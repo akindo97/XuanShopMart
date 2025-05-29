@@ -4,10 +4,12 @@ const CartUIContext = createContext();
 
 export const CartUIProvider = ({ children }) => {
   const [visible, setVisible] = useState(false);
+  const [productDetail, setproductDetail] = useState();
   const [onAdd, setOnAdd] = useState(() => () => {});
 
-  const show = (addCallback) => {
-    //setOnAdd(() => addCallback);
+  const show = (productDetail) => {
+    // setOnAdd(() => addCallback);
+    setproductDetail(productDetail);
     setVisible(true);
   };
 
@@ -17,7 +19,7 @@ export const CartUIProvider = ({ children }) => {
   };
 
   return (
-    <CartUIContext.Provider value={{ visible, show, hide, onAdd }}>
+    <CartUIContext.Provider value={{ visible, productDetail, show, hide, onAdd }}>
       {children}
     </CartUIContext.Provider>
   );

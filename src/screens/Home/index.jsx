@@ -183,10 +183,10 @@ export default function HomeScreens() {
     );
 
     // danh mục chi tiết
-    const detailedItem = ({ item }) => (
+    const detailedProduct = ({ item }) => (
         <Card style={styles.cCatCard} onPress={() => alert(item.name)}>
             <TouchableOpacity style={styles.cCatPlus}
-                onPress={() => show()}>
+                onPress={() => show(item)}>
                 <Icon source="plus-thick" size={30} color='#FFF' />
             </TouchableOpacity>
             <Card.Cover source={item.image} style={styles.image} />
@@ -206,8 +206,6 @@ export default function HomeScreens() {
                 data={productCatalog}
                 keyExtractor={(item, index) => index.toString()}
                 ListHeaderComponent={
-                    <>
-
                         <FlatList
                             data={productCatalog}
                             renderItem={catalogItem}
@@ -215,7 +213,6 @@ export default function HomeScreens() {
                             numColumns={5}
                             contentContainerStyle={styles.listContainer}
                         />
-                    </>
                 }
                 renderItem={({ item }) => (
                     <View style={styles.container}>
@@ -234,7 +231,7 @@ export default function HomeScreens() {
                             <FlatList
                                 horizontal
                                 data={item.item}
-                                renderItem={detailedItem}
+                                renderItem={detailedProduct}
                                 keyExtractor={(i) => i.id.toString()}
                                 showsHorizontalScrollIndicator={false}
                                 contentContainerStyle={{ paddingHorizontal: 8 }}

@@ -1,9 +1,11 @@
 import { View, Image } from 'react-native';
 import { Appbar, Searchbar, Avatar, useTheme } from 'react-native-paper';
 import styles from './styles';
+import { useNavigation } from '@react-navigation/native';
 
 const Header = ({ searchQuery, setSearchQuery }) => {
   const theme = useTheme();
+  const navigation = useNavigation();
 
   return (
     <Appbar.Header style={styles.header}>
@@ -28,9 +30,7 @@ const Header = ({ searchQuery, setSearchQuery }) => {
       {/* Icon thông báo */}
       <Appbar.Action
         icon="bell-outline"
-        onPress={() => {
-          console.log('Thông báo');
-        }}
+        onPress={() => { navigation.navigate('Notifications') }}
       />
     </Appbar.Header>
   );

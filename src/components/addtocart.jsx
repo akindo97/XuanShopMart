@@ -1,12 +1,23 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { StyleSheet, Text, Image, View, FlatList, Dimensions, ScrollView, TouchableOpacity } from 'react-native';
-import { Card, Icon } from 'react-native-paper';
-import { Button } from 'react-native-paper';
+import { Card, Icon, Button } from 'react-native-paper';
 import { useCartUI } from '../hooks/useCartOverlay';
+import Animated, { useSharedValue, useAnimatedStyle, withTiming } from 'react-native-reanimated';
 
+export const AddToCart = ({  }) => {
+    const { hide, productDetail } = useCartUI();
+    console.log('AddToCart: productDetail', productDetail);
 
-export const AddToCart = ({ onAdd }) => {
-    const { hide } = useCartUI();
+    const [quantity, setQuantity] = useState(1);
+
+    // Khởi tạo giá trị chia sẻ cho hiệu ứng trượt
+    const translateY = useSharedValue(200); // bắt đầu dưới màn hình
+    useEffect(() => {
+        translateY.value = withTiming(0, { duration: 200 }); // trượt lên
+    }, []);
+    const animatedStyle = useAnimatedStyle(() => ({
+        transform: [{ translateY: translateY.value }],
+    }));
 
     return (
         <View style={styles.container}>
@@ -14,12 +25,12 @@ export const AddToCart = ({ onAdd }) => {
             <View style={{ flex: 1 }}>
                 <TouchableOpacity onPress={hide} style={{ flex: 1 }}></TouchableOpacity>
             </View>
-            <View style={styles.cAddBlock}>
+            <Animated.View style={[styles.cAddBlock, animatedStyle]}>
                 <View style={styles.cAddUp}>
-                    <Card.Cover source={require('../../assets/images/bapbo.jpg')} style={styles.cAddImage} />
+                    <Card.Cover source={productDetail.image} style={styles.cAddImage} />
                     <Card.Content style={styles.cAddContent}>
-                        <Text style={styles.cAddName}>Bắp bò ngon VKL luôn (1kg)</Text>
-                        <Text style={styles.cAddPrice}>￥1,000</Text>
+                        <Text style={styles.cAddName}>{productDetail.name}</Text>
+                        <Text style={styles.cAddPrice}>￥{productDetail.price}</Text>
                     </Card.Content>
                     <TouchableOpacity onPress={hide}>
                         <Icon source="close" size={30} />
@@ -29,11 +40,11 @@ export const AddToCart = ({ onAdd }) => {
                     <Text style={styles.cAddQty}>Số lượng</Text>
                     <View style={{ flexDirection: 'row', alignItems: 'center', flex: 1, justifyContent: 'flex-end' }}>
                         {/* Các nút tăng/giảm số lượng */}
-                        <TouchableOpacity onPress={() => alert("-")}>
+                        <TouchableOpacity onPress={() => setQuantity(quantity > 1 ? quantity - 1 : 1)}>
                             <Text style={styles.cAddQtyInput}>ー</Text>
                         </TouchableOpacity>
-                        <Text style={styles.cAddQtyInput}>1</Text>
-                        <TouchableOpacity onPress={() => alert("+")}>
+                        <Text style={styles.cAddQtyInput}>{quantity}</Text>
+                        <TouchableOpacity onPress={() => setQuantity(quantity + 1)}>
                             <Text style={styles.cAddQtyInput}>＋</Text>
                         </TouchableOpacity>
                     </View>
@@ -45,7 +56,7 @@ export const AddToCart = ({ onAdd }) => {
                 >
                     Thêm vào giỏ hàng
                 </Button>
-            </View>
+            </Animated.View>
         </View>
     );
 }
