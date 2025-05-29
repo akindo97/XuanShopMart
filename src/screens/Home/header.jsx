@@ -17,7 +17,7 @@ const Header = ({ searchQuery, setSearchQuery }) => {
       {/* Thanh tìm kiếm */}
       <View style={styles.searchContainer}>
         <Searchbar
-          placeholder="Tìm kiếm..."
+          placeholder="Tìm kiếm sản phẩm..."
           onChangeText={setSearchQuery}
           value={searchQuery}
           style={styles.searchbar}

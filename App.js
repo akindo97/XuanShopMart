@@ -1,26 +1,34 @@
-import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
-import { PaperProvider } from 'react-native-paper';
+import { PaperProvider, DefaultTheme, useTheme } from 'react-native-paper';
+import Footer from './src/screens/Home/footer';
+import { AddToCart } from './src/components/addtocart';
+import { CartUIProvider, useCartUI } from './src/hooks/useCartOverlay';
 
-import HomeScreens from './src/screens/Home';
+const theme = {
+  ...DefaultTheme,
+  colors: {
+    ...DefaultTheme.colors,
+    background: '#FFF', // 🎨 màu xám nền toàn app
+  },
+};
+
+const MainContent = () => {
+  const { visible, onAdd } = useCartUI();
+
+  return (
+    <>
+      <Footer />
+      {visible && <AddToCart onAdd={onAdd} />}
+    </>
+  );
+};
 
 export default function App() {
   return (
-    <PaperProvider>
-      <HomeScreens />
-      <View style={styles.container}>
-        <Text>Open up App.js to start working on your app! 12312</Text>
-        <StatusBar style="auto" />
-      </View>
-    </PaperProvider>
+    <CartUIProvider>
+      <PaperProvider theme={theme}>
+        <MainContent />
+      </PaperProvider>
+    </CartUIProvider>
   );
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
