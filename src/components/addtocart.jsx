@@ -3,6 +3,7 @@ import { StyleSheet, Text, Image, View, FlatList, Dimensions, ScrollView, Toucha
 import { Card, Icon, Button } from 'react-native-paper';
 import { useCartUI } from '../hooks/useCartOverlay';
 import Animated, { useSharedValue, useAnimatedStyle, withTiming } from 'react-native-reanimated';
+import { fToYen } from '../utils/utils';
 
 export const AddToCart = ({  }) => {
     const { hide, productDetail } = useCartUI();
@@ -30,7 +31,7 @@ export const AddToCart = ({  }) => {
                     <Card.Cover source={productDetail.image} style={styles.cAddImage} />
                     <Card.Content style={styles.cAddContent}>
                         <Text style={styles.cAddName}>{productDetail.name}</Text>
-                        <Text style={styles.cAddPrice}>￥{productDetail.price}</Text>
+                        <Text style={styles.cAddPrice}>￥{fToYen(productDetail.price)}</Text>
                     </Card.Content>
                     <TouchableOpacity onPress={hide}>
                         <Icon source="close" size={30} />
@@ -49,11 +50,9 @@ export const AddToCart = ({  }) => {
                         </TouchableOpacity>
                     </View>
                 </View>
-                <Button
-                    mode="contained"
+                <Button mode="contained"
                     // onPress={onAdd}
-                    style={{ backgroundColor: '#00CC66' }}
-                >
+                    style={{ backgroundColor: '#00CC66' }}>
                     Thêm vào giỏ hàng
                 </Button>
             </Animated.View>
@@ -68,7 +67,7 @@ const styles = StyleSheet.create({
         start: 0,
         end: 0,
         bottom: 0,
-        zIndex: 10,
+        zIndex: 100,
         backgroundColor: 'rgba(0, 0, 0, 0.5)',
         flexDirection: 'column',
     },

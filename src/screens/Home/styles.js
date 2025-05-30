@@ -1,28 +1,65 @@
-import { StyleSheet } from 'react-native';
+import { StyleSheet, Dimensions } from 'react-native';
+
+// tính toán kích thước của item dựa trên chiều rộng
+const screenWidth = Dimensions.get('window').width;
+const itemWidth = screenWidth / 5;
 
 export default StyleSheet.create({
-    header: {
-        elevation: 4,
-        backgroundColor: '#00CC66',
+    listContainer: {
+        paddingVertical: 10,
     },
-    logo: {
-        marginLeft: 8,
+    container: {
+        backgroundColor: '#DDDDDD',
     },
-    searchContainer: {
-        flex: 1,
-        marginLeft: 50,
-        marginRight: 2
+    block: {
+        backgroundColor: '#FFF',
+        marginTop: 10,
+        borderRadius: 2
     },
-    searchbar: {
-        height: 36,
-        borderRadius: 20,
-        elevation: 0,
+    item: {
+        width: itemWidth,
+        alignItems: 'center',
         justifyContent: 'center',
+        marginVertical: 8,
     },
-    inputStyle: {
-        fontSize: 14,
-        marginTop: -10,
-        paddingVertical: 0,       // giảm khoảng cách trên/dưới
-        textAlignVertical: 'center', // hiệu quả trên Android
+    card: {
+        width: "80%",
+        height: 70,
+        borderRadius: "20%",
+        alignItems: 'center',
+        justifyContent: 'center',
+        backgroundColor: '#f5f5f5',
+        overflow: 'hidden',
     },
+    icon: {
+        width: "100%",
+        height: "100%",
+        resizeMode: 'contain',
+    },
+    text: {
+        fontSize: 12,
+        marginTop: 10,
+        textAlign: 'center',
+    },
+    cCatBlock: {
+        backgroundColor: '#FFF',
+        marginTop: 10,
+        borderRadius: 2,
+        paddingRight: 8,
+    },
+    cCatTitle: {
+        flexDirection: 'row',
+        paddingLeft: 8,
+        paddingTop: 5,
+    },
+    cCatTitTex: {
+        fontSize: 20,
+    },
+    cCatShowTex: {
+        fontSize: 16,
+        color: '#0a68ff'
+    },
+    fwbold: {
+        fontWeight: 'bold'
+    }
 });
