@@ -1,6 +1,6 @@
 
 import React, { useState } from 'react';
-import { Text, FlatList, TouchableOpacity, StyleSheet } from 'react-native';
+import { Text, FlatList, TouchableOpacity, StyleSheet, View } from 'react-native';
 import { Card, Icon } from 'react-native-paper';
 import { useCartUI } from '../hooks/useCartOverlay';
 import { useNavigation } from '@react-navigation/native';
@@ -28,7 +28,11 @@ const HorizontalList = (props) => {
                     <Text numberOfLines={2} style={styles.cCatName}>
                         {item.name}
                     </Text>
-                    <Text style={styles.cCatPrice}>￥{fToYen(item.price)}</Text>
+                    <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
+                        <Text style={styles.cCatPrice}>￥{fToYen(item.price)}</Text>
+                        {/* nếu là sản phẩm đông lạnh thì hiển thị chữ "cold" */}
+                        {item.frozen && <Text style={styles.cCatCold}>cold</Text>}
+                    </View>
                 </Card.Content>
             </Card>
         );
@@ -86,6 +90,15 @@ const styles = StyleSheet.create({
     cCatPrice: {
         fontSize: 16,
         color: 'red',
+    },
+    cCatCold: {
+        fontSize: 12,
+        backgroundColor: '#3366CC',
+        color: '#fff',
+        alignSelf: 'flex-start',
+        paddingHorizontal: 6,
+        borderRadius: 7,
+        marginTop: 3,
     },
 })
 
