@@ -11,6 +11,7 @@ export const XproductCatalog = [
                 price: 1000,
                 image: require('../../assets/images/bapbo.jpg'),
                 frozen: true,
+                sale: true,
             },
             {
                 id: 2,
@@ -48,6 +49,7 @@ export const XproductCatalog = [
                 name: 'Thịt ba chỉ (1kg)',
                 price: 1000,
                 frozen: true,
+                sale: true,
                 image: {uri: 'https://vcdn1-suckhoe.vnecdn.net/2019/12/07/3-1p60g42555v7-1575707575-1794-1575707805.jpg?w=680&h=0&q=100&dpr=2&fit=crop&s=PB-xDL0S0c5hNxxWuFe6wA'},
             },
             {
@@ -77,6 +79,48 @@ export const XproductCatalog = [
                 price: 860,
                 frozen: true,
                 image: {uri: 'https://thaiduongmartvn.com/wp-content/uploads/2022/10/kiotviet_0c4e8da71c55a214a8375c539ce0aede.jpg'},
+            },
+            {
+                id: 9215,
+                name: 'Vịt xiêm nguyên con',
+                price: 1600,
+                frozen: true,
+                image: {uri: 'https://thaiduongmartvn.com/wp-content/uploads/2022/10/kiotviet_9c32fc248861e2771a2d2626232ec333.jpg'},
+            },
+            {
+                id: 9216,
+                name: 'Gà non',
+                price: 620,
+                frozen: true,
+                image: {uri: 'https://thaiduongmartvn.com/wp-content/uploads/2022/10/kiotviet_d69215d130aa7cc341c36f8e47652bd2e.jpg'},
+            },
+            {
+                id: 9217,
+                name: 'Vịt nguyên con đầu cổ',
+                price: 1600,
+                frozen: true,
+                image: {uri: 'https://thaiduongmartvn.com/wp-content/uploads/2022/10/kiotviet_813475f923f2c855d8cb9d2bff4a4868.jpg'},
+            },
+            {
+                id: 9218,
+                name: 'Cánh gà',
+                price: 600,
+                frozen: true,
+                image: {uri: 'https://thaiduongmartvn.com/wp-content/uploads/2022/10/kiotviet_2db1fb0f5bc66c9302c5a3468f10cdaf.jpg'},
+            },
+            {
+                id: 9219,
+                name: 'Mề gà',
+                price: 600,
+                frozen: true,
+                image: {uri: 'https://thaiduongmartvn.com/wp-content/uploads/2022/10/kiotviet_a96ed2e051f06efa751f4f9e89b1ea9f.jpg'},
+            },
+            {
+                id: 9220,
+                name: 'Thịt ức gà',
+                price: 950,
+                frozen: true,
+                image: {uri: 'https://thaiduongmartvn.com/wp-content/uploads/2022/10/kiotviet_5fe80aebae06979c5359625bf044d1ff-450x450.jpeg'},
             }
         ]
     },

@@ -5,23 +5,56 @@ import { Card, Icon } from 'react-native-paper';
 import { useCartUI } from '../hooks/useCartOverlay';
 import { useNavigation } from '@react-navigation/native';
 import { fToYen } from '../utils/utils';
+import commonStyles from '../utils/commonstyles';
 
 const HorizontalList = (props) => {
+    /////// hãy check các props //////
+
     // sử dụng hook để lấy hàm show từ useCartUI
-    const { show } = useCartUI();
+    const { addToCartShow } = useCartUI();
     const navigation = useNavigation();
 
+    // Hiển thị tối đa ... sản phẩm trong danh sách
+    const maxItems = 8;
+
+    // kiểm tra xem có truyền thuộc tính isHorizontal không, nếu không thì mặc định là true
     const isHorizontal = props.isHorizontal ?? true; // mặc định là hiển thị ngang
+
+    // Nếu isHorizontal === true thì lấy tối đa 8 item + thêm item "xem thêm"
+    let renderList;
+    if (isHorizontal && props.item.length > maxItems) {
+        renderList = props.item.slice(0, maxItems);
+        // thêm item "Xem thêm" vào cuối danh sách
+        renderList.push({
+            isSeeMore: true,
+            id: -1
+        });
+    } else {
+        renderList = props.item;
+    }
 
     // danh mục chi tiết
     const detailedProduct = ({ item }) => {
+        if (item.isSeeMore) {
+            // nếu là item "Xem thêm" thì hiển thị nút xem thêm
+            return (
+                <TouchableOpacity style={styles.cCatMore}
+                    onPress={() => { navigation.navigate('Store', { catalogId: props.productList.id }) }}>
+                    <Text style={commonStyles.textColor}>＞</Text>
+                    <Text style={commonStyles.textColor}>Xem</Text>
+                    <Text style={commonStyles.textColor}>tất</Text>
+                    <Text style={commonStyles.textColor}>cả</Text>
+                    <Text style={commonStyles.textColor}>＞</Text>
+                </TouchableOpacity>
+            );
+        }
         return (
             <Card style={isHorizontal ? styles.cCatCardHor : styles.cCatCardVer}
                 // khi ấn vào sẽ chuyển đến trang sản phẩm
                 onPress={() => { navigation.navigate('Product', { product: item, productList: props.item }) }}>
                 <TouchableOpacity style={styles.cCatPlus}
-                    onPress={() => show(item)}>
-                    <Icon source="plus-thick" size={30} color='#FFF' />
+                    onPress={() => addToCartShow(item)}>
+                    <Icon source="cart-plus" size={25} color='#FFF' />
                 </TouchableOpacity>
                 <Card.Cover source={item.image} style={styles.cCatImage} />
                 <Card.Content style={styles.cCatContent}>
@@ -29,9 +62,9 @@ const HorizontalList = (props) => {
                         {item.name}
                     </Text>
                     <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
-                        <Text style={styles.cCatPrice}>￥{fToYen(item.price)}</Text>
-                        {/* nếu là sản phẩm đông lạnh thì hiển thị chữ "cold" */}
-                        {item.frozen && <Text style={styles.cCatCold}>cold</Text>}
+                        <Text style={commonStyles.priceColor}>￥{fToYen(item.price)}</Text>
+                        {/* nếu là sản phẩm đông lạnh thì hiển thị chữ "Đông" */}
+                        {item.frozen && <Text style={styles.cCatCold}>đông</Text>}
                     </View>
                 </Card.Content>
             </Card>
@@ -40,7 +73,7 @@ const HorizontalList = (props) => {
 
     return (
         <FlatList
-            data={props.item}
+            data={renderList}
             renderItem={detailedProduct}
             keyExtractor={(i) => i.id.toString()}
             horizontal={isHorizontal}
@@ -59,6 +92,15 @@ const styles = StyleSheet.create({
         marginVertical: 10,
         backgroundColor: '#FFFFFF',
     },
+    cCatMore: {
+        backgroundColor: '#EEEEEE',
+        justifyContent: 'center',
+        alignItems: 'center',
+        borderRadius: 12,
+        marginRight: 12,
+        marginVertical: 10,
+        padding: 10,
+    },
     cCatCardVer: {
         position: 'relative',
         width: '48%',
@@ -71,8 +113,8 @@ const styles = StyleSheet.create({
         end: 0,
         zIndex: 1,
         borderRadius: 12,
-        backgroundColor: '#00CC6699',
-        padding: 2,
+        backgroundColor: '#00CC66ff',
+        padding: 3,
     },
     cCatImage: {
         height: 100,
@@ -87,10 +129,10 @@ const styles = StyleSheet.create({
         lineHeight: 17,
         minHeight: 32,
     },
-    cCatPrice: {
-        fontSize: 16,
-        color: 'red',
-    },
+    // cCatPrice: {
+    //     fontSize: 16,
+    //     color: 'red',
+    // },
     cCatCold: {
         fontSize: 12,
         backgroundColor: '#3366CC',

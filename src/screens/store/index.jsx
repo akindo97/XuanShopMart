@@ -4,7 +4,7 @@ import { View, ScrollView, StyleSheet, TouchableOpacity } from 'react-native';
 import Header from '../../components/header';
 import { Text } from 'react-native-paper';
 import { XproductCatalog } from '../../utils/fakeapi';
-import { commonStyles } from '../../utils/commonstyles';
+import commonStyles from '../../utils/commonstyles';
 import HorizontalList from '../../components/horizontallist';
 
 const StoreScreen = ({ route }) => {

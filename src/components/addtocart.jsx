@@ -4,12 +4,15 @@ import { Card, Icon, Button } from 'react-native-paper';
 import { useCartUI } from '../hooks/useCartOverlay';
 import Animated, { useSharedValue, useAnimatedStyle, withTiming } from 'react-native-reanimated';
 import { fToYen } from '../utils/utils';
+import QuantitySelect from './quantityselect';
+import commonStyles from '../utils/commonstyles';
 
-export const AddToCart = ({  }) => {
-    const { hide, productDetail } = useCartUI();
-    console.log('AddToCart: productDetail', productDetail);
+const AddToCartModal = ({ }) => {
+    // Lấy thông tin sản phẩm và các hàm từ context
+    const { addToCartHide, productDetail, addToCart } = useCartUI();
 
-    const [quantity, setQuantity] = useState(1);
+    // Sử dụng state để quản lý số lượng
+    const [quantity, setQuantity] = useState(0);
 
     // Khởi tạo giá trị chia sẻ cho hiệu ứng trượt
     const translateY = useSharedValue(200); // bắt đầu dưới màn hình
@@ -24,7 +27,7 @@ export const AddToCart = ({  }) => {
         <View style={styles.container}>
 
             <View style={{ flex: 1 }}>
-                <TouchableOpacity onPress={hide} style={{ flex: 1 }}></TouchableOpacity>
+                <TouchableOpacity onPress={addToCartHide} style={{ flex: 1 }}></TouchableOpacity>
             </View>
             <Animated.View style={[styles.cAddBlock, animatedStyle]}>
                 <View style={styles.cAddUp}>
@@ -33,26 +36,19 @@ export const AddToCart = ({  }) => {
                         <Text style={styles.cAddName}>{productDetail.name}</Text>
                         <Text style={styles.cAddPrice}>￥{fToYen(productDetail.price)}</Text>
                     </Card.Content>
-                    <TouchableOpacity onPress={hide}>
+                    <TouchableOpacity onPress={addToCartHide}>
                         <Icon source="close" size={30} />
                     </TouchableOpacity>
                 </View>
                 <View style={[styles.cAddUp, styles.cAddCenter]}>
                     <Text style={styles.cAddQty}>Số lượng</Text>
-                    <View style={{ flexDirection: 'row', alignItems: 'center', flex: 1, justifyContent: 'flex-end' }}>
+                    <View>
                         {/* Các nút tăng/giảm số lượng */}
-                        <TouchableOpacity onPress={() => setQuantity(quantity > 1 ? quantity - 1 : 1)}>
-                            <Text style={styles.cAddQtyInput}>ー</Text>
-                        </TouchableOpacity>
-                        <Text style={styles.cAddQtyInput}>{quantity}</Text>
-                        <TouchableOpacity onPress={() => setQuantity(quantity + 1)}>
-                            <Text style={styles.cAddQtyInput}>＋</Text>
-                        </TouchableOpacity>
+                        <QuantitySelect onChange={(quantity) => setQuantity(quantity)} />
                     </View>
                 </View>
-                <Button mode="contained"
-                    // onPress={onAdd}
-                    style={{ backgroundColor: '#00CC66' }}>
+                <Button mode="contained" style={commonStyles.buttonColor}
+                    onPress={() => addToCart(quantity, productDetail)}>
                     Thêm vào giỏ hàng
                 </Button>
             </Animated.View>
@@ -105,7 +101,8 @@ const styles = StyleSheet.create({
         fontSize: 20,
     },
     cAddCenter: {
-        alignItems: 'center'
+        alignItems: 'center',
+        justifyContent: 'space-between',
     },
     cAddQty: {
         fontSize: 16,
@@ -122,3 +119,5 @@ const styles = StyleSheet.create({
         borderColor: '#BEBEBE'
     },
 })
+
+export default AddToCartModal;

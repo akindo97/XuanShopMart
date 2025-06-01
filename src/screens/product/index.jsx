@@ -1,11 +1,11 @@
-import React, { useState, useRef } from 'react';
-import { View, Text, FlatList, Image, Dimensions, StyleSheet, TouchableOpacity} from 'react-native';
-import { fToYen } from '../../utils/utils';
-
-import { Card, Icon, Button } from 'react-native-paper';
+import React, { useState } from 'react';
+import { View, Text, FlatList, Image, Dimensions, StyleSheet, TouchableOpacity } from 'react-native';
+import { Icon, Button } from 'react-native-paper';
 import { useCartUI } from '../../hooks/useCartOverlay';
-
 import HorizontalList from '../../components/horizontallist';
+import commonStyles from '../../utils/commonstyles';
+import { useNavigation } from '@react-navigation/native';
+import { fToYen } from '../../utils/utils';
 
 const { width } = Dimensions.get('window');
 
@@ -16,17 +16,17 @@ const images = [
 ];
 
 export default function ProductScreen({ route }) {
-    console.log('route.params', route.params)
+    const navigation = useNavigation();
+
+
     // lấy sản phẩm từ params của route
     const { product, productList } = route.params;
-    console.log('product:', product);
-
-    // sử dụng hook để lấy hàm show từ useCartUI
-    const { show } = useCartUI();
-
+    // sử dụng hook để lấy hàm addToCartShow từ useCartUI
+    const { addToCartShow, totalQuantity } = useCartUI();
+    // State để quản lý chỉ mục hiện tại của ảnh
     const [currentIndex, setCurrentIndex] = useState(0);
-    const flatListRef = useRef(null);
 
+    // Hàm xử lý sự kiện cuộn để cập nhật chỉ mục hiện tại
     const onScroll = (event) => {
         const index = Math.round(event.nativeEvent.contentOffset.x / width);
         setCurrentIndex(index);
@@ -55,7 +55,7 @@ export default function ProductScreen({ route }) {
                 <View style={styles.cProHov}>
                     <View style={{ flexDirection: 'row', alignItems: 'flex-end' }}>
                         <Text style={styles.cProPrice}>￥{fToYen(product.price)}</Text>
-                        <Text style={styles.cProOldPrice}>￥{fToYen(1200)}</Text>
+                        <Text style={[commonStyles.oldPrice, commonStyles.pLeft10]}>￥{fToYen(1200)}</Text>
                         <Text style={styles.cProSale}>　|　Sale</Text>
                     </View>
                     <Text style={styles.cProStatus}>còn hàng</Text>
@@ -76,25 +76,36 @@ export default function ProductScreen({ route }) {
                         </Text>
                     </View>
                     <TouchableOpacity style={{ flexDirection: 'row', paddingTop: 3 }}>
-                        <Text style={styles.cCatShowTex}>Xem tất cả</Text>
-                        <Icon source="chevron-right" size={23} color="#0a68ff" />
+                        <Text style={[styles.cCatShowTex, commonStyles.textColor]}>Xem tất cả</Text>
+                        <Icon source="chevron-right" size={23} color="#00CC66" />
                     </TouchableOpacity>
                 </View>
                 <HorizontalList item={productList || []} />
             </View>
 
             <View style={styles.cProBotBlocck}>
+                {/* nút chat */}
                 <View style={styles.cProBotFlex}>
                     <Icon source="facebook-messenger" size={23} />
-                    <Text style={styles.CproBotText}>Liên hệ</Text>
+                    <Text style={styles.cProBotText}>Liên hệ</Text>
                 </View>
-                <View style={styles.cProBotFlex}>
-                    <Icon source="cart-outline" size={23} />
-                    <Text style={styles.CproBotText}>Giỏ hàng</Text>
-                </View>
+                {/* Nút giỏ hàng */}
+                <TouchableOpacity style={styles.cProBotFlex}
+                    // Chuyển hướng tới giỏ hàng khi nhấn nút
+                    onPress={() => navigation.navigate('Main', {
+                        screen: 'Cart',
+                    })}>
+                    <View style={commonStyles.pRelative}>
+                        <Icon source="cart-outline" size={23} />
+                        {/* Hiển thị số lượng sản phẩm trong giỏ hàng nếu có */}
+                        {totalQuantity !== 0 && <Text style={styles.cProBadge}>{totalQuantity}</Text>}
+                    </View>
+                    <Text style={styles.cProBotText}>Giỏ hàng</Text>
+                </TouchableOpacity>
+                {/* nút thêm vào giỏ hàng */}
                 <View style={styles.cProBotBtn}>
                     <Button mode="contained" style={{ backgroundColor: '#000' }}
-                        onPress={() => show(product)}>
+                        onPress={() => addToCartShow(product)}>
                         Thêm vào giỏ hàng
                     </Button>
                 </View>
@@ -148,13 +159,13 @@ const styles = StyleSheet.create({
         color: 'red',
         fontWeight: 'bold',
     },
-    cProOldPrice: {
-        fontSize: 13,
-        textDecorationLine: 'line-through',
-        color: '#666',
-        paddingLeft: 10,
-        paddingBottom: 2,
-    },
+    // cProOldPrice: {
+    //     fontSize: 13,
+    //     textDecorationLine: 'line-through',
+    //     color: '#666',
+    //     paddingLeft: 10,
+    //     paddingBottom: 2,
+    // },
     cProSale: {
         fontSize: 13,
         color: '#00CC66',
@@ -193,7 +204,6 @@ const styles = StyleSheet.create({
     },
     cCatShowTex: {
         fontSize: 16,
-        color: '#0a68ff'
     },
     cProBotBlocck: {
         position: 'absolute',
@@ -215,7 +225,17 @@ const styles = StyleSheet.create({
         marginRight: 10,
         paddingRight: 10,
     },
-    CproBotText: {
+    cProBadge: {
+        position: 'absolute',
+        top: -3,
+        right: -10,
+        backgroundColor: '#FF0000',
+        borderRadius: 10,
+        paddingHorizontal: 5,
+        color: '#fff',
+        fontSize: 12,
+    },
+    cProBotText: {
         fontSize: 12,
     },
     cProBotBtn: {

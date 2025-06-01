@@ -1,51 +1,8 @@
-// import * as React from 'react';
-// import { BottomNavigation, Text } from 'react-native-paper';
-// import { View } from 'react-native';
-// import HomeScreens from '../screens/home';
-// import StoreScreen from '../screens/store';
-
-// const Cart = () => <Text>Cart</Text>;
-
-// const RecentsRoute = () => <Text>Recents</Text>;
-
-// const Account = () => <Text>Notifications</Text>;
-
-// const Footer = () => {
-//   const [index, setIndex] = React.useState(0);
-//   const [routes] = React.useState([
-//     { key: 'home', title: 'Trang chủ', focusedIcon: 'home', unfocusedIcon: 'home-outline'},
-//     { key: 'store', title: 'Cửa hàng', focusedIcon: 'store', unfocusedIcon: 'store-outline'},
-//     { key: 'cart', title: 'Giỏ hàng', focusedIcon: 'cart', unfocusedIcon: 'cart-outline' },
-//     { key: 'recents', title: 'Đơn hàng', focusedIcon: 'history' },
-//     { key: 'account', title: 'Tài khoản', focusedIcon: 'account', unfocusedIcon: 'account-outline' },
-//   ]);
-
-//   const renderScene = BottomNavigation.SceneMap({
-//     home: HomeScreens,
-//     store: StoreScreen,
-//     cart: Cart,
-//     recents: RecentsRoute,
-//     account: Account,
-//   });
-
-//   return (
-//     <BottomNavigation
-//       navigationState={{ index, routes }}
-//       onIndexChange={setIndex}
-//       renderScene={renderScene}
-//       activeColor='#00CC66'
-//     />
-//   );
-// };
-
-// export default Footer;
-
-
-
 import React from 'react';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import { NavigationContainer } from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+
+import { useCartUI } from '../hooks/useCartOverlay';
 
 import HomeScreens from '../screens/home';
 import StoreScreen from '../screens/store';
@@ -57,6 +14,8 @@ import { Text } from 'react-native-paper';
 const Tab = createBottomTabNavigator();
 
 const Footer = () => {
+    const { totalQuantity } = useCartUI();
+
     return (
         <Tab.Navigator
             screenOptions={({ route }) => ({
@@ -96,6 +55,7 @@ const Footer = () => {
 
                     return <Icon name={iconName} size={35} color={color} height={35} width={35} />;
                 },
+                tabBarBadge: route.name === 'Cart' && totalQuantity !== 0 ? totalQuantity : undefined,
             })}
         >
             <Tab.Screen name="Home" component={HomeScreens} options={{ tabBarLabel: 'Trang chủ' }} />

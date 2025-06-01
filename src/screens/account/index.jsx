@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { View, Image, Text, StyleSheet } from 'react-native';
 import Headers from '../../components/header';
-import { commonStyles } from '../../utils/commonstyles';
+import commonStyles from '../../utils/commonstyles';
 import { Button } from 'react-native-paper';
 import { useNavigation } from '@react-navigation/native';
 

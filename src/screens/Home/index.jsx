@@ -1,14 +1,12 @@
 import React, { useState } from 'react';
-import { StyleSheet, Text, Image, View, FlatList, Dimensions, ScrollView, TouchableOpacity } from 'react-native';
-import { TouchableRipple, Surface, useTheme, Card, Icon } from 'react-native-paper';
+import { Text, Image, View, FlatList, TouchableOpacity } from 'react-native';
+import { TouchableRipple, Surface, Icon } from 'react-native-paper';
 import Header from '../../components/header';
-import { CartUIProvider, useCartUI } from '../../hooks/useCartOverlay';
 import { useNavigation } from '@react-navigation/native';
-import { fToYen } from '../../utils/utils';
 import HorizontalList from '../../components/horizontallist';
 import { XproductCatalog } from '../../utils/fakeapi';
 import styles from './styles';
-import StoreScreen from '../store';
+import commonStyles from '../../utils/commonstyles';
 
 const HomeScreens = () => {
     const navigation = useNavigation();
@@ -36,6 +34,7 @@ const HomeScreens = () => {
                 keyExtractor={(item, index) => index.toString()}
                 ListHeaderComponent={
                     <FlatList
+                        style={{ backgroundColor: '#FFF' }}
                         data={XproductCatalog}
                         renderItem={catalogItem}
                         keyExtractor={(item, index) => 'cat' + index}
@@ -54,8 +53,8 @@ const HomeScreens = () => {
                                 </View>
                                 <TouchableOpacity style={{ flexDirection: 'row' }}
                                     onPress={() => navigation.navigate('Store', { catalogId: item.id })}>
-                                    <Text style={styles.cCatShowTex}>Xem tất cả</Text>
-                                    <Icon source="chevron-right" size={23} color="#0a68ff" />
+                                    <Text style={[styles.cCatShowTex, commonStyles.textColor]}>Xem tất cả</Text>
+                                    <Icon source="chevron-right" size={23} color="#00CC66" />
                                 </TouchableOpacity>
                             </View>
                             <HorizontalList item={item.item} productList={item} />

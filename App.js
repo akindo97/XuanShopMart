@@ -2,8 +2,9 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { PaperProvider, DefaultTheme } from 'react-native-paper';
 import Footer from './src/components/footer';
-import { AddToCart } from './src/components/addtocart';
+import AddToCartModal from './src/components/addtocart';
 import { CartUIProvider, useCartUI } from './src/hooks/useCartOverlay';
+import { DialogProvider } from './src/hooks/dialogcontext';
 import NotificationScreen from './src/screens/notification';
 import ProductScreen from './src/screens/product';
 
@@ -18,8 +19,8 @@ const theme = {
 };
 
 const MainContent = () => {
-  // sử dụng hook để lấy giá trị visible và hàm onAdd từ CartUIProvider
-  const { visible, onAdd } = useCartUI();
+  // sử dụng hook để lấy giá trị visible từ CartUIProvider
+  const { visible } = useCartUI();
 
   return (
     <>
@@ -52,18 +53,20 @@ const MainContent = () => {
             }} />
         </Stack.Navigator>
       </NavigationContainer>
-      {visible && <AddToCart onAdd={onAdd} />}
+      {visible && <AddToCartModal />}
     </>
   );
 };
 
 export default function App() {
   return (
-    <CartUIProvider>
-      <PaperProvider theme={theme}>
-        <MainContent />
-      </PaperProvider>
-    </CartUIProvider>
+    <PaperProvider theme={theme}>
+      <DialogProvider>
+        <CartUIProvider>
+          <MainContent />
+        </CartUIProvider>
+      </DialogProvider>
+    </PaperProvider>
   );
 }
 

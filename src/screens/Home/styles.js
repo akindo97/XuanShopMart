@@ -57,7 +57,7 @@ export default StyleSheet.create({
     },
     cCatShowTex: {
         fontSize: 16,
-        color: '#0a68ff'
+        color: '#00CC66'
     },
     fwbold: {
         fontWeight: 'bold'
