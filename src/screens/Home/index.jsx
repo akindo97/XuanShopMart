@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { Text, Image, View, FlatList, TouchableOpacity } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { Text, Image, View, FlatList, TouchableOpacity, ActivityIndicator } from 'react-native';
 import { TouchableRipple, Surface, Icon } from 'react-native-paper';
 import Header from '../../components/header';
 import { useNavigation } from '@react-navigation/native';
@@ -7,12 +7,30 @@ import HorizontalList from '../../components/horizontallist';
 import { XproductCatalog } from '../../utils/fakeapi';
 import styles from './styles';
 import commonStyles from '../../utils/commonstyles';
+import { apiRequest } from '../../api';
 
 const HomeScreens = () => {
     const navigation = useNavigation();
 
-    // tìm kiếm
-    const [searchQuery, setSearchQuery] = useState('');
+    const [loading, setLoading] = useState(true);
+    const [category, setCategory] = useState([]);
+    const [error, setError] = useState(null);
+
+    useEffect(() => {
+        const loadProducts = async () => {
+            try {
+                const res = await apiRequest('/category');
+                setCategory(res);
+                setError(null);
+            } catch (err) {
+                setError(err.message || 'Đã có lỗi xảy ra');
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        loadProducts();
+    }, []);
 
     // danh mục sản phẩm
     const catalogItem = ({ item }) => (
@@ -26,9 +44,26 @@ const HomeScreens = () => {
         </TouchableRipple>
     );
 
+    if (loading) {
+        return (
+            <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+                <ActivityIndicator size="large" color="#00CC66" />
+                <Text>Đang tải dữ liệu...</Text>
+            </View>
+        );
+    }
+
+    if (error) { 
+        return (
+            <View>
+                <Text>Lỗi: {error}</Text>
+            </View>
+        );
+    }
+
     return (
         <>
-            <Header searchQuery={searchQuery} setSearchQuery={setSearchQuery} />
+            <Header />
             <FlatList
                 data={XproductCatalog}
                 keyExtractor={(item, index) => index.toString()}
@@ -66,67 +101,5 @@ const HomeScreens = () => {
         </>
     );
 }
-
-// const screenWidth = Dimensions.get('window').width;
-// const itemWidth = screenWidth / 5;
-// const styles = StyleSheet.create({
-//     listContainer: {
-//         paddingVertical: 10,
-//     },
-//     container: {
-//         backgroundColor: '#DDDDDD',
-//     },
-//     block: {
-//         backgroundColor: '#FFF',
-//         marginTop: 10,
-//         borderRadius: 2
-//     },
-//     item: {
-//         width: itemWidth,
-//         alignItems: 'center',
-//         justifyContent: 'center',
-//         marginVertical: 8,
-//     },
-//     card: {
-//         width: "80%",
-//         height: 70,
-//         borderRadius: "20%",
-//         alignItems: 'center',
-//         justifyContent: 'center',
-//         backgroundColor: '#f5f5f5',
-//         overflow: 'hidden',
-//     },
-//     icon: {
-//         width: "100%",
-//         height: "100%",
-//         resizeMode: 'contain',
-//     },
-//     text: {
-//         fontSize: 12,
-//         marginTop: 10,
-//         textAlign: 'center',
-//     },
-//     cCatBlock: {
-//         backgroundColor: '#FFF',
-//         marginTop: 10,
-//         borderRadius: 2,
-//         paddingRight: 8,
-//     },
-//     cCatTitle: {
-//         flexDirection: 'row',
-//         paddingLeft: 8,
-//         paddingTop: 5,
-//     },
-//     cCatTitTex: {
-//         fontSize: 20,
-//     },
-//     cCatShowTex: {
-//         fontSize: 18,
-//         color: '#0a68ff'
-//     },
-//     fwbold: {
-//         fontWeight: 'bold'
-//     }
-// });
 
 export default HomeScreens;

@@ -2,6 +2,8 @@ import { View, Text, StyleSheet } from 'react-native';
 import { Appbar, Searchbar, Avatar, useTheme, Icon } from 'react-native-paper';
 import { useNavigation } from '@react-navigation/native';
 
+import { apiRequest } from '../api';
+
 const Header = ({ searchQuery, setSearchQuery, title }) => {
   const navigation = useNavigation();
 
@@ -35,7 +37,11 @@ const Header = ({ searchQuery, setSearchQuery, title }) => {
           {/* Icon thông báo */}
           <Appbar.Action
             icon="bell-outline"
-            onPress={() => { navigation.navigate('Notifications') }}
+            onPress={async() => { 
+              // navigation.navigate('Notifications')
+              const users = await apiRequest('/category');
+              console.log(users);
+             }}
           />
         </>
       }
