@@ -15,14 +15,14 @@ const HorizontalList = (props) => {
     const navigation = useNavigation();
 
     // Hiển thị tối đa ... sản phẩm trong danh sách
-    const maxItems = 8;
+    const maxItems = 10;
 
     // kiểm tra xem có truyền thuộc tính isHorizontal không, nếu không thì mặc định là true
     const isHorizontal = props.isHorizontal ?? true; // mặc định là hiển thị ngang
 
     // Nếu isHorizontal === true thì lấy tối đa 8 item + thêm item "xem thêm"
     let renderList;
-    if (isHorizontal && props.item.length > maxItems) {
+    if (isHorizontal) {
         renderList = props.item.slice(0, maxItems);
         // thêm item "Xem thêm" vào cuối danh sách
         renderList.push({
@@ -40,11 +40,10 @@ const HorizontalList = (props) => {
             return (
                 <TouchableOpacity style={styles.cCatMore}
                     onPress={() => { navigation.navigate('Store', { catalogId: props.productList.id }) }}>
-                    <Text style={commonStyles.textColor}>＞</Text>
-                    <Text style={commonStyles.textColor}>Xem</Text>
-                    <Text style={commonStyles.textColor}>tất</Text>
-                    <Text style={commonStyles.textColor}>cả</Text>
-                    <Text style={commonStyles.textColor}>＞</Text>
+                    <View style={styles.cCatMoreIcon}>
+                        <Icon source="arrow-right-thick" size={30} color='#000' />
+                    </View>
+                    <Text>Xem tất</Text>
                 </TouchableOpacity>
             );
         }
@@ -93,13 +92,17 @@ const styles = StyleSheet.create({
         backgroundColor: '#FFFFFF',
     },
     cCatMore: {
-        backgroundColor: '#EEEEEE',
         justifyContent: 'center',
         alignItems: 'center',
         borderRadius: 12,
         marginRight: 12,
         marginVertical: 10,
-        padding: 10,
+        padding: 6,
+    },
+    cCatMoreIcon: {
+        backgroundColor: '#EEEEEE',
+        borderRadius: '50%',
+        padding: 8,
     },
     cCatCardVer: {
         position: 'relative',

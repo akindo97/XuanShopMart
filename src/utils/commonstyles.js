@@ -26,6 +26,15 @@ const commonStyles = StyleSheet.create({
   fwblob: {
     fontWeight: 'bold',
   },
+  font12: {
+    fontSize: 12,
+  },
+  font13: {
+    fontSize: 13,
+  },
+  font14: {
+    fontSize: 14,
+  },
   font16: {
     fontSize: 16,
   },
@@ -35,8 +44,20 @@ const commonStyles = StyleSheet.create({
   font20: {
     fontSize: 20,
   },
+  pHorizontal10: {
+    paddingHorizontal: 10,
+  },
   pLeft10: {
     paddingLeft: 10,
+  },
+  pRight10: {
+    paddingRight: 10,
+  },
+  mLeft10: {
+    marginLeft: 10,
+  },
+  mRight10: {
+    marginRight: 10,
   },
   fStart: {
     textAlign: 'left',
@@ -62,6 +83,12 @@ const commonStyles = StyleSheet.create({
   pRelative: {
     position: 'relative',
   },
+  blurredText: {
+    color: '#FFFFCC',
+    textShadowColor: 'rgba(0, 0, 0, 0.5)',
+    textShadowOffset: { width: 1, height: 1 },
+    textShadowRadius: 2,
+  }
 });
 
 export default commonStyles;

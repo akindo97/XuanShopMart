@@ -6,7 +6,9 @@ import AddToCartModal from './src/components/addtocart';
 import { CartUIProvider, useCartUI } from './src/hooks/useCartOverlay';
 import { DialogProvider } from './src/hooks/dialogcontext';
 import NotificationScreen from './src/screens/notification';
-import ProductScreen from './src/screens/product';
+import ProductScreen from './src/screens/product'
+import registerLoginScreen from './src/screens/account/registerlogin';
+
 
 const Stack = createNativeStackNavigator();
 
@@ -25,32 +27,21 @@ const MainContent = () => {
   return (
     <>
       <NavigationContainer>
-        <Stack.Navigator>
+        <Stack.Navigator
+          screenOptions={{
+            headerStyle: {
+              backgroundColor: '#00CC66',
+            },
+            headerTintColor: '#fff',
+            headerTitleStyle: {
+              fontSize: 26,
+              fontWeight: 'bold',
+            },
+          }}>
           <Stack.Screen name="Main" component={Footer} options={{ headerShown: false }} />
-          <Stack.Screen name="Notifications" component={NotificationScreen}
-            options={{
-              title: 'Thông báo',
-              headerStyle: {
-                backgroundColor: '#00CC66', // màu nền
-              },
-              headerTintColor: '#fff',
-              headerTitleStyle: {
-                fontSize: 26,
-                fontWeight: 'bold',
-              },
-            }} />
-          <Stack.Screen name="Product" component={ProductScreen}
-            options={{
-              title: 'Sản phẩm',
-              headerStyle: {
-                backgroundColor: '#00CC66', // màu nền
-              },
-              headerTintColor: '#fff',
-              headerTitleStyle: {
-                fontSize: 26,
-                fontWeight: 'bold',
-              },
-            }} />
+          <Stack.Screen name="Notifications" component={NotificationScreen} options={{ title: 'Thông báo' }} />
+          <Stack.Screen name="Product" component={ProductScreen} options={{ title: 'Sản phẩm' }} />
+          <Stack.Screen name="RegisterLogin" component={registerLoginScreen} options={{ title: 'Đăng ký/Đăng nhập' }} />
         </Stack.Navigator>
       </NavigationContainer>
       {visible && <AddToCartModal />}

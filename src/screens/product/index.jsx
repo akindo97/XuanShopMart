@@ -17,8 +17,7 @@ const images = [
 
 export default function ProductScreen({ route }) {
     const navigation = useNavigation();
-
-
+    
     // lấy sản phẩm từ params của route
     const { product, productList } = route.params;
     // sử dụng hook để lấy hàm addToCartShow từ useCartUI
