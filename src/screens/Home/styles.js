@@ -21,6 +21,7 @@ export default StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'center',
         marginVertical: 8,
+        overflow: 'hidden',
     },
     card: {
         width: "80%",
@@ -29,7 +30,6 @@ export default StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'center',
         backgroundColor: '#f5f5f5',
-        overflow: 'hidden',
     },
     icon: {
         width: "100%",

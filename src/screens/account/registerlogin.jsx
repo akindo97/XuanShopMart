@@ -3,7 +3,7 @@ import { KeyboardAvoidingView, Platform, ScrollView, View, Text, StyleSheet } fr
 import { Button, Icon, TextInput, TouchableRipple } from 'react-native-paper';
 import commonStyles from '../../utils/commonstyles';
 
-const registerLoginScreen = ({ route }) => {
+const RegisterLoginScreen = ({ route }) => {
     // Nếu có tham số isLoginScreen thì sử dụng, nếu không thì mặc định là true (đăng nhập)
     const isLoginScreen = route.params?.isLoginScreen ?? true;
     // State phân biệt đăng nhập và đăng ký
@@ -229,4 +229,4 @@ const styles = StyleSheet.create({
     }
 })
 
-export default registerLoginScreen;
+export default RegisterLoginScreen;

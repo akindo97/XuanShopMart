@@ -22,8 +22,6 @@ const HomeScreens = () => {
         const loadProducts = async () => {
             try {
                 const res = await apiRequest('/category');
-                console.log(XproductCatalog);
-                console.log(res.data);
                 setCategory(res.data);
             } catch (err) {
                 setError(err.message || 'Đã có lỗi xảy ra');

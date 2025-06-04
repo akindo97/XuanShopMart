@@ -6,19 +6,17 @@ import { useCartUI } from '../hooks/useCartOverlay';
 import { useNavigation } from '@react-navigation/native';
 import { fToYen } from '../utils/utils';
 import commonStyles from '../utils/commonstyles';
+import { MAX_ITEM } from '../config/config';
 
 const HorizontalList = (props) => {
     // console.log('props', props);
     /////// hãy check các props //////
     // Các sản phẩm trong danh mục
-    const products = props.products ?? [];
+    const products = props?.products ?? [];
 
     // sử dụng hook để lấy hàm show từ useCartUI
     const { addToCartShow } = useCartUI();
     const navigation = useNavigation();
-
-    // Hiển thị tối đa ... sản phẩm trong danh sách
-    const maxItems = 10;
 
     // kiểm tra xem có truyền thuộc tính isHorizontal không, nếu không thì mặc định là true
     const isHorizontal = props.isHorizontal ?? true; // mặc định là hiển thị ngang
@@ -26,7 +24,7 @@ const HorizontalList = (props) => {
     // Nếu isHorizontal === true thì lấy tối đa 8 item + thêm item "xem thêm"
     let renderList;
     if (isHorizontal) {
-        renderList = products.slice(0, maxItems);
+        renderList = products.slice(0, MAX_ITEM);
         // thêm item "Xem thêm" vào cuối danh sách
         renderList.push({
             isSeeMore: true,
@@ -64,15 +62,21 @@ const HorizontalList = (props) => {
                     onPress={() => addToCartShow(item)}>
                     <Icon source="cart-plus" size={25} color='#FFF' />
                 </TouchableOpacity>
-                <Card.Cover source={{ uri: item.thumbnail_url }} style={styles.cCatImage} />
+                <View style={commonStyles.pRelative}>
+                    <Card.Cover source={{ uri: item.thumbnail_url }} style={styles.cCatImage} />
+                    <View style={styles.cCatPrDeital}>
+                        {/* nếu là sản phẩm đông lạnh thì hiển thị chữ "Đông" */}
+                        {item.is_frozen && <Text style={[styles.cCatTip, styles.cCatCold]}>đông</Text>}
+                        {/* nếu là sản phẩm giảm giá thì hiển thị chữ "Sale" */}
+                        {item.is_sale && <Text style={[styles.cCatTip, styles.cCatSale]}>sale</Text>}
+                    </View>
+                </View>
                 <Card.Content style={styles.cCatContent}>
                     <Text numberOfLines={2} style={styles.cCatName}>
                         {item.name}
                     </Text>
-                    <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
+                    <View>
                         <Text style={commonStyles.priceColor}>￥{fToYen(item.price)}</Text>
-                        {/* nếu là sản phẩm đông lạnh thì hiển thị chữ "Đông" */}
-                        {item.frozen && <Text style={styles.cCatCold}>đông</Text>}
                     </View>
                 </Card.Content>
             </Card>
@@ -128,6 +132,14 @@ const styles = StyleSheet.create({
         backgroundColor: '#00CC66ff',
         padding: 3,
     },
+    cCatPrDeital: {
+        position: 'absolute',
+        bottom: 0,
+        end: 0,
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'space-between'
+    },
     cCatImage: {
         height: 100,
     },
@@ -145,15 +157,22 @@ const styles = StyleSheet.create({
     //     fontSize: 16,
     //     color: 'red',
     // },
-    cCatCold: {
+    cCatTip: {
         fontSize: 12,
-        backgroundColor: '#3366CC',
-        color: '#fff',
+        color: '#ffffff',
         alignSelf: 'flex-start',
         paddingHorizontal: 6,
         borderRadius: 7,
         marginTop: 3,
+        marginLeft: 2,
+        marginRight: 2,
     },
+    cCatCold: {
+        backgroundColor: '#3366CC',
+    },
+    cCatSale: {
+        backgroundColor: '#FF0000',
+    }
 })
 
 export default HorizontalList;

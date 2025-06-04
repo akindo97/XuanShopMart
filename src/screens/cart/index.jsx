@@ -41,7 +41,7 @@ const CartScreen = () => {
                                     <View key={index} style={styles.cCartProBlock}>
                                         {/* ảnh sản phẩm */}
                                         <View style={commonStyles.pRelative}>
-                                            <Image source={{uri: item.thumbnail_url}} style={styles.cCartImage} />
+                                            <Image source={{ uri: item.thumbnail_url }} style={styles.cCartImage} />
                                         </View>
                                         <View style={{ flex: 1, marginLeft: 10, flexDirection: 'column', justifyContent: 'space-between' }}>
                                             <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'flex-start' }}>
@@ -57,9 +57,9 @@ const CartScreen = () => {
                                             </View>
                                             <View style={styles.cCartStaBlock}>
                                                 {/* nếu là sản phẩm đông lạnh thì hiển thị chữ "Đông" */}
-                                                {item.frozen && <Text style={[styles.cCartStaText, styles.cCartCold]}>đông</Text>}
+                                                {item.is_frozen && <Text style={[styles.cCartStaText, styles.cCartCold]}>đông</Text>}
                                                 {/* nếu là sản phẩm giảm giá thì hiển thị chữ "Sale" */}
-                                                {item.sale && <Text style={[styles.cCartStaText, styles.cCartSale]}>sale</Text>}
+                                                {item.is_sale && <Text style={[styles.cCartStaText, styles.cCartSale]}>sale</Text>}
                                             </View>
                                             <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
                                                 <View style={[commonStyles.fEnd]}>
@@ -82,6 +82,15 @@ const CartScreen = () => {
                                 ))}
                             </ScrollView>
                             {/* khu vực tổng tiền và nút đặt hàng */}
+                            <View style={styles.cCartPointBlock}>
+                                <View>
+                                    <Text>Tích điểm </Text>
+                                </View>
+                                <View>
+                                    <Text>
+                                        Có thể nhận <Text style={[commonStyles.textColor, commonStyles.fwblob]} >+30</Text> điểm </Text>
+                                </View>
+                            </View>
                             <View style={styles.cCartProvi}>
                                 <View>
                                     <View style={styles.cCartProviLeft}>
@@ -98,7 +107,10 @@ const CartScreen = () => {
                                     </View>
                                 </View>
                                 <View style={[commonStyles.flex1, commonStyles.fEnd]}>
-                                    <Button mode="contained" style={[styles.cCartProviButton, commonStyles.buttonColor]}>
+                                    <Button mode="contained" style={[styles.cCartProviButton, commonStyles.buttonColor]}
+                                        onPress={() => {
+                                            navigation.navigate('CheckOut');
+                                        }}>
                                         Đặt hàng
                                     </Button>
                                 </View>

@@ -44,6 +44,16 @@ const styles = StyleSheet.create({
     cCartOldPrice: {
         marginBottom: -6,
     },
+    cCartPointBlock: {
+        backgroundColor: '#fff',
+        borderTopWidth: 1,
+        borderColor: '#DCDCDC',
+        paddingHorizontal: 10,
+        paddingVertical: 3,
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+    },
     cCartProvi: {
         backgroundColor: '#fff',
         borderTopWidth: 1,

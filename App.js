@@ -7,9 +7,9 @@ import { CartUIProvider, useCartUI } from './src/hooks/useCartOverlay';
 import { DialogProvider } from './src/hooks/dialogcontext';
 import NotificationScreen from './src/screens/notification';
 import ProductScreen from './src/screens/product'
-import registerLoginScreen from './src/screens/account/registerlogin';
+import RegisterLoginScreen from './src/screens/account/registerlogin';
 import { RootProvider } from './src/hooks/rootcontext';
-
+import CheckOutScreen from './src/screens/checkout';
 
 const Stack = createNativeStackNavigator();
 
@@ -42,7 +42,8 @@ const MainContent = () => {
           <Stack.Screen name="Main" component={Footer} options={{ headerShown: false }} />
           <Stack.Screen name="Notifications" component={NotificationScreen} options={{ title: 'Thông báo' }} />
           <Stack.Screen name="Product" component={ProductScreen} options={{ title: 'Sản phẩm' }} />
-          <Stack.Screen name="RegisterLogin" component={registerLoginScreen} options={{ title: 'Đăng ký/Đăng nhập' }} />
+          <Stack.Screen name="RegisterLogin" component={RegisterLoginScreen} options={{ title: 'Đăng ký/Đăng nhập' }} />
+          <Stack.Screen name="CheckOut" component={CheckOutScreen} options={{ title: 'Đặt hàng' }} />
         </Stack.Navigator>
       </NavigationContainer>
       {visible && <AddToCartModal />}

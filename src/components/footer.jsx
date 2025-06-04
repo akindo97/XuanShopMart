@@ -9,7 +9,6 @@ import StoreScreen from '../screens/store';
 import CartScreen from '../screens/cart';
 import RecentsScreen from '../screens/recents';
 import AccountScreen from '../screens/account';
-import { Text } from 'react-native-paper';
 
 const Tab = createBottomTabNavigator();
 
