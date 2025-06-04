@@ -4,7 +4,7 @@ export const XproductCatalog = [
         id: 1,
         name: "Sale",
         icon: require("../../assets/icons/sale.png"),
-        item: [
+        products: [
             {
                 id: 1,
                 name: 'Sản phẩm A Sản phẩm B',
@@ -43,7 +43,7 @@ export const XproductCatalog = [
         id: 2,
         name: "Thịt bò, lợn",
         icon: require("../../assets/icons/meat.png"),
-        item: [
+        products: [
             {
                 id: 123,
                 name: 'Thịt ba chỉ (1kg)',
@@ -128,7 +128,7 @@ export const XproductCatalog = [
         id: 3,
         name: "Thịt gà, vịt",
         icon: require("../../assets/icons/poultry.png"),
-        item: [
+        products: [
             {
                 id: 215,
                 name: 'Vịt xiêm nguyên con',
@@ -177,7 +177,7 @@ export const XproductCatalog = [
         id: 4,
         name: "Thủy hải sản",
         icon: require("../../assets/icons/fish.png"),
-        item: [
+        products: [
             {
                 id: 315,
                 name: 'Cá diêu hồng',
@@ -218,7 +218,7 @@ export const XproductCatalog = [
         id: 5,
         name: "Bún, mì, miến",
         icon: require("../../assets/icons/noodles.png"),
-        item: [
+        products: [
             {
                 id: 515,
                 name: 'Bún tươi Safoco',
@@ -243,7 +243,7 @@ export const XproductCatalog = [
         id: 6,
         name: "Gia vị, nguyên liệu",
         icon: require("../../assets/icons/spice.png"),
-        item: [
+        products: [
             {
                 id: 615,
                 name: 'Tương ớt Chinsu chai to 520ml',
@@ -268,7 +268,7 @@ export const XproductCatalog = [
         id: 7,
         name: "Bánh kẹo, ăn vặt",
         icon: require("../../assets/icons/snacks.png"),
-        item: [
+        products: [
             {
                 id: 715,
                 name: 'Bánh AFC vị rau củ',
@@ -293,7 +293,7 @@ export const XproductCatalog = [
         id: 8,
         name: "Giò chả, chế biến sẵn",
         icon: require("../../assets/icons/ham.png"),
-        item: [
+        products: [
             {
                 id: 815,
                 name: 'Giò Lụa 450g',
@@ -318,7 +318,7 @@ export const XproductCatalog = [
         id: 9,
         name: "Rau, củ, quả",
         icon: require("../../assets/icons/vegetable.png"),
-        item: [
+        products: [
             {
                 id: 915,
                 name: 'Sả tươi',
@@ -342,7 +342,7 @@ export const XproductCatalog = [
         id: 10,
         name: "Drink",
         icon: require("../../assets/icons/drink.png"),
-        item: [
+        products: [
             {
                 id: 1015,
                 name: 'Trà Vải Tự Nhiên – TH True TEA 350ml',
@@ -367,7 +367,7 @@ export const XproductCatalog = [
         id: 11,
         name: "Khác",
         icon: require("../../assets/icons/other.png"),
-        item: [
+        products: [
             {
                 id: 1115,
                 name: 'Dao chẻ rau muống',

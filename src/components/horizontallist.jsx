@@ -8,7 +8,10 @@ import { fToYen } from '../utils/utils';
 import commonStyles from '../utils/commonstyles';
 
 const HorizontalList = (props) => {
+    // console.log('props', props);
     /////// hãy check các props //////
+    // Các sản phẩm trong danh mục
+    const products = props.products ?? [];
 
     // sử dụng hook để lấy hàm show từ useCartUI
     const { addToCartShow } = useCartUI();
@@ -23,14 +26,14 @@ const HorizontalList = (props) => {
     // Nếu isHorizontal === true thì lấy tối đa 8 item + thêm item "xem thêm"
     let renderList;
     if (isHorizontal) {
-        renderList = props.item.slice(0, maxItems);
+        renderList = products.slice(0, maxItems);
         // thêm item "Xem thêm" vào cuối danh sách
         renderList.push({
             isSeeMore: true,
             id: -1
         });
     } else {
-        renderList = props.item;
+        renderList = products;
     }
 
     // danh mục chi tiết
@@ -39,7 +42,11 @@ const HorizontalList = (props) => {
             // nếu là item "Xem thêm" thì hiển thị nút xem thêm
             return (
                 <TouchableOpacity style={styles.cCatMore}
-                    onPress={() => { navigation.navigate('Store', { catalogId: props.productList.id }) }}>
+                    onPress={() => {
+                        navigation.navigate('Store', {
+                            categoryId: item.category_id
+                        })
+                    }}>
                     <View style={styles.cCatMoreIcon}>
                         <Icon source="arrow-right-thick" size={30} color='#000' />
                     </View>
@@ -50,12 +57,14 @@ const HorizontalList = (props) => {
         return (
             <Card style={isHorizontal ? styles.cCatCardHor : styles.cCatCardVer}
                 // khi ấn vào sẽ chuyển đến trang sản phẩm
-                onPress={() => { navigation.navigate('Product', { product: item, productList: props.item }) }}>
+                onPress={() => {
+                    navigation.navigate('Product', { product: item, categoryId: item.category_id })
+                }}>
                 <TouchableOpacity style={styles.cCatPlus}
                     onPress={() => addToCartShow(item)}>
                     <Icon source="cart-plus" size={25} color='#FFF' />
                 </TouchableOpacity>
-                <Card.Cover source={item.image} style={styles.cCatImage} />
+                <Card.Cover source={{ uri: item.thumbnail_url }} style={styles.cCatImage} />
                 <Card.Content style={styles.cCatContent}>
                     <Text numberOfLines={2} style={styles.cCatName}>
                         {item.name}

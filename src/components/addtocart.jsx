@@ -31,7 +31,7 @@ const AddToCartModal = ({ }) => {
             </View>
             <Animated.View style={[styles.cAddBlock, animatedStyle]}>
                 <View style={styles.cAddUp}>
-                    <Card.Cover source={productDetail.image} style={styles.cAddImage} />
+                    <Card.Cover source={{uri: productDetail.thumbnail_url}} style={styles.cAddImage} />
                     <Card.Content style={styles.cAddContent}>
                         <Text style={styles.cAddName}>{productDetail.name}</Text>
                         <Text style={styles.cAddPrice}>￥{fToYen(productDetail.price)}</Text>

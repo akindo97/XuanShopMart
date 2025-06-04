@@ -8,6 +8,7 @@ import { DialogProvider } from './src/hooks/dialogcontext';
 import NotificationScreen from './src/screens/notification';
 import ProductScreen from './src/screens/product'
 import registerLoginScreen from './src/screens/account/registerlogin';
+import { RootProvider } from './src/hooks/rootcontext';
 
 
 const Stack = createNativeStackNavigator();
@@ -53,9 +54,11 @@ export default function App() {
   return (
     <PaperProvider theme={theme}>
       <DialogProvider>
+        <RootProvider>
         <CartUIProvider>
           <MainContent />
         </CartUIProvider>
+        </RootProvider>
       </DialogProvider>
     </PaperProvider>
   );

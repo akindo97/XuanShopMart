@@ -6,9 +6,12 @@ import { Text } from 'react-native-paper';
 import { XproductCatalog } from '../../utils/fakeapi';
 import commonStyles from '../../utils/commonstyles';
 import HorizontalList from '../../components/horizontallist';
+import { useRootContext } from '../../hooks/rootcontext';
 
 const StoreScreen = ({ route }) => {
-    const catalogId = route?.params?.catalogId ?? 0;
+    const categoryId = route?.params?.categoryId ?? 0;
+
+    const { category } = useRootContext();
 
     // tìm kiếm
     const [searchQuery, setSearchQuery] = useState('');
@@ -24,10 +27,10 @@ const StoreScreen = ({ route }) => {
 
     // Khi người dùng chọn một danh mục, mặc định là 0 (Tất cả)
     useEffect(() => {
-        setSelected(catalogId);
+        setSelected(categoryId);
 
-        // Tìm index của catalogId trong danh sách tab
-        const tabRef = tabRefs.current[catalogId];
+        // Tìm index của categoryId trong danh sách tab
+        const tabRef = tabRefs.current[categoryId];
 
         if (tabRef && scrollRef.current) {
             setTimeout(() => {
@@ -37,59 +40,62 @@ const StoreScreen = ({ route }) => {
                 });
             }, 0); // delay 0 để đảm bảo tab đã được render xong
         }
-    }, [catalogId]);
+    }, [categoryId]);
 
 
 
     // Gom tât cả sản phẩm từ các danh mục để tạo danh sách tất cả sản phẩm
-    const XproductCatalogAll = XproductCatalog.flatMap((catalog) => catalog.item);
+    const allProduct = category.flatMap((catalog) => catalog.products);
     // Tạo danh sách mới với mục "Tất cả" ở đầu
-    const newProductCatalog = [
+    let newCategory = [
         {
             id: 0,
             name: 'Tất cả',
-            item: XproductCatalogAll,
+            products: allProduct,
         },
-        ...XproductCatalog]
-
-
+        ...category];
 
     return (
         <>
             <Header searchQuery={searchQuery} setSearchQuery={setSearchQuery} />
             <View style={[commonStyles.bgrColor, commonStyles.flex1]}>
-                <View style={{ paddingBottom: 3 }}>
+                {/* danh sách menu category trượt ngang */}
+                <View>
                     <ScrollView
                         ref={scrollRef}
                         horizontal
                         showsHorizontalScrollIndicator={false}
                         contentContainerStyle={styles.container}
                     >
-                        {newProductCatalog.map((catalog, index) => (
+                        {newCategory.map((category) => (
                             <TouchableOpacity
-                                key={catalog.id}
+                                key={category.id}
                                 ref={(ref) => {
-                                    if (ref) tabRefs.current[catalog.id] = ref;
+                                    if (ref) tabRefs.current[category.id] = ref;
                                 }}
-                                onPress={() => setSelected(catalog.id)} style={styles.tab}>
+                                onPress={() => setSelected(category.id)} style={[
+                                    styles.tab,
+                                    selected === category.id && styles.selectedTab,
+                                ]}>
                                 <Text
                                     style={[
                                         styles.text,
-                                        selected === catalog.id && styles.selectedText,
+                                        selected === category.id && styles.selectedText,
                                     ]}
                                 >
-                                    {catalog.name}
+                                    {category.name}
                                 </Text>
-                                {selected === catalog.id && <View style={styles.underline} />}
+                                {selected === category.id && <View style={styles.underline} />}
                             </TouchableOpacity>
                         ))}
                     </ScrollView>
                 </View>
 
-                <View style={[commonStyles.bgrWhite, commonStyles.flex1]}>
+                <View style={[commonStyles.bgrWhite, commonStyles.flex1, {paddingTop: 8}]}>
                     <HorizontalList isHorizontal={false}
-                        item={newProductCatalog[selected].item}
-                        productList={newProductCatalog[selected]} />
+                        // Các sản phẩm trong danh mục
+                        products={newCategory[selected].products}
+                    />
                 </View>
             </View>
         </>
@@ -98,12 +104,18 @@ const StoreScreen = ({ route }) => {
 
 const styles = StyleSheet.create({
     container: {
-        paddingHorizontal: 10,
-        paddingTop: 16,
+
     },
     tab: {
-        marginRight: 20,
         alignItems: 'center',
+        paddingHorizontal: 15,
+        paddingTop: 16,
+        paddingBottom: 3,
+    },
+    selectedTab: {
+        backgroundColor: "#fff",
+        borderTopLeftRadius: 6,
+        borderTopRightRadius: 6,
     },
     text: {
         fontSize: 16,

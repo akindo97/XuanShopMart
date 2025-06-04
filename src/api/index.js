@@ -26,7 +26,6 @@ export async function apiRequest(endpoint, options = {}) {
 
         const response = await fetch(url, fetchOptions);
         const rawText = await response.text();
-        console.log('rawText', rawText);
 
         let result;
         try {

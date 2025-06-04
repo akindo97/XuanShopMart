@@ -6,6 +6,7 @@ import HorizontalList from '../../components/horizontallist';
 import commonStyles from '../../utils/commonstyles';
 import { useNavigation } from '@react-navigation/native';
 import { fToYen } from '../../utils/utils';
+import { useRootContext } from '../../hooks/rootcontext';
 
 const { width } = Dimensions.get('window');
 
@@ -17,13 +18,20 @@ const images = [
 
 export default function ProductScreen({ route }) {
     const navigation = useNavigation();
-    
-    // lấy sản phẩm từ params của route
-    const { product, productList } = route.params;
+
+    // lấy toàn bộ danh sách sản phẩm
+    const { category } = useRootContext();
+
+    // lấy thông tin sản phẩm từ params của route
+    const { product } = route.params;
+
     // sử dụng hook để lấy hàm addToCartShow từ useCartUI
     const { addToCartShow, totalQuantity } = useCartUI();
     // State để quản lý chỉ mục hiện tại của ảnh
     const [currentIndex, setCurrentIndex] = useState(0);
+
+    // lấy danh sách liên quan
+    const relatedProducts = category.find((item) => item.id === product.category_id);
 
     // Hàm xử lý sự kiện cuộn để cập nhật chỉ mục hiện tại
     const onScroll = (event) => {
@@ -74,12 +82,20 @@ export default function ProductScreen({ route }) {
                             Sản phẩm liên quan
                         </Text>
                     </View>
-                    <TouchableOpacity style={{ flexDirection: 'row', paddingTop: 3 }}>
+                    <TouchableOpacity style={{ flexDirection: 'row', paddingTop: 3 }}
+                        onPress={() =>
+                            navigation.navigate('Main', {
+                                screen: 'Store',
+                            })
+                        }>
                         <Text style={[styles.cCatShowTex, commonStyles.textColor]}>Xem tất cả</Text>
                         <Icon source="chevron-right" size={23} color="#00CC66" />
                     </TouchableOpacity>
                 </View>
-                <HorizontalList item={productList || []} />
+                <HorizontalList
+                    // Các sản phẩm trong danh mục
+                    products={relatedProducts.products}
+                />
             </View>
 
             <View style={styles.cProBotBlocck}>

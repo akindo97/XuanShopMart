@@ -41,7 +41,7 @@ const CartScreen = () => {
                                     <View key={index} style={styles.cCartProBlock}>
                                         {/* ảnh sản phẩm */}
                                         <View style={commonStyles.pRelative}>
-                                            <Image source={item.image} style={styles.cCartImage} />
+                                            <Image source={{uri: item.thumbnail_url}} style={styles.cCartImage} />
                                         </View>
                                         <View style={{ flex: 1, marginLeft: 10, flexDirection: 'column', justifyContent: 'space-between' }}>
                                             <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'flex-start' }}>
