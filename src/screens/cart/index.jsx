@@ -14,7 +14,7 @@ const CartScreen = () => {
     const navigation = useNavigation();
 
     // Lấy thông tin giỏ hàng và các hàm từ context
-    const { cartItems, changeQuantity, removeFromCart, totalQuantity, totalPrice } = useCartUI();
+    const { cartItems, changeQuantity, removeFromCart, totalQuantity, totalPrice, getBonusPoint } = useCartUI();
     // Lấy hàm hiển thị dialog từ context
     const { showDialog } = useDialog();
 
@@ -88,7 +88,7 @@ const CartScreen = () => {
                                 </View>
                                 <View>
                                     <Text>
-                                        Có thể nhận <Text style={[commonStyles.textColor, commonStyles.fwblob]} >+30</Text> điểm </Text>
+                                        Có thể nhận <Text style={[commonStyles.textColor, commonStyles.fwblob]} >+{fToYen(getBonusPoint)}</Text> điểm </Text>
                                 </View>
                             </View>
                             <View style={styles.cCartProvi}>

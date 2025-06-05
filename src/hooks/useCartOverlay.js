@@ -20,6 +20,8 @@ export const CartUIProvider = ({ children }) => {
   const [totalQuantity, setTotalQuantity] = useState(0);
   // State để lưu tổng giá trị giỏ hàng
   const [totalPrice, setTotalPrice] = useState(0);
+  // State để lưu điểm có thể nhận được
+  const [getBonusPoint, setGetBonusPoint] = useState(0);
 
   // Hàm hiển thị thông tin sản phẩm để thêm vào giỏ hàng
   const addToCartShow = (productDetail) => {
@@ -75,6 +77,9 @@ export const CartUIProvider = ({ children }) => {
     setTotalQuantity(totalQty);
     const totalPrice = cartItems.reduce((sum, item) => sum + (item.price * item.quantity), 0);
     setTotalPrice(totalPrice);
+    // Tính điểm nhận được mỗi khi thay đổi
+    const totalPoint = cartItems.reduce((sum, item) => sum + (item.bonus_point * item.quantity), 0);
+    setGetBonusPoint(totalPoint);
 
     // Lưu giỏ hàng vào AsyncStorage
     // chưa xử lý lỗi
@@ -105,7 +110,8 @@ export const CartUIProvider = ({ children }) => {
   return (
     <CartUIContext.Provider value={{
       visible, productDetail, addToCartShow, addToCartHide,
-      cartItems, totalQuantity, totalPrice, setCartItems, addToCart, changeQuantity, removeFromCart
+      cartItems, totalQuantity, totalPrice, getBonusPoint, 
+      setCartItems, addToCart, changeQuantity, removeFromCart
     }}>
       {children}
     </CartUIContext.Provider>
