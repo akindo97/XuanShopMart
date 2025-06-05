@@ -114,6 +114,13 @@ const styles = StyleSheet.create({
         marginHorizontal: 18,
         paddingVertical: 3,
         marginBottom: 50,
+    },
+    cSussGuideBlock: {
+        borderWidth: 1,
+        borderColor: 'gray',
+        borderRadius: 8,
+        padding: 10,
+        marginVertical: 6
     }
 })
 

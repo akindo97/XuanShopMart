@@ -59,12 +59,13 @@ const CheckOutScreen = ({ params }) => {
     // State để lưu lỗi
     const [errors, setErrors] = useState({});
 
+    // Chuẩn bị item để gửi lên API tính toán
+    const postItems = cartItems.map((item) => (
+        { id: item.id, quantity: item.quantity }
+    ));
+
     // lấy phần tổng kết và các cài đặt từ API
     useEffect(() => {
-        // Chuẩn bị item để gửi lên API tính toán
-        const postItems = cartItems.map((item) => (
-            { id: item.id, quantity: item.quantity }
-        ));
         // gửi
         const calculate = async () => {
             try {
@@ -126,10 +127,42 @@ const CheckOutScreen = ({ params }) => {
     };
 
     // CheckOut
-    const checkOut = () => {
+    const checkOut = async () => {
         // Kiểm tra các INPUT cần
-        // const validaInput = validateAndFocus();
-        navigation.replace('Successful');
+        validateAndFocus();
+        return;
+        alert('checkinput ok')
+        if (isValidateInput) {
+            try {
+                const res = await apiRequest('/checkout', {
+                    method: 'POST',
+                    data: {
+                        items: postItems,
+                        shipping_method: 'standard',
+                        payment_method: shipping,
+                        device_id: 999999999,
+                        contact_email: email,
+                        shipping_first_name: firstName,
+                        shipping_last_name: lastName,
+                        shipping_postal_code: postalCode,
+                        shipping_address_1: address1,
+                        shipping_address_2: address2,
+                        shipping_address_3: address3,
+                        shipping_phone_number: phone,
+                        shipping_delivery_time: deliveryTime,
+                        shipping_message: message,
+                    }
+                });
+                console.log(res.data);
+            } catch (err) {
+                console.log(err.message || 'Đã có lỗi xảy ra');
+            } finally {
+                alert('ok')
+            }
+        }
+
+        // navigation.replace('Successful');
+
     }
 
     return (
@@ -161,6 +194,7 @@ const CheckOutScreen = ({ params }) => {
                     style={styles.cCOInput}
                     outlineStyle={{ borderRadius: 20 }}
                     activeUnderlineColor="#00CC66"
+                    autoCapitalize="none"
                 />
 
                 {/* Thông tin giao hàng */}

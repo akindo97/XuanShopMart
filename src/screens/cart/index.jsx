@@ -64,7 +64,9 @@ const CartScreen = () => {
                                             <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
                                                 <View style={[commonStyles.fEnd]}>
                                                     {/* Nếu có giá cũ thì hiển thị */}
-                                                    <Text style={[commonStyles.oldPrice, styles.cCartOldPrice]}>{item.oldPrice && '￥' + fToYen(item.oldPrice)}</Text>
+                                                    {item.oldPrice && <Text style={[commonStyles.oldPrice, styles.cCartOldPrice]}>
+                                                        '￥'{fToYen(item.oldPrice)}
+                                                    </Text>}
                                                     {/* Giá hiện tại */}
                                                     <Text style={[commonStyles.priceColor, commonStyles.fwblob, commonStyles.font20]}>
                                                         ￥{fToYen(item.price)}
