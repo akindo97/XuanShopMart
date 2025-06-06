@@ -9,7 +9,7 @@ export default StyleSheet.create({
         paddingVertical: 10,
     },
     container: {
-        backgroundColor: '#DDDDDD',
+        backgroundColor: '#EEEEEE',
     },
     block: {
         backgroundColor: '#FFF',

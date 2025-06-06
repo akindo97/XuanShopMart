@@ -66,9 +66,9 @@ const HorizontalList = (props) => {
                     <Card.Cover source={{ uri: item.thumbnail_url }} style={styles.cCatImage} />
                     <View style={styles.cCatPrDeital}>
                         {/* nếu là sản phẩm đông lạnh thì hiển thị chữ "Đông" */}
-                        {item.is_frozen && <Text style={[styles.cCatTip, styles.cCatCold]}>đông</Text>}
+                        {item.is_frozen ? <Text style={[styles.cCatTip, styles.cCatCold]}>đông</Text> : null}
                         {/* nếu là sản phẩm giảm giá thì hiển thị chữ "Sale" */}
-                        {item.is_sale && <Text style={[styles.cCatTip, styles.cCatSale]}>sale</Text>}
+                        {item.is_sale ? <Text style={[styles.cCatTip, styles.cCatSale]}>sale</Text> : null}
                     </View>
                 </View>
                 <Card.Content style={styles.cCatContent}>

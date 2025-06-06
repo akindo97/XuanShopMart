@@ -12,7 +12,7 @@ const Header = ({ searchQuery, setSearchQuery, title }) => {
       {title ?
         // nếu title được truyền vào thì hiển thị tiêu đề
         <Text style={styles.cHeaderTitle}>{title}</Text> :
-        
+
         // nếu không thì hiển thị logo, thanh tìm kiếm và icon thông báo
         <>
           {/* Logo bên trái */}
@@ -27,21 +27,20 @@ const Header = ({ searchQuery, setSearchQuery, title }) => {
           <View style={styles.cHeaSearchCtn}>
             <Searchbar
               placeholder="Tìm kiếm sản phẩm..."
-              onChangeText={setSearchQuery}
-              value={searchQuery}
-              style={styles.cSearchBar}
-              inputStyle={styles.inputStyle}
+              onFocus={() =>
+                navigation.navigate('Search')
+              }
+            style={styles.cSearchBar}
+            inputStyle={styles.inputStyle}
             />
           </View>
 
           {/* Icon thông báo */}
           <Appbar.Action
             icon="bell-outline"
-            onPress={async() => { 
-              // navigation.navigate('Notifications')
-              const users = await apiRequest('/category');
-              console.log(users);
-             }}
+            onPress={async () => {
+              navigation.navigate('Notifications')
+            }}
           />
         </>
       }

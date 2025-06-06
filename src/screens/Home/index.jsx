@@ -4,11 +4,11 @@ import { TouchableRipple, Surface, Icon, ActivityIndicator } from 'react-native-
 import Header from '../../components/header';
 import { useNavigation } from '@react-navigation/native';
 import HorizontalList from '../../components/horizontallist';
-import { XproductCatalog } from '../../utils/fakeapi';
 import styles from './styles';
 import commonStyles from '../../utils/commonstyles';
 import { apiRequest } from '../../api';
 import { useRootContext } from '../../hooks/rootcontext';
+import { Loading } from '../../components/loading';
 
 const HomeScreens = () => {
     const navigation = useNavigation();
@@ -22,6 +22,7 @@ const HomeScreens = () => {
         const loadProducts = async () => {
             try {
                 const res = await apiRequest('/category');
+                console.log(res.data);
                 setCategory(res.data);
             } catch (err) {
                 setError(err.message || 'Đã có lỗi xảy ra');
@@ -47,12 +48,7 @@ const HomeScreens = () => {
 
     // Loading khi tải dữ liệu
     if (loading) {
-        return (
-            <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-                <ActivityIndicator size="large" animating={true} color="#00CC66" />
-                <Text>Đang tải dữ liệu...</Text>
-            </View>
-        );
+        return (<Loading />);
     }
 
     return (

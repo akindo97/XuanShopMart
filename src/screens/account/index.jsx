@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Image, Text, StyleSheet, ScrollView } from 'react-native';
+import { View, Image, Text, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
 import Headers from '../../components/header';
 import commonStyles from '../../utils/commonstyles';
 import { Button, Icon, TouchableRipple } from 'react-native-paper';
@@ -10,7 +10,12 @@ const AccountScreen = () => {
     const navigation = useNavigation();
 
     const accList = [
-        { id: 1, name: 'Đơn hàng', subTitle: 'Bạn chưa có đơn hàng nào', icon: 'history' },
+        {
+            id: 1, name: 'Đơn hàng', subTitle: 'Bạn chưa có đơn hàng nào', icon: 'history',
+            onPress: () => {
+                navigation.navigate('Recents');
+            }
+        },
         { id: 2, name: 'Địa chỉ', subTitle: 'Địa chỉ để nhận hàng', icon: 'map-marker-outline' },
         { id: 3, name: 'Tích điểm', subTitle: 'Đăng nhập để tích điểm', icon: 'star-four-points-outline' },
         { id: 4, name: 'Voucher', subTitle: 'Tiết kiệm nhiều hơn với mã giảm giá', icon: 'ticket-percent-outline' },
@@ -72,16 +77,18 @@ const AccountScreen = () => {
 
             <ScrollView style={[commonStyles.bgrColor, commonStyles.flex1, commonStyles.pHorizontal10]}>
                 {accList.map((item) => (
-                    <View key={item.id} style={styles.cAccItemBblock}>
-                        <Icon source={item.icon} size={46} />
-                        <View style={[commonStyles.flex1, commonStyles.pHorizontal10]}>
-                            <Text style={styles.cAccItemTitle}>{item.name}</Text>
-                            <Text style={styles.cAccItemSubTitle}>{item.subTitle}</Text>
+                    <TouchableOpacity key={item.id} onPress={item.onPress}>
+                        <View style={styles.cAccItemBblock}>
+                            <Icon source={item.icon} size={46} />
+                            <View style={[commonStyles.flex1, commonStyles.pHorizontal10]}>
+                                <Text style={styles.cAccItemTitle}>{item.name}</Text>
+                                <Text style={styles.cAccItemSubTitle}>{item.subTitle}</Text>
+                            </View>
+                            <View style={{ alignSelf: 'center' }}>
+                                <Text style={commonStyles.fwblob}>＞</Text>
+                            </View>
                         </View>
-                        <View style={{ alignSelf: 'center' }}>
-                            <Text style={commonStyles.fwblob}>＞</Text>
-                        </View>
-                    </View>
+                    </TouchableOpacity>
                 ))}
             </ScrollView>
         </>

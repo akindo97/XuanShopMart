@@ -68,15 +68,15 @@ const StoreScreen = ({ route }) => {
                         contentContainerStyle={styles.container}
                     >
                         {newCategory.map((category) => (
-                            <TouchableOpacity
-                                key={category.id}
+                            <TouchableOpacity key={category.id}
                                 ref={(ref) => {
                                     if (ref) tabRefs.current[category.id] = ref;
                                 }}
                                 onPress={() => setSelected(category.id)} style={[
                                     styles.tab,
                                     selected === category.id && styles.selectedTab,
-                                ]}>
+                                ]}
+                                >
                                 <Text
                                     style={[
                                         styles.text,

@@ -2,7 +2,7 @@ import { StyleSheet } from 'react-native';
 
 const commonStyles = StyleSheet.create({
   bgrColor: {
-    backgroundColor: '#DDDDDD',
+    backgroundColor: '#EEEEEE',
   },
   textColor: {
     color: '#00CC66',

@@ -39,7 +39,7 @@ export const XproductCatalog = [
             }
         ]
     },
-    {
+    { 
         id: 2,
         name: "Thịt bò, lợn",
         icon: require("../../assets/icons/meat.png"),

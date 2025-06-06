@@ -11,6 +11,8 @@ import RegisterLoginScreen from './src/screens/account/registerlogin';
 import { RootProvider } from './src/hooks/rootcontext';
 import CheckOutScreen from './src/screens/checkout';
 import SuccessfulScreen from './src/screens/checkout/successful';
+import DetailScreen from './src/screens/recents/detail';
+import SearchScreen from './src/screens/search';
 import FlashMessage from "react-native-flash-message";
 
 const Stack = createNativeStackNavigator();
@@ -47,6 +49,8 @@ const MainContent = () => {
           <Stack.Screen name="RegisterLogin" component={RegisterLoginScreen} options={{ title: 'Đăng ký/Đăng nhập' }} />
           <Stack.Screen name="CheckOut" component={CheckOutScreen} options={{ title: 'Đặt hàng' }} />
           <Stack.Screen name="Successful" component={SuccessfulScreen} options={{ title: 'Đặt hàng thành công', gestureEnabled: false, headerLeft: () => null }} />
+          <Stack.Screen name="Detail" component={DetailScreen} options={{ title: 'Chi tiết đơn hàng' }} />
+          <Stack.Screen name="Search" component={SearchScreen} />
         </Stack.Navigator>
       </NavigationContainer>
       {visible && <AddToCartModal />}

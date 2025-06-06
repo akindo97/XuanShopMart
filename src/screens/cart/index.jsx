@@ -30,7 +30,7 @@ const CartScreen = () => {
     return (
         <>
             <Headers title="Giỏ hàng" />
-            <View style={[commonStyles.bgrColor, commonStyles.flex1]}>
+            <View style={[commonStyles.flex1]}>
                 {
                     cartItems?.length > 0 ?
                         <>
@@ -57,9 +57,9 @@ const CartScreen = () => {
                                             </View>
                                             <View style={styles.cCartStaBlock}>
                                                 {/* nếu là sản phẩm đông lạnh thì hiển thị chữ "Đông" */}
-                                                {item.is_frozen && <Text style={[styles.cCartStaText, styles.cCartCold]}>đông</Text>}
+                                                {item.is_frozen ? <Text style={[styles.cCartStaText, styles.cCartCold]}>đông</Text> : null}
                                                 {/* nếu là sản phẩm giảm giá thì hiển thị chữ "Sale" */}
-                                                {item.is_sale && <Text style={[styles.cCartStaText, styles.cCartSale]}>sale</Text>}
+                                                {item.is_sale ? <Text style={[styles.cCartStaText, styles.cCartSale]}>sale</Text> : null}
                                             </View>
                                             <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
                                                 <View style={[commonStyles.fEnd]}>

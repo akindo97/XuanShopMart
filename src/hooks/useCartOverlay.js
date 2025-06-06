@@ -1,13 +1,11 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { useDialog } from './dialogcontext';
+import { showMessage } from "react-native-flash-message";
 
 const CartUIContext = createContext();
 
 // Hàm tạo context cho CartUI
 export const CartUIProvider = ({ children }) => {
-  // Lấy hàm hiển thị dialog từ context
-  const { showDialog } = useDialog();
   // State để quản lý trạng thái đã tải dữ liệu
   const [isLoaded, setIsLoaded] = useState(false);
   // State lưu trữ thông tin các sản phẩm trong giỏ hàng
@@ -50,9 +48,9 @@ export const CartUIProvider = ({ children }) => {
     // Ẩn thông tin sản phẩm sau khi thêm vào giỏ hàng
     addToCartHide();
     // Hiển thị thông báo đã thêm vào giỏ hàng
-    showDialog({
-      type: 'snackbar',
-      message: `Đã thêm vào giỏ hàng.`,
+    showMessage({
+      message: 'Đã thêm vào giỏ hàng',
+      type: "info",
     });
   };
 
@@ -88,6 +86,11 @@ export const CartUIProvider = ({ children }) => {
   }, [cartItems]);
 
 
+  // Hàm xóa toàn bộ sản phẩm khỏi giỏ hàng
+  const clearCart = () => {
+    setCartItems([]);
+  }
+
   // Hàm load giỏ hàng từ AsyncStorage khi component mount
   useEffect(() => {
     console.log('Loading cart from AsyncStorage...');
@@ -110,8 +113,8 @@ export const CartUIProvider = ({ children }) => {
   return (
     <CartUIContext.Provider value={{
       visible, productDetail, addToCartShow, addToCartHide,
-      cartItems, totalQuantity, totalPrice, getBonusPoint, 
-      setCartItems, addToCart, changeQuantity, removeFromCart
+      cartItems, totalQuantity, totalPrice, getBonusPoint,
+      setCartItems, addToCart, changeQuantity, removeFromCart, clearCart
     }}>
       {children}
     </CartUIContext.Provider>

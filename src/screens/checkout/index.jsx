@@ -3,19 +3,19 @@ import { View, Text, StyleSheet, ScrollView, Image, TouchableOpacity } from "rea
 import commonStyles from "../../utils/commonstyles";
 import { Button, Card, RadioButton, TextInput } from 'react-native-paper';
 import { Dropdown } from 'react-native-paper-dropdown';
-import { DELIVERY_TIME } from '../../config/config';
+import { DELIVERY_TIME, PAY_METHOD } from '../../config/config';
 import { useNavigation } from '@react-navigation/native';
 import { useCartUI } from '../../hooks/useCartOverlay';
-import { fToYen } from "../../utils/utils";
+import { fToYen, isEmail, codeToAddress } from "../../utils/utils";
 import { apiRequest } from "../../api";
 import styles from "./styles";
-import { showMessage, hideMessage } from "react-native-flash-message";
+import { showMessage } from "react-native-flash-message";
 
 const CheckOutScreen = ({ params }) => {
     const navigation = useNavigation();
 
     // Lấy thông tin giỏ hàng và các hàm từ context
-    const { cartItems } = useCartUI();
+    const { cartItems, clearCart } = useCartUI();
 
     // Thông tin tính toán nhận được từ API
     const [calculate, setCalculate] = useState([]);
@@ -40,8 +40,8 @@ const CheckOutScreen = ({ params }) => {
     const [deliveryTime, setDeliveryTime] = useState("Không yêu cầu");
     // Lời nhắn
     const [message, setMessage] = useState('');
-    // Hình thức vận chuyển
-    const [shipping, setShipping] = useState('transfer');
+    // Hình thức thanh toán
+    const [paymentMethod, setPaymentMethod] = useState('transfer');
 
     // Hiển thị guide hướng dẫn
     const [isGuideShow, setIsGuideShow] = useState(false);
@@ -59,6 +59,13 @@ const CheckOutScreen = ({ params }) => {
     // State để lưu lỗi
     const [errors, setErrors] = useState({});
 
+    useEffect(() => {
+        codeToAddress(postalCode,
+            (address1) => setAddress1(address1),
+            (address2) => setAddress2(address2),
+        )
+    }, [postalCode]);
+
     // Chuẩn bị item để gửi lên API tính toán
     const postItems = cartItems.map((item) => (
         { id: item.id, quantity: item.quantity }
@@ -73,8 +80,8 @@ const CheckOutScreen = ({ params }) => {
                     method: 'POST',
                     data: {
                         items: postItems,
-                        shipping_method: 'standard',
-                        payment_method: shipping
+                        shipping_method: 'standard', // chưa có
+                        payment_method: paymentMethod
                     }
                 });
                 setCalculate(res.data);
@@ -85,15 +92,14 @@ const CheckOutScreen = ({ params }) => {
             }
         }
         calculate();
-    }, [shipping]);
+    }, [paymentMethod]);
 
     // 
     const validateAndFocus = () => {
         const newErrors = {};
-
         if (!email.trim()) {
             newErrors.email = "Vui lòng nhập email";
-        } else if (!isValidEmail(email)) {
+        } else if (!isEmail(email)) {
             newErrors.email = "Email không hợp lệ";
         }
 
@@ -102,6 +108,8 @@ const CheckOutScreen = ({ params }) => {
         if (!address1.trim()) newErrors.address1 = "Vui lòng nhập địa chỉ";
         if (!address2.trim()) newErrors.address2 = "Vui lòng nhập địa chỉ";
         if (!address3.trim()) newErrors.address3 = "Vui lòng nhập địa chỉ";
+
+        console.log(newErrors);
 
         if (Object.keys(newErrors).length > 0) {
             setErrors(newErrors);
@@ -129,9 +137,9 @@ const CheckOutScreen = ({ params }) => {
     // CheckOut
     const checkOut = async () => {
         // Kiểm tra các INPUT cần
-        validateAndFocus();
-        return;
-        alert('checkinput ok')
+        const isValidateInput = validateAndFocus();
+
+        let result;
         if (isValidateInput) {
             try {
                 const res = await apiRequest('/checkout', {
@@ -139,8 +147,8 @@ const CheckOutScreen = ({ params }) => {
                     data: {
                         items: postItems,
                         shipping_method: 'standard',
-                        payment_method: shipping,
-                        device_id: 999999999,
+                        payment_method: paymentMethod,
+                        device_id: "999999999",
                         contact_email: email,
                         shipping_first_name: firstName,
                         shipping_last_name: lastName,
@@ -153,15 +161,18 @@ const CheckOutScreen = ({ params }) => {
                         shipping_message: message,
                     }
                 });
-                console.log(res.data);
+                console.log(res);
+                result = res.data;
+                // Xóa toàn bộ sản phẩm nếu đặt hàng thành công
+                clearCart();
+                // Sang trang báo thành công
+                navigation.replace('Successful', { result: result, settings: calculate.settings });
             } catch (err) {
                 console.log(err.message || 'Đã có lỗi xảy ra');
             } finally {
-                alert('ok')
             }
         }
 
-        // navigation.replace('Successful');
 
     }
 
@@ -220,14 +231,16 @@ const CheckOutScreen = ({ params }) => {
                 </View>
                 {/* Mã bưu điện */}
                 <TextInput mode="flat" underlineColor="transparent"
+                    keyboardType="numeric"
                     ref={inputRefs.postalCode}
                     error={!!errors.postalCode}
                     label="Mã bưu điện - 郵便番号 (vd:1235678)"
                     value={postalCode}
-                    onChangeText={setPostalCode}
+                    onChangeText={(text) => setPostalCode(text.replace(/[^0-9]/g, ''))}
                     right={<TextInput.Icon style={styles.cCOInputIcon} icon="office-building-marker-outline" color="#AAAAAA" />}
                     style={styles.cCOInput}
                     activeUnderlineColor="#00CC66"
+                    maxLength={7}
                 />
                 {/* Tỉnh - 都道府県 */}
                 <TextInput mode="flat" underlineColor="transparent"
@@ -303,11 +316,12 @@ const CheckOutScreen = ({ params }) => {
 
                 {/* Hình thức thanh toán */}
                 <Text style={styles.cCOTitle}>Hình thức thanh toán</Text>
-                <RadioButton.Group onValueChange={value => setShipping(value)} value={shipping}>
+                <RadioButton.Group onValueChange={value => setPaymentMethod(value)} value={paymentMethod}>
+                    {/* Chuyển khoản ngân hàng */}
                     <View style={styles.cCORadioItem1}>
-                        <RadioButton.Item label="Chuyển khoản ngân hàng" value="transfer"
-                            style={shipping === 'transfer' && styles.cCORadioItemSl} />
-                        {shipping === 'transfer' && (
+                        <RadioButton.Item label={PAY_METHOD.transfer.label} value="transfer"
+                            style={paymentMethod === 'transfer' && styles.cCORadioItemSl} />
+                        {paymentMethod === 'transfer' && (
                             <View style={{ padding: 10, paddingHorizontal: 20, marginTop: 5 }}>
                                 <Text style={{ fontFamily: 'monospace' }}>
                                     {calculate.settings?.bank_info ?? ''}
@@ -315,10 +329,11 @@ const CheckOutScreen = ({ params }) => {
                             </View>
                         )}
                     </View>
+                    {/* Thanh toán khi nhận hàng */}
                     <View style={styles.cCORadioItem2}>
-                        <RadioButton.Item label="Thanh toán khi nhận hàng (COD) +￥500" value="cod"
-                            style={shipping === 'cod' && styles.cCORadioItemSl} />
-                        {shipping === 'cod' && (
+                        <RadioButton.Item label={PAY_METHOD.cod.label} value="cod"
+                            style={paymentMethod === 'cod' && styles.cCORadioItemSl} />
+                        {paymentMethod === 'cod' && (
                             <View style={{ padding: 10, paddingHorizontal: 20, marginTop: 5 }}>
                                 <Text style={{ fontFamily: 'monospace' }}>
                                     {calculate.settings?.cod_info ?? ''}
