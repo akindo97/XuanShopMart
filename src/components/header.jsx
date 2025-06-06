@@ -21,21 +21,21 @@ const Header = ({ searchQuery, setSearchQuery, title }) => {
               size={58}
               source={require('../../assets/icons/logoxshrv.png')} // Thay bằng logo thật
             />
-          </View>
+            </View>
 
-          {/* Thanh tìm kiếm */}
-          <View style={styles.cHeaSearchCtn}>
+            {/* Thanh tìm kiếm */}
+            <View style={styles.cHeaSearchCtn}>
             <Searchbar
               placeholder="Tìm kiếm sản phẩm..."
-              onFocus={() =>
-                navigation.navigate('Search')
+              onTouchStart={() =>
+              navigation.navigate('Search')
               }
             style={styles.cSearchBar}
             inputStyle={styles.inputStyle}
             />
-          </View>
+            </View>
 
-          {/* Icon thông báo */}
+            {/* Icon thông báo */}
           <Appbar.Action
             icon="bell-outline"
             onPress={async () => {

@@ -1,34 +1,119 @@
-import React, { useLayoutEffect, useState } from 'react';
-import { TextInput, Searchbar } from 'react-native-paper';
-import { View, StyleSheet } from 'react-native';
+import React, { useEffect, useLayoutEffect, useState } from 'react';
+import { TextInput, Searchbar, Button } from 'react-native-paper';
+import { View, StyleSheet, Text } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
+import { RecentKeywords, PopularKeywords } from '../../components/recentkeywords';
+import { apiRequest } from '../../api';
+import HorizontalList from '../../components/horizontallist';
+import { Loading } from '../../components/loading';
 
 const SearchScreen = () => {
-    const [keyword, setKeyword] = useState('');
     const navigation = useNavigation();
+    const [keyword, setKeyword] = useState('');
+    // Loading khi chưa tải xong
+    const [loading, setLoading] = useState(false);
+    const [keywordToAdd, setKeywordToAdd] = useState('');
+
+    // các từ khoá phổ biến
+    const popular = [
+        'bún khô',
+        'phở khô',
+        'gà ủ muối',
+        'xúc xích',
+        'bánh tráng',
+        'miến dong',
+        'mộc nhĩ khô',
+        'nấm hương',
+        'gạo'
+    ];
+
+    const handleSearch = () => {
+        if(!keyword) return;
+        setKeywordToAdd(keyword.trim());
+        handleKeywordSelect(keyword.trim());
+        setKeyword('');
+    };
+
+    const handleKeywordSelect = (keyword) => {
+        if(!keyword) return;
+        // Thực hiện tìm kiếm lại với từ khoá được chọn
+        console.log('Selected:', keyword);
+        searchProducts(keyword);
+    };
 
     useLayoutEffect(() => {
         navigation.setOptions({
             headerTitle: () => (
-                <View style={{ flex: 1, paddingTop: 8 }}>
+                <View style={{ flex: 1, paddingTop: 6 }}>
                     <Searchbar
                         placeholder="Tìm kiếm sản phẩm..."
                         value={keyword}
                         onChangeText={setKeyword}
                         style={styles.cSearchBar}
                         inputStyle={styles.inputStyle}
+                        onSubmitEditing={() => handleSearch()}
                     />
                 </View>
             ),
         });
     }, [navigation, keyword]);
 
-    // Bạn có thể xử lý tìm kiếm tại đây
-    // useEffect(() => { ... gọi API với keyword ... }, [keyword]);
+    const [products, setProducts] = useState([]);
+
+    // Tìm kiếm
+    const searchProducts = async (keyword) => {
+        setLoading(true);
+        try {
+            const res = await apiRequest('/search', {
+                method: 'POST',
+                data: {
+                    keyword: keyword
+                }
+            });
+            const result = res.data;
+            console.log(res);
+            setProducts(result);
+        } catch (err) {
+            console.log(err.message || 'Đã có lỗi xảy ra');
+        } finally {
+            setLoading(false);
+        }
+    }
 
     return (
-        <View>
-            {/* Nội dung khác của màn hình */}
+        <View style={{ flex: 1 }}>
+            {/* Loading khi tải dữ liệu */}
+            {loading ? (<Loading text='Đang tìm kiếm...' size={60} />) : null}
+            {products.length && !loading ?
+                <View style={{ flex: 1 }}>
+                    <Text style={{ backgroundColor: '#ffffff', marginBottom: 10, padding: 10, fontSize: 16, fontWeight: 'bold' }} >
+                        Kết quả tìm kiếm
+                    </Text>
+                    <View style={{ backgroundColor: '#ffffff' }}>
+                        <HorizontalList products={products} isHorizontal={false} />
+                    </View>
+                </View>
+                :
+                null}
+            <View style={{ display: !products.length && !loading ? 'flex' : 'none' }}>
+                <View style={{ backgroundColor: '#ffffff', marginBottom: 10 }}>
+                    <View style={[styles.cSearchBlock, { height: 100 }]}>
+                        <Text style={styles.cSearchTitle}>Lịch sử tìm kiếm</Text>
+                        <RecentKeywords
+                            addKeyword={keywordToAdd}
+                            onSelect={handleKeywordSelect}
+                        />
+                    </View>
+                </View>
+                <View style={{ backgroundColor: '#ffffff' }}>
+                    <View style={[styles.cSearchBlock]}>
+                        <Text style={styles.cSearchTitle}>Tìm kiếm phố biến</Text>
+                        {/* <Button onPress={handleSearch}>add</Button> */}
+                        <Button onPress={handleSearch} >Search</Button>
+                        <PopularKeywords keywords={popular} onSelect={handleKeywordSelect} />
+                    </View>
+                </View>
+            </View>
         </View>
     );
 }
@@ -52,6 +137,13 @@ const styles = StyleSheet.create({
         paddingVertical: 0,       // giảm khoảng cách trên/dưới
         textAlignVertical: 'center', // hiệu quả trên Android
     },
+    cSearchBlock: {
+        margin: 10
+    },
+    cSearchTitle: {
+        fontSize: 16,
+        fontWeight: 'bold'
+    }
 });
 
 export default SearchScreen;
