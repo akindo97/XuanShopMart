@@ -58,10 +58,15 @@ const HorizontalList = (props) => {
                 onPress={() => {
                     navigation.navigate('Product', { product: item, categoryId: item.category_id })
                 }}>
-                <TouchableOpacity style={styles.cCatPlus}
-                    onPress={() => addToCartShow(item)}>
-                    <Icon source="cart-plus" size={25} color='#FFF' />
-                </TouchableOpacity>
+                {/* Nếu hết hàng thì không cho phép thêm vào giỏ hàng */}
+                {item.is_active ?
+                    <TouchableOpacity style={styles.cCatPlus}
+                        onPress={() => addToCartShow(item)}>
+                        <Icon source="cart-plus" size={25} color='#FFF' />
+                    </TouchableOpacity>
+                    :
+                    <Text style={styles.cCatOut}>Hết hàng</Text>
+                }
                 <View style={commonStyles.pRelative}>
                     <Card.Cover source={{ uri: item.thumbnail_url }} style={styles.cCatImage} />
                     <View style={styles.cCatPrDeital}>
@@ -131,6 +136,16 @@ const styles = StyleSheet.create({
         borderRadius: 12,
         backgroundColor: '#00CC66ff',
         padding: 3,
+    },
+    cCatOut: {
+        position: 'absolute',
+        end: 0,
+        zIndex: 1,
+        borderRadius: 12,
+        backgroundColor: '#666666ff',
+        padding: 2,
+        paddingHorizontal: 3,
+        color: '#ffffff'
     },
     cCatPrDeital: {
         position: 'absolute',

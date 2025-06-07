@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import { View, Image, Text, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
 import Headers from '../../components/header';
 import commonStyles from '../../utils/commonstyles';
@@ -7,12 +7,17 @@ import { useNavigation } from '@react-navigation/native';
 import { ORDER_STATUS, PAY_METHOD } from '../../config/config';
 import styles from './styles';
 import { apiRequest } from '../../api';
-import { fToYen, fromatDate } from '../../utils/utils';
+import { fToYen, formatDate } from '../../utils/utils';
 import { Loading } from '../../components/loading';
+import { useRootContext } from '../../hooks/rootcontext';
+import { useFocusEffect } from '@react-navigation/native';
 
 
 const RecentsScreen = () => {
     const navigation = useNavigation();
+
+    // Lấy deviceId và token từ Root
+    const { deviceId, token } = useRootContext();
 
     // Thanh trang thái trên top
     const [selected, setSelected] = useState(0);
@@ -26,25 +31,54 @@ const RecentsScreen = () => {
     // Show list
     const [showRecents, setShowRecents] = useState([]);
 
-    useEffect(() => {
-        const recentsApi = async () => {
-            try {
-                const res = await apiRequest('/recents', {
-                    method: 'POST',
-                    data: {
-                        "device_id": 999999999
-                    }
-                });
-                console.log(res.data);
-                setRecents(res.data);
-            } catch (err) {
-                console.log(err.message || 'Đã có lỗi xảy ra');
-            } finally {
-                setLoading(false);
-            }
-        }
-        recentsApi();
-    }, []);
+    useFocusEffect(
+        useCallback(() => {
+            const recentsApi = async () => {
+                try {
+                    setLoading(true);
+                    const res = await apiRequest('/recents', {
+                        method: 'POST',
+                        headers: {
+                            Authorization: `Bearer ${token}`,
+                        },
+                        data: {
+                            device_id: deviceId,
+                        },
+                    });
+                    setRecents(res.data);
+                } catch (err) {
+                    console.log(err.message || 'Đã có lỗi xảy ra');
+                } finally {
+                    setLoading(false);
+                }
+            };
+
+            recentsApi();
+        }, [token, deviceId])
+    );
+
+    // useEffect(() => {
+    //     const recentsApi = async () => {
+    //         try {
+    //             const res = await apiRequest('/recents', {
+    //                 method: 'POST',
+    //                 headers: {
+    //                     Authorization: `Bearer ${token}`
+    //                 },
+    //                 data: {
+    //                     "device_id": deviceId
+    //                 }
+    //             });
+    //             console.log(res.data);
+    //             setRecents(res.data);
+    //         } catch (err) {
+    //             console.log(err.message || 'Đã có lỗi xảy ra');
+    //         } finally {
+    //             setLoading(false);
+    //         }
+    //     }
+    //     recentsApi();
+    // }, []);
 
     useEffect(() => {
         const filterRecents = recents.filter((recent) => selected == 0 || recent.order_status == selected);
@@ -66,13 +100,13 @@ const RecentsScreen = () => {
                                     <TouchableOpacity key={index}
                                         onPress={() => setSelected(statu)} style={[
                                             styles.tab,
-                                            selected == statu && styles.selectedTab,
+                                            selected == statu && recents.length && styles.selectedTab,
                                         ]}
                                     >
                                         <Text
                                             style={[
                                                 styles.text,
-                                                selected == statu && styles.selectedText,
+                                                selected == statu && recents.length && styles.selectedText,
                                             ]}
                                         >
                                             {ORDER_STATUS[statu].label}
@@ -118,7 +152,7 @@ const RecentsScreen = () => {
                                                                 <View style={styles.cRecentBlockLine}>
                                                                     <Icon source="clock-time-eight-outline" size={18} />
                                                                     <Text style={styles.cRecentBlockTextT}>Ngày đặt</Text>
-                                                                    <Text style={styles.cRecentBlockTextC}>{fromatDate(recent.created_at)}</Text>
+                                                                    <Text style={styles.cRecentBlockTextC}>{formatDate(recent.created_at)}</Text>
                                                                 </View>
                                                                 <View style={styles.cRecentBlockLine}>
                                                                     <Icon source="cryengine" size={18} />

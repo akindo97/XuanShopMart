@@ -2,10 +2,27 @@ import React, { useState } from 'react';
 import { KeyboardAvoidingView, Platform, ScrollView, View, Text, StyleSheet } from 'react-native';
 import { Button, Icon, TextInput, TouchableRipple } from 'react-native-paper';
 import commonStyles from '../../utils/commonstyles';
+import { apiRequest } from '../../api';
+import { useRootContext } from '../../hooks/rootcontext';
+import styles from './styles';
+import { useNavigation } from '@react-navigation/native';
+import { showMessage } from 'react-native-flash-message';
+import { FullLoading } from '../../components/loading';
+import { useDialog } from '../../hooks/dialogcontext';
 
 const registerLoginScreen = ({ route }) => {
+    const navigation = useNavigation();
+    const { showDialog } = useDialog();
+
     // Nếu có tham số isLoginScreen thì sử dụng, nếu không thì mặc định là true (đăng nhập)
     const isLoginScreen = route.params?.isLoginScreen ?? true;
+
+    // Loading khi chưa tải xong
+    const [loading, setLoading] = useState(false);
+
+    // 
+    const { deviceId, setUserInfo } = useRootContext();
+
     // State phân biệt đăng nhập và đăng ký
     const [isLogin, setIsLogin] = useState(isLoginScreen);
     // E-mail
@@ -25,11 +42,124 @@ const registerLoginScreen = ({ route }) => {
     // Số điện thoại
     const [phone, setPhone] = useState("");
 
+    // Hàm đăng nhập
+    const loginApi = async () => {
+        setLoading(true);
+        try {
+            const res = await apiRequest('/login', {
+                method: 'POST',
+                data: {
+                    device_id: deviceId,
+                    email: email,
+                    password: password
+                }
+            });
+            console.log(res);
+            const { token, user } = res;
+            setUserInfo({
+                user: user,
+                token: token
+            });
+
+            // Nếu có đơn hàng trong thiết bị
+            if (res.has_purchases) {
+                showDialog({
+                    type: 'confirm',
+                    message: 'Bạn có đơn hàng đã đặt trên thiết bị này, bạn có muốn đồng bộ với tài khoản không? Nếu bạn không đồng bộ thì đơn hàng sẽ không hiển thị khi đăng nhập.',
+                    onConfirm: () => assignOrder(token),
+                    ok: 'Đồng bộ',
+                });
+            } else {
+                navigation.replace('Main');
+                showMessage({
+                    message: 'Đăng nhập thành công',
+                    type: 'info'
+                })
+            }
+
+        } catch (err) {
+            console.log(err.message || 'Đã có lỗi xảy ra');
+        } finally {
+            setLoading(false);
+        }
+    }
+
+    // Hàm đăng ký
+    const registerApi = async () => {
+        setLoading(true);
+        try {
+            const res = await apiRequest('/register', {
+                method: 'POST',
+                data: {
+                    device_id: deviceId,
+                    email: email,
+                    password: password,
+                    first_name: firstName,
+                    last_name: lastName,
+                    phone: phone
+                }
+            });
+            console.log(res);
+            const { token, user } = res;
+            setUserInfo({
+                user: user,
+                token: token
+            });
+
+            // Nếu có đơn hàng trong thiết bị
+            if (res.has_purchases) {
+                showDialog({
+                    type: 'confirm',
+                    message: 'Bạn có đơn hàng đã đặt trên thiết bị này, bạn có muốn đồng bộ với tài khoản không? Nếu bạn không đồng bộ thì đơn hàng sẽ không hiển thị khi đăng nhập.',
+                    onConfirm: () => assignOrder(token),
+                    ok: 'Đồng bộ',
+                });
+            } else {
+                navigation.replace('Main');
+                showMessage({
+                    message: 'Đăng ký thành công',
+                    type: 'info'
+                })
+            }
+
+        } catch (err) {
+            console.log(err.message || 'Đã có lỗi xảy ra');
+        } finally {
+            setLoading(false);
+        }
+    }
+
+    // Hàm đồng bộ đơn hàng nếu có
+    const assignOrder = async (token) => {
+        setLoading(true);
+        try {
+            const res = await apiRequest('/assign-order', {
+                method: 'POST',
+                headers: {
+                    Authorization: `Bearer ${token}`
+                },
+                data: {
+                    device_id: deviceId
+                }
+            });
+            console.log(res);
+            navigation.replace('Main');
+            showMessage({
+                message: res.message,
+                type: 'info'
+            })
+        } catch (err) {
+            console.log(err.message || 'Đã có lỗi xảy ra');
+        } finally {
+            setLoading(false);
+        }
+    }
 
     return (
         <ScrollView
             contentContainerStyle={{ flexGrow: 1 }}
             keyboardShouldPersistTaps="handled">
+            {loading ? <FullLoading /> : null}
             <KeyboardAvoidingView
                 behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
                 style={[commonStyles.bgrColor, styles.cRLContainer]}>
@@ -123,7 +253,7 @@ const registerLoginScreen = ({ route }) => {
                                 // nếu là đăng nhập thì hiển thị nút đăng nhập và đăng ký
                                 (<View>
                                     <Button mode="contained" style={[commonStyles.buttonColor, styles.cRLButton]}
-                                        onPress={() => console.log("Đăng nhập")}>
+                                        onPress={loginApi}>
                                         Đăng nhập
                                     </Button>
                                     <Text style={styles.cRLOrText}>hoặc</Text>
@@ -141,7 +271,7 @@ const registerLoginScreen = ({ route }) => {
                                 // nếu là đăng ký thì hiển thị nút đăng ký và đăng nhập
                                 (<View>
                                     <Button mode="contained" style={[commonStyles.buttonColor, styles.cRLButton]}
-                                        onPress={() => console.log("Đăng ký")}>
+                                        onPress={registerApi}>
                                         Đăng ký
                                     </Button>
                                     <Text style={styles.cRLOrText}>hoặc</Text>
@@ -162,71 +292,5 @@ const registerLoginScreen = ({ route }) => {
         </ScrollView>
     );
 }
-
-const styles = StyleSheet.create({
-    cRLContainer: {
-        flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center'
-    },
-    cRLBlock: {
-        width: '90%',
-        backgroundColor: '#FFFFFF',
-        padding: 20,
-        borderRadius: 10,
-        alignItems: 'center'
-    },
-    cRLTitle: {
-        width: '100%',
-        alignItems: 'center',
-        borderBottomWidth: 1,
-        borderColor: '#DDDDDD',
-    },
-    cRLTitleText: {
-        fontSize: 24,
-        fontWeight: 'bold',
-        color: '#333333',
-        paddingBottom: 10
-    },
-    cRLInput: {
-        backgroundColor: 'white',
-        borderColor: '#DDDDDD',
-        borderWidth: 1,
-        borderRadius: 6,
-        paddingHorizontal: 10,
-        marginBottom: 10,
-    },
-    xRLForgotBlock: {
-        flexDirection: 'row',
-        justifyContent: 'flex-end',
-        width: '100%'
-    },
-    xRLForgot: {
-        color: '#007BFF',
-        textAlign: 'right',
-        marginBottom: 10,
-        paddingTop: 5,
-    },
-    cRLButton: {
-        paddingVertical: 6,
-        borderRadius: 6,
-        marginTop: 30,
-    },
-    cRLOrText: {
-        textAlign: 'center',
-        marginVertical: 26,
-        color: '#888888'
-    },
-    cRLResgisBlock: {
-        flexDirection: 'row',
-        justifyContent: 'center',
-        alignItems: 'center',
-    },
-    xRLRegisNow: {
-        color: '#007BFF',
-        marginLeft: 5,
-        fontWeight: 'bold',
-    }
-})
 
 export default registerLoginScreen;

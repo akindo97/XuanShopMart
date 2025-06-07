@@ -95,6 +95,17 @@ const CheckOutScreen = ({ params }) => {
     }, [paymentMethod]);
 
     // 
+    /**
+     * Kiểm tra hợp lệ các trường trong form và xử lý focus, hiển thị lỗi.
+     *
+     * - Kiểm tra các trường bắt buộc (email, lastName, postalCode, address1, address2, address3) đã nhập chưa.
+     * - Kiểm tra định dạng email.
+     * - Gán thông báo lỗi cho các trường không hợp lệ.
+     * - Focus vào input đầu tiên bị lỗi.
+     * - Hiển thị thông báo lỗi đầu tiên bằng `showMessage`.
+     *
+     * @returns {boolean} Trả về true nếu tất cả hợp lệ, ngược lại trả về false.
+     */
     const validateAndFocus = () => {
         const newErrors = {};
         if (!email.trim()) {

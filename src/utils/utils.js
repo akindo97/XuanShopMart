@@ -39,7 +39,7 @@ export const codeToAddress = async (zipcode, cbPref, cbCityAddr) => {
  * @param withTime - Nếu là true, sẽ thêm giờ và phút vào kết quả (mặc định là false)
  * @returns Chuỗi ngày đã định dạng, ví dụ: "05/06/2025" hoặc "05/06/2025 16:36"
  */
-export const fromatDate = (timestamp, withTime = false) => {
+export const formatDate = (timestamp, withTime = false) => {
   // Tạo đối tượng Date từ chuỗi timestamp
   const date = new Date(timestamp);
   // Lấy ngày, thêm số 0 phía trước nếu nhỏ hơn 10
@@ -59,3 +59,7 @@ export const fromatDate = (timestamp, withTime = false) => {
   return `${day}/${month}/${year}`;
 };
 
+// Chuyển ngày thàng năm qua định dạng của mysql
+export const toMySQLDate = (dateObj) => {
+  return dateObj.toISOString().slice(0, 10);
+};

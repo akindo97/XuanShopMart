@@ -117,13 +117,25 @@ export default function ProductScreen({ route }) {
                     </View>
                     <Text style={styles.cProBotText}>Giỏ hàng</Text>
                 </TouchableOpacity>
-                {/* nút thêm vào giỏ hàng */}
-                <View style={styles.cProBotBtn}>
-                    <Button mode="contained" style={{ backgroundColor: '#000' }}
-                        onPress={() => addToCartShow(product)}>
-                        Thêm vào giỏ hàng
-                    </Button>
-                </View>
+                {
+                    product.is_active ?
+                        // nút thêm vào giỏ hàng
+                        <View style={styles.cProBotBtn}>
+                            <Button mode="contained" style={{ backgroundColor: '#000' }}
+                                onPress={() => addToCartShow(product)}>
+                                Thêm vào giỏ hàng
+                            </Button>
+                        </View>
+                        :
+                        // Nếu hết hàng
+                        <View style={styles.cProBotBtn}>
+                            <Button mode="contained" style={{ backgroundColor: '#666666' }}>
+                                Hết hàng
+                            </Button>
+                        </View>
+                }
+
+
             </View>
         </View>
     );

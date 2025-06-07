@@ -2,7 +2,7 @@ import { View, Text, Image, ScrollView } from "react-native";
 import { Card, Icon } from "react-native-paper";
 import styles from './styles';
 import CopyToClipboard from '../../components/copy';
-import { fToYen, fromatDate } from "../../utils/utils";
+import { fToYen, formatDate } from "../../utils/utils";
 import commonStyles from "../../utils/commonstyles";
 import { ORDER_STATUS, PAY_METHOD } from "../../config/config";
 
@@ -19,7 +19,7 @@ const DetailScreen = ({ route }) => {
                         <View style={styles.cRecentBlockLineLast}>
                             <Icon source="clock-time-eight-outline" size={18} />
                             <Text style={styles.cRecentBlockTextD}>Ngày giờ</Text>
-                            <Text style={styles.cRecentBlockTextC}>{fromatDate(recent.created_at, true)}</Text>
+                            <Text style={styles.cRecentBlockTextC}>{formatDate(recent.created_at, true)}</Text>
                         </View>
                         {/* Mã đơn */}
                         <View style={styles.cRecentBlockLineLast}>

@@ -28,24 +28,26 @@ const SearchScreen = () => {
     ];
 
     const handleSearch = () => {
-        if(!keyword) return;
+        if (!keyword) return;
         setKeywordToAdd(keyword.trim());
         handleKeywordSelect(keyword.trim());
         setKeyword('');
     };
 
     const handleKeywordSelect = (keyword) => {
-        if(!keyword) return;
+        if (!keyword) return;
         // Thực hiện tìm kiếm lại với từ khoá được chọn
         console.log('Selected:', keyword);
         searchProducts(keyword);
     };
 
     useLayoutEffect(() => {
+        let inputRef = null;
         navigation.setOptions({
             headerTitle: () => (
-                <View style={{ flex: 1, paddingTop: 6 }}>
+                <View style={{ flex: 1, paddingTop: 3 }}>
                     <Searchbar
+                        ref={ref => { inputRef = ref; }}
                         placeholder="Tìm kiếm sản phẩm..."
                         value={keyword}
                         onChangeText={setKeyword}
@@ -56,6 +58,12 @@ const SearchScreen = () => {
                 </View>
             ),
         });
+        // Focus vào input khi component mount
+        setTimeout(() => {
+            if (inputRef && inputRef.focus) {
+                inputRef.focus();
+            }
+        }, 300);
     }, [navigation, keyword]);
 
     const [products, setProducts] = useState([]);
@@ -82,6 +90,7 @@ const SearchScreen = () => {
 
     return (
         <View style={{ flex: 1 }}>
+            <View style={{ height: 10, backgroundColor: '#00CC66' }}></View>
             {/* Loading khi tải dữ liệu */}
             {loading ? (<Loading text='Đang tìm kiếm...' size={60} />) : null}
             {products.length && !loading ?

@@ -13,6 +13,7 @@ import CheckOutScreen from './src/screens/checkout';
 import SuccessfulScreen from './src/screens/checkout/successful';
 import DetailScreen from './src/screens/recents/detail';
 import SearchScreen from './src/screens/search';
+import ProfileScreen from './src/screens/account/profile';
 import FlashMessage from "react-native-flash-message";
 
 const Stack = createNativeStackNavigator();
@@ -51,6 +52,7 @@ const MainContent = () => {
           <Stack.Screen name="Successful" component={SuccessfulScreen} options={{ title: 'Đặt hàng thành công', gestureEnabled: false, headerLeft: () => null }} />
           <Stack.Screen name="Detail" component={DetailScreen} options={{ title: 'Chi tiết đơn hàng' }} />
           <Stack.Screen name="Search" component={SearchScreen} />
+          <Stack.Screen name="Profile" component={ProfileScreen} options={{ title: 'Profile' }} />
         </Stack.Navigator>
       </NavigationContainer>
       {visible && <AddToCartModal />}

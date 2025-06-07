@@ -5,19 +5,22 @@ import commonStyles from '../../utils/commonstyles';
 import { Button, Icon, TouchableRipple } from 'react-native-paper';
 import { useNavigation } from '@react-navigation/native';
 import { LinearGradient } from 'expo-linear-gradient';
+import { useRootContext } from '../../hooks/rootcontext';
 
 const AccountScreen = () => {
     const navigation = useNavigation();
 
+    const { auth, user } = useRootContext();
+
     const accList = [
         {
-            id: 1, name: 'Đơn hàng', subTitle: 'Bạn chưa có đơn hàng nào', icon: 'history',
+            id: 1, name: 'Đơn hàng', subTitle: 'Lịch sử đơn hàng', icon: 'history',
             onPress: () => {
                 navigation.navigate('Recents');
             }
         },
         { id: 2, name: 'Địa chỉ', subTitle: 'Địa chỉ để nhận hàng', icon: 'map-marker-outline' },
-        { id: 3, name: 'Tích điểm', subTitle: 'Đăng nhập để tích điểm', icon: 'star-four-points-outline' },
+        { id: 3, name: 'Tích điểm', subTitle: 'Tích điểm cho mỗi đơn hàng', icon: 'star-four-points-outline' },
         { id: 4, name: 'Voucher', subTitle: 'Tiết kiệm nhiều hơn với mã giảm giá', icon: 'ticket-percent-outline' },
         { id: 5, name: 'Điều khoản sử dụng', subTitle: 'Chính sách sử sụng dịch vụ', icon: 'shield-account-outline' },
         { id: 6, name: 'Liên hệ', subTitle: 'Liên hệ trực tiếp với chúng tôi', icon: 'chat-outline' },
@@ -30,50 +33,88 @@ const AccountScreen = () => {
             <View style={[commonStyles.bgrColor]}>
                 <LinearGradient colors={['#00CC66', '#EEEEEE', '#FFFFFF']}
                     style={styles.cAccBlock}>
-                    <View style={styles.cAccBlockUp}>
+                    <TouchableOpacity style={styles.cAccBlockUp}
+                        onPress={() => {
+                            auth ?
+                                // Đăng nhập rồi thì vào trang cá nhân
+                                navigation.navigate('Profile')
+                                :
+                                // Chưa đăng nhập thì vào trang đăng ký
+                                navigation.navigate('RegisterLogin')
+                        }}>
                         <View>
                             <Image source={require('../../../assets/icons/edit-info.png')} style={styles.cAccAvatar} />
                         </View>
                         <View style={styles.cAccCen}>
                             <Text style={[commonStyles.font20, commonStyles.fwblob]}>
-                                Khách hàng
+                                {auth ? user.last_name : 'Khách hàng'}
                             </Text>
                             <Text style={[commonStyles.blurredText, commonStyles.font13]}>
-                                Đăng nhập hoặc đăng ký để nhận tích điểm và nhận thêm nhiều ưu đãi!
+                                {
+                                    auth ?
+                                        'Tiếp tục mua sắm để tăng điểm và đổi quà ngay hôm nay!'
+                                        :
+                                        'Đăng nhập hoặc đăng ký để nhận tích điểm và nhận thêm nhiều ưu đãi!'
+                                }
                             </Text>
                         </View>
                         <View style={{ alignSelf: 'center', paddingRight: 10 }}>
                             <Text style={commonStyles.fwblob}>＞</Text>
                         </View>
-                    </View>
+                    </TouchableOpacity>
                     {/* Khoảng trống giữa phần trên và nút đăng ký, đăng nhập */}
                     <View style={[commonStyles.bgrColor, { height: 20 }]}></View>
+                    {auth ?
+                        <View style={styles.cAccButCtn}>
+                            <TouchableRipple borderless rippleColor={'transparent'}
+                                onPress={() => console.log("Point")}>
+                                <LinearGradient colors={['orange', '#FFFFFF']}
+                                    style={styles.cAccButGradient} >
+                                    <View style={styles.AccButContent}>
+                                        <Icon source="star-four-points-outline" size={20} color="#000000" />
+                                        <Text style={styles.AccButText}>Số điểm {user.points}</Text>
+                                    </View>
+                                </LinearGradient>
+                            </TouchableRipple>
+                            <TouchableRipple borderless rippleColor={'transparent'}
+                                onPress={() => navigation.navigate('Profile')}>
+                                <LinearGradient colors={['#00CC66', '#FFFFFF']}
+                                    style={styles.cAccButGradient} >
+                                    <View style={styles.AccButContent}>
+                                        <Icon source="account-edit" size={20} color="#000000" />
+                                        <Text style={styles.AccButText}>Tài khoản</Text>
+                                    </View>
+                                </LinearGradient>
+                            </TouchableRipple>
+                        </View>
+                        :
+                        // nút đăng ký và đăng nhập nếu chưa đăng nhập
+                        < View style={styles.cAccButCtn}>
+                            <TouchableRipple borderless rippleColor={'transparent'}
+                                onPress={() => navigation.navigate('RegisterLogin', { isLoginScreen: false })}>
+                                <LinearGradient colors={['#00CC66', '#FFFFFF']}
+                                    style={styles.cAccButGradient} >
+                                    <View style={styles.AccButContent}>
+                                        <Icon source="account-plus" size={20} color="#000000" />
+                                        <Text style={styles.AccButText}>Đăng ký</Text>
+                                    </View>
+                                </LinearGradient>
+                            </TouchableRipple>
+                            <TouchableRipple borderless rippleColor={'transparent'}
+                                onPress={() => navigation.navigate('RegisterLogin', { isLoginScreen: true })}>
+                                <LinearGradient colors={['#00CC66', '#FFFFFF']}
+                                    style={styles.cAccButGradient} >
+                                    <View style={styles.AccButContent}>
+                                        <Icon source="login" size={20} color="#000000" />
+                                        <Text style={styles.AccButText}>Đăng nhập</Text>
+                                    </View>
+                                </LinearGradient>
+                            </TouchableRipple>
+                        </View>
+                    }
 
-                    {/* nút đăng ký và đăng nhập */}
-                    <View style={styles.cAccButCtn}>
-                        <TouchableRipple borderless rippleColor={'transparent'}
-                            onPress={() => navigation.navigate('RegisterLogin', { isLoginScreen: false })}>
-                            <LinearGradient colors={['#00CC66', '#FFFFFF']}
-                                style={styles.cAccButGradient} >
-                                <View style={styles.AccButContent}>
-                                    <Icon source="account-plus" size={20} color="#000000" />
-                                    <Text style={styles.AccButText}>Đăng ký</Text>
-                                </View>
-                            </LinearGradient>
-                        </TouchableRipple>
-                        <TouchableRipple borderless rippleColor={'transparent'}
-                            onPress={() => navigation.navigate('RegisterLogin', { isLoginScreen: true })}>
-                            <LinearGradient colors={['#00CC66', '#FFFFFF']}
-                                style={styles.cAccButGradient} >
-                                <View style={styles.AccButContent}>
-                                    <Icon source="login" size={20} color="#000000" />
-                                    <Text style={styles.AccButText}>Đăng nhập</Text>
-                                </View>
-                            </LinearGradient>
-                        </TouchableRipple>
-                    </View>
-                </LinearGradient>
-            </View>
+                </LinearGradient >
+            </View >
 
             <ScrollView style={[commonStyles.bgrColor, commonStyles.flex1, commonStyles.pHorizontal10]}>
                 {accList.map((item) => (
