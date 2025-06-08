@@ -10,7 +10,7 @@ import { showMessage } from 'react-native-flash-message';
 import { FullLoading } from '../../components/loading';
 import { useDialog } from '../../hooks/dialogcontext';
 
-const registerLoginScreen = ({ route }) => {
+const RegisterLoginScreen = ({ route }) => {
     const navigation = useNavigation();
     const { showDialog } = useDialog();
 
@@ -294,4 +294,4 @@ const registerLoginScreen = ({ route }) => {
     );
 }
 
-export default registerLoginScreen;
+export default RegisterLoginScreen;
