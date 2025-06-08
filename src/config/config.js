@@ -1,10 +1,13 @@
 // URL API
-export const BASE_URL = 'https://19e9-240b-c020-4e0-9435-4814-f150-9be-1a2a.ngrok-free.app/api';
+export const BASE_URL = 'https://6a7b-240b-c020-4d6-252d-a587-c922-adc9-6d63.ngrok-free.app/api';
 // export const BASE_URL = 'http://10.0.2.2:8000/api';
 // export const BASE_URL = 'http://192.20.10.4:8000/api';
 
 // Số lượng item hiển thị khi tạo list ngang
 export const MAX_ITEM = 10;
+
+// Tổng cân nặng có thể vận chuyển
+export const MAX_WEIGHT = 24.5;
 
 // Thời gian nhận hàng
 export const DELIVERY_TIME = [

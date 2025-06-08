@@ -22,7 +22,7 @@ const RecentsScreen = () => {
     // Thanh trang thái trên top
     const [selected, setSelected] = useState(0);
 
-    // Loading khi chưa tải xong
+    // Trạng thái loading
     const [loading, setLoading] = useState(true);
 
     // Lưu trữ data từ API

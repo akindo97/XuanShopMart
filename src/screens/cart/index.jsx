@@ -9,12 +9,13 @@ import { fToYen } from '../../utils/utils';
 import QuantitySelect from '../../components/quantityselect';
 import { useCartUI } from '../../hooks/useCartOverlay';
 import { useDialog } from '../../hooks/dialogcontext';
+import { MAX_WEIGHT } from '../../config/config';
 
 const CartScreen = () => {
     const navigation = useNavigation();
 
     // Lấy thông tin giỏ hàng và các hàm từ context
-    const { cartItems, changeQuantity, removeFromCart, totalQuantity, totalPrice, getBonusPoint } = useCartUI();
+    const { cartItems, changeQuantity, removeFromCart, totalQuantity, totalPrice, getbonusPoint, totalWeight } = useCartUI();
     // Lấy hàm hiển thị dialog từ context
     const { showDialog } = useDialog();
 
@@ -84,39 +85,53 @@ const CartScreen = () => {
                                 ))}
                             </ScrollView>
                             {/* khu vực tổng tiền và nút đặt hàng */}
-                            <View style={styles.cCartPointBlock}>
-                                <View>
-                                    <Text>Tích điểm </Text>
-                                </View>
-                                <View>
-                                    <Text>
-                                        Có thể nhận <Text style={[commonStyles.textColor, commonStyles.fwblob]} >+{fToYen(getBonusPoint)}</Text> điểm </Text>
-                                </View>
-                            </View>
-                            <View style={styles.cCartProvi}>
-                                <View>
-                                    <View style={styles.cCartProviLeft}>
-                                        <Text style={styles.cCartProviText}>Số lượng:</Text>
-                                        <Text style={[commonStyles.font16]}>
-                                            {totalQuantity}
+                            {
+                                totalWeight > MAX_WEIGHT ?
+                                    // Nếu tổng cân nặng quá MAX_WEIGHT kg
+                                    <View style={styles.cCartPointBlock}>
+                                        <Text style={{ fontSize: 16, fontWeight: 'bold', color: 'red' }}>
+                                            Tổng tất cả các mặt hàng đã vượt quá 25kg, hãy điều chỉnh lại giỏ hàng của bạn
                                         </Text>
                                     </View>
-                                    <View style={styles.cCartProviLeft}>
-                                        <Text style={styles.cCartProviText}>Tạm tính:</Text>
-                                        <Text style={[commonStyles.priceColor, commonStyles.fwblob, commonStyles.font20]}>
-                                            ￥{fToYen(totalPrice)}
-                                        </Text>
+                                    :
+                                    // Điểm và tạm tính BT
+                                    <View>
+                                        <View style={styles.cCartPointBlock}>
+                                            <View>
+                                                <Text>Tích điểm</Text>
+                                            </View>
+                                            <View>
+                                                <Text>
+                                                    Có thể nhận <Text style={[commonStyles.textColor, commonStyles.fwblob]} >+{fToYen(getbonusPoint)}</Text> điểm </Text>
+                                            </View>
+                                        </View>
+                                        <View style={styles.cCartProvi}>
+                                            <View>
+                                                <View style={styles.cCartProviLeft}>
+                                                    <Text style={styles.cCartProviText}>Số lượng:</Text>
+                                                    <Text style={[commonStyles.font16]}>
+                                                        {totalQuantity}
+                                                    </Text>
+                                                </View>
+                                                <View style={styles.cCartProviLeft}>
+                                                    <Text style={styles.cCartProviText}>Tạm tính:</Text>
+                                                    <Text style={[commonStyles.priceColor, commonStyles.fwblob, commonStyles.font20]}>
+                                                        ￥{fToYen(totalPrice)}
+                                                    </Text>
+                                                </View>
+                                            </View>
+                                            <View style={[commonStyles.flex1, commonStyles.fEnd]}>
+                                                <Button mode="contained" style={[styles.cCartProviButton, commonStyles.buttonColor]}
+                                                    onPress={() => {
+                                                        navigation.navigate('CheckOut');
+                                                    }}>
+                                                    Đặt hàng
+                                                </Button>
+                                            </View>
+                                        </View>
                                     </View>
-                                </View>
-                                <View style={[commonStyles.flex1, commonStyles.fEnd]}>
-                                    <Button mode="contained" style={[styles.cCartProviButton, commonStyles.buttonColor]}
-                                        onPress={() => {
-                                            navigation.navigate('CheckOut');
-                                        }}>
-                                        Đặt hàng
-                                    </Button>
-                                </View>
-                            </View>
+                            }
+
                         </>
                         :
                         // Giỏ hàng trống

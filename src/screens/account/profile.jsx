@@ -13,11 +13,11 @@ import { useDialog } from '../../hooks/dialogcontext';
 import { useNavigation } from '@react-navigation/native';
 
 export default function ProfileScreen() {
+    const navigation = useNavigation();
     const { user, token, setUser, logoutAccount } = useRootContext();
     const { showDialog } = useDialog();
-    const navigation = useNavigation();
 
-    // Loading khi chưa tải xong
+    // Trạng thái loading
     const [loading, setLoading] = useState(false);
 
     const [isEdit, setIsEdit] = useState(false);

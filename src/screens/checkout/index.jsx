@@ -10,9 +10,14 @@ import { fToYen, isEmail, codeToAddress } from "../../utils/utils";
 import { apiRequest } from "../../api";
 import styles from "./styles";
 import { showMessage } from "react-native-flash-message";
+import { useRootContext } from "../../hooks/rootcontext";
+import { useDialog } from "../../hooks/dialogcontext";
 
 const CheckOutScreen = ({ params }) => {
     const navigation = useNavigation();
+    const { auth, user, token } = useRootContext();
+    const { showFullLoading } = useDialog();
+    
 
     // Lấy thông tin giỏ hàng và các hàm từ context
     const { cartItems, clearCart } = useCartUI();
@@ -20,12 +25,15 @@ const CheckOutScreen = ({ params }) => {
     // Thông tin tính toán nhận được từ API
     const [calculate, setCalculate] = useState([]);
 
+    // Trạng thái loading
+    const [loading, setLoading] = useState(false);
+
     // E-mail
-    const [email, setEmail] = useState("");
+    const [email, setEmail] = useState(user?.email ?? "");
     // Họ
-    const [firstName, setFirstName] = useState("");
+    const [firstName, setFirstName] = useState(user?.first_name ?? "");
     // Tên đệm & tên
-    const [lastName, setLastName] = useState("");
+    const [lastName, setLastName] = useState(user?.last_name ?? "");
     // Mã bưu điện
     const [postalCode, setPostalCode] = useState("");
     // Tỉnh
@@ -35,7 +43,7 @@ const CheckOutScreen = ({ params }) => {
     // Địa chỉ cụ thể - 番地・建物名・部屋番号
     const [address3, setAddress3] = useState("");
     // Số điện thoại
-    const [phone, setPhone] = useState("");
+    const [phone, setPhone] = useState(user?.phone ?? '');
     // Giờ nhận
     const [deliveryTime, setDeliveryTime] = useState("Không yêu cầu");
     // Lời nhắn
@@ -75,6 +83,7 @@ const CheckOutScreen = ({ params }) => {
     useEffect(() => {
         // gửi
         const calculate = async () => {
+            showFullLoading(true);
             try {
                 const res = await apiRequest('/calculate-order', {
                     method: 'POST',
@@ -89,6 +98,7 @@ const CheckOutScreen = ({ params }) => {
             } catch (err) {
                 console.log(err.message || 'Đã có lỗi xảy ra');
             } finally {
+                showFullLoading(false);
             }
         }
         calculate();
@@ -153,8 +163,12 @@ const CheckOutScreen = ({ params }) => {
         let result;
         if (isValidateInput) {
             try {
+                showFullLoading(true);
                 const res = await apiRequest('/checkout', {
                     method: 'POST',
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    },
                     data: {
                         items: postItems,
                         shipping_method: 'standard',
@@ -181,6 +195,7 @@ const CheckOutScreen = ({ params }) => {
             } catch (err) {
                 console.log(err.message || 'Đã có lỗi xảy ra');
             } finally {
+                showFullLoading(false);
             }
         }
 
@@ -191,19 +206,22 @@ const CheckOutScreen = ({ params }) => {
         <ScrollView style={commonStyles.bgrColor}>
             <View style={styles.cCOBlock}>
                 {/* Khuều đăng nhập */}
-                <View>
-                    <Card style={{ padding: 10 }}>
-                        <Text style={{ fontFamily: 'monospace', color: '#696969' }}>
-                            Hãy
-                            <TouchableOpacity onPress={() => {
-                                navigation.navigate('RegisterLogin');
-                            }}>
-                                <Text style={styles.cCOLogText}>đăng nhập</Text>
-                            </TouchableOpacity>
-                            để có thể theo dõi đơn hàng, tích điểm và hưởng nhiều ưu đãi nhé.
-                        </Text>
-                    </Card>
-                </View>
+                {!auth ?
+                    <View>
+                        <Card style={{ padding: 10 }}>
+                            <Text style={{ fontFamily: 'monospace', color: '#696969' }}>
+                                Hãy
+                                <TouchableOpacity onPress={() => {
+                                    navigation.navigate('RegisterLogin');
+                                }}>
+                                    <Text style={styles.cCOLogText}>đăng nhập</Text>
+                                </TouchableOpacity>
+                                để có thể theo dõi đơn hàng, tích điểm và hưởng nhiều ưu đãi nhé.
+                            </Text>
+                        </Card>
+                    </View> : null
+                }
+
                 {/* Thông tin liên hệ */}
                 <Text style={styles.cCOTitle}>Thông tin liên hệ</Text>
                 <TextInput mode="flat" underlineColor="transparent"
@@ -214,7 +232,6 @@ const CheckOutScreen = ({ params }) => {
                     onChangeText={setEmail}
                     right={<TextInput.Icon style={styles.cCOInputIcon} icon="email" color="#AAAAAA" />}
                     style={styles.cCOInput}
-                    outlineStyle={{ borderRadius: 20 }}
                     activeUnderlineColor="#00CC66"
                     autoCapitalize="none"
                 />

@@ -10,7 +10,7 @@ import { Loading } from '../../components/loading';
 const SearchScreen = () => {
     const navigation = useNavigation();
     const [keyword, setKeyword] = useState('');
-    // Loading khi chưa tải xong
+    // Trạng thái loading
     const [loading, setLoading] = useState(false);
     const [keywordToAdd, setKeywordToAdd] = useState('');
 

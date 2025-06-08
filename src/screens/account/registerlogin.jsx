@@ -17,7 +17,7 @@ const registerLoginScreen = ({ route }) => {
     // Nếu có tham số isLoginScreen thì sử dụng, nếu không thì mặc định là true (đăng nhập)
     const isLoginScreen = route.params?.isLoginScreen ?? true;
 
-    // Loading khi chưa tải xong
+    // Trạng thái loading
     const [loading, setLoading] = useState(false);
 
     // 
@@ -67,16 +67,12 @@ const registerLoginScreen = ({ route }) => {
                     type: 'confirm',
                     message: 'Bạn có đơn hàng đã đặt trên thiết bị này, bạn có muốn đồng bộ với tài khoản không? Nếu bạn không đồng bộ thì đơn hàng sẽ không hiển thị khi đăng nhập.',
                     onConfirm: () => assignOrder(token),
+                    onCancel: () => goHome('Đăng nhập thành công'),
                     ok: 'Đồng bộ',
                 });
             } else {
-                navigation.replace('Main');
-                showMessage({
-                    message: 'Đăng nhập thành công',
-                    type: 'info'
-                })
+                goHome('Đăng nhập thành công');
             }
-
         } catch (err) {
             console.log(err.message || 'Đã có lỗi xảy ra');
         } finally {
@@ -99,7 +95,6 @@ const registerLoginScreen = ({ route }) => {
                     phone: phone
                 }
             });
-            console.log(res);
             const { token, user } = res;
             setUserInfo({
                 user: user,
@@ -112,14 +107,11 @@ const registerLoginScreen = ({ route }) => {
                     type: 'confirm',
                     message: 'Bạn có đơn hàng đã đặt trên thiết bị này, bạn có muốn đồng bộ với tài khoản không? Nếu bạn không đồng bộ thì đơn hàng sẽ không hiển thị khi đăng nhập.',
                     onConfirm: () => assignOrder(token),
+                    onCancel: () => goHome('Đăng ký thành công'),
                     ok: 'Đồng bộ',
                 });
             } else {
-                navigation.replace('Main');
-                showMessage({
-                    message: 'Đăng ký thành công',
-                    type: 'info'
-                })
+                goHome('Đăng ký thành công');
             }
 
         } catch (err) {
@@ -127,6 +119,15 @@ const registerLoginScreen = ({ route }) => {
         } finally {
             setLoading(false);
         }
+    }
+
+    // Hàm đưa về màn hình chính và thông báo
+    const goHome = (message) => {
+        navigation.replace('Main');
+        showMessage({
+            message: message,
+            type: 'info'
+        });
     }
 
     // Hàm đồng bộ đơn hàng nếu có
