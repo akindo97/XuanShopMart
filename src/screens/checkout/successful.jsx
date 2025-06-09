@@ -5,6 +5,7 @@ import styles from "./styles"
 import { PAY_METHOD } from '../../config/config';
 import { Button } from "react-native-paper"
 import { useNavigation } from '@react-navigation/native';
+import CopyToClipboard from "../../components/copy";
 
 const SuccessfulScreen = ({ route }) => {
     const { result, settings } = route.params;
@@ -30,6 +31,7 @@ const SuccessfulScreen = ({ route }) => {
                             {/* Mã đơn hàng */}
                             {result.purchased_product.order_code}
                         </Text>
+                        <CopyToClipboard value={"MA DON: " + result.purchased_product.order_code} />
                     </View>
                     <View style={{ flexDirection: 'row', alignItems: 'center', paddingBottom: 12 }}>
                         <Text style={{ fontSize: 15 }}>

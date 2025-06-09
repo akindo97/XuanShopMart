@@ -17,6 +17,7 @@ import ProfileScreen from './src/screens/account/profile';
 import ShipAddressScreen from './src/screens/account/shipaddress';
 import ResetPasswordScreen from './src/screens/account/resetpassword';
 import VoucherScreen from './src/screens/account/voucher';
+import MessengerButton from './src/components/fbmessenger';
 import FlashMessage from "react-native-flash-message";
 
 const Stack = createNativeStackNavigator();
@@ -63,6 +64,7 @@ const MainContent = () => {
       </NavigationContainer>
       {visible && <AddToCartModal />}
       <FlashMessage position="top" />
+      <MessengerButton />
     </>
   );
 };

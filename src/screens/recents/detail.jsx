@@ -28,7 +28,7 @@ const DetailScreen = ({ route }) => {
                             <Text style={[styles.cRecentBlockTextC, { fontWeight: 'bold', color: 'orange' }]}>
                                 {recent.order_code}
                             </Text>
-                            <CopyToClipboard value={recent.order_code} />
+                            <CopyToClipboard value={"MA DON: " + recent.order_code} />
                         </View>
                     </View>
                     {/* Trạng thái */}

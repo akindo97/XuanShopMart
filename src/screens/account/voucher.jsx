@@ -67,7 +67,7 @@ export default function VoucherScreen({ navigation }) {
                 textAlign: 'center',
                 marginTop: 20,
             }}>
-                Bạn chưa có đơn voucher nào
+                Bạn chưa có voucher nào
             </Text>
         </View>
         // <View style={styles.container}>
