@@ -14,6 +14,9 @@ import SuccessfulScreen from './src/screens/checkout/successful';
 import DetailScreen from './src/screens/recents/detail';
 import SearchScreen from './src/screens/search';
 import ProfileScreen from './src/screens/account/profile';
+import ShipAddressScreen from './src/screens/account/shipaddress';
+import ResetPasswordScreen from './src/screens/account/resetpassword';
+import VoucherScreen from './src/screens/account/voucher';
 import FlashMessage from "react-native-flash-message";
 
 const Stack = createNativeStackNavigator();
@@ -53,6 +56,9 @@ const MainContent = () => {
           <Stack.Screen name="Detail" component={DetailScreen} options={{ title: 'Chi tiết đơn hàng' }} />
           <Stack.Screen name="Search" component={SearchScreen} />
           <Stack.Screen name="Profile" component={ProfileScreen} options={{ title: 'Profile' }} />
+          <Stack.Screen name="ShipAddress" component={ShipAddressScreen} options={{ title: 'Shipping Info' }} />
+          <Stack.Screen name="ResetPassword" component={ResetPasswordScreen} options={{ title: 'Đặt lại mật khẩu' }} />
+          <Stack.Screen name="Voucher" component={VoucherScreen} options={{ title: 'Voucher của tôi' }} />
         </Stack.Navigator>
       </NavigationContainer>
       {visible && <AddToCartModal />}

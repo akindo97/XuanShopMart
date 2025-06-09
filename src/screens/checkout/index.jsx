@@ -12,12 +12,13 @@ import styles from "./styles";
 import { showMessage } from "react-native-flash-message";
 import { useRootContext } from "../../hooks/rootcontext";
 import { useDialog } from "../../hooks/dialogcontext";
+import ShippingInfo from "../../components/shippingInfo";
 
 const CheckOutScreen = ({ params }) => {
     const navigation = useNavigation();
-    const { auth, user, token } = useRootContext();
+    const { auth, user, token, address } = useRootContext();
     const { showFullLoading } = useDialog();
-    
+
 
     // Lấy thông tin giỏ hàng và các hàm từ context
     const { cartItems, clearCart } = useCartUI();
@@ -25,34 +26,28 @@ const CheckOutScreen = ({ params }) => {
     // Thông tin tính toán nhận được từ API
     const [calculate, setCalculate] = useState([]);
 
-    // Trạng thái loading
-    const [loading, setLoading] = useState(false);
-
     // E-mail
     const [email, setEmail] = useState(user?.email ?? "");
-    // Họ
-    const [firstName, setFirstName] = useState(user?.first_name ?? "");
-    // Tên đệm & tên
-    const [lastName, setLastName] = useState(user?.last_name ?? "");
+    // Họ (ưu tiên thông tin từ user_address)
+    const [firstName, setFirstName] = useState(address ? address.first_name : (user?.first_name ?? ""));
+    // Tên đệm & tên (ưu tiên thông tin từ user_address)
+    const [lastName, setLastName] = useState(address ? address.last_name : (user?.last_name ?? ""));
     // Mã bưu điện
-    const [postalCode, setPostalCode] = useState("");
+    const [postalCode, setPostalCode] = useState(address?.postal_code ?? "");
     // Tỉnh
-    const [address1, setAddress1] = useState("");
+    const [address1, setAddress1] = useState(address?.address_1 ?? "");
     // Thành phố/khu vực - 市区町村
-    const [address2, setAddress2] = useState("");
+    const [address2, setAddress2] = useState(address?.address_2 ?? "");
     // Địa chỉ cụ thể - 番地・建物名・部屋番号
-    const [address3, setAddress3] = useState("");
+    const [address3, setAddress3] = useState(address?.address_3 ?? "");
     // Số điện thoại
-    const [phone, setPhone] = useState(user?.phone ?? '');
+    const [phone, setPhone] = useState(address ? address.phone : (user?.phone ?? ""));
     // Giờ nhận
     const [deliveryTime, setDeliveryTime] = useState("Không yêu cầu");
     // Lời nhắn
     const [message, setMessage] = useState('');
     // Hình thức thanh toán
     const [paymentMethod, setPaymentMethod] = useState('transfer');
-
-    // Hiển thị guide hướng dẫn
-    const [isGuideShow, setIsGuideShow] = useState(false);
 
     // cách input ref để focus
     const inputRefs = {
@@ -67,12 +62,12 @@ const CheckOutScreen = ({ params }) => {
     // State để lưu lỗi
     const [errors, setErrors] = useState({});
 
-    useEffect(() => {
-        codeToAddress(postalCode,
-            (address1) => setAddress1(address1),
-            (address2) => setAddress2(address2),
-        )
-    }, [postalCode]);
+    // useEffect(() => {
+    //     codeToAddress(postalCode,
+    //         (address1) => setAddress1(address1),
+    //         (address2) => setAddress2(address2),
+    //     )
+    // }, [postalCode]);
 
     // Chuẩn bị item để gửi lên API tính toán
     const postItems = cartItems.map((item) => (
@@ -129,9 +124,7 @@ const CheckOutScreen = ({ params }) => {
         if (!address1.trim()) newErrors.address1 = "Vui lòng nhập địa chỉ";
         if (!address2.trim()) newErrors.address2 = "Vui lòng nhập địa chỉ";
         if (!address3.trim()) newErrors.address3 = "Vui lòng nhập địa chỉ";
-
-        console.log(newErrors);
-
+        
         if (Object.keys(newErrors).length > 0) {
             setErrors(newErrors);
 
@@ -160,7 +153,7 @@ const CheckOutScreen = ({ params }) => {
         // Kiểm tra các INPUT cần
         const isValidateInput = validateAndFocus();
 
-        let result;
+
         if (isValidateInput) {
             try {
                 showFullLoading(true);
@@ -238,108 +231,18 @@ const CheckOutScreen = ({ params }) => {
 
                 {/* Thông tin giao hàng */}
                 <Text style={styles.cCOTitle}>Thông tin giao hàng</Text>
-                <View style={{ flexDirection: 'row' }}>
-                    <TextInput mode="flat" underlineColor="transparent"
-                        label="Họ"
-                        value={firstName}
-                        onChangeText={setFirstName}
-                        style={[styles.cCOInput, { width: '36%' }]}
-                        activeUnderlineColor="#00CC66"
-                    />
-                    <TextInput mode="flat" underlineColor="transparent"
-                        ref={inputRefs.lastName}
-                        error={!!errors.lastName}
-                        label="Tên đệm & tên"
-                        value={lastName}
-                        onChangeText={setLastName}
-                        right={<TextInput.Icon style={styles.cCOInputIcon} icon="card-account-details-outline" color="#AAAAAA" />}
-                        style={[styles.cCOInput, commonStyles.mLeft10, commonStyles.flex1]}
-                        activeUnderlineColor="#00CC66"
-                    />
-                </View>
-                {/* Mã bưu điện */}
-                <TextInput mode="flat" underlineColor="transparent"
-                    keyboardType="numeric"
-                    ref={inputRefs.postalCode}
-                    error={!!errors.postalCode}
-                    label="Mã bưu điện - 郵便番号 (vd:1235678)"
-                    value={postalCode}
-                    onChangeText={(text) => setPostalCode(text.replace(/[^0-9]/g, ''))}
-                    right={<TextInput.Icon style={styles.cCOInputIcon} icon="office-building-marker-outline" color="#AAAAAA" />}
-                    style={styles.cCOInput}
-                    activeUnderlineColor="#00CC66"
-                    maxLength={7}
-                />
-                {/* Tỉnh - 都道府県 */}
-                <TextInput mode="flat" underlineColor="transparent"
-                    ref={inputRefs.address1}
-                    error={!!errors.address1}
-                    label="Tỉnh - 都道府県"
-                    value={address1}
-                    onChangeText={setAddress1}
-                    right={<TextInput.Icon style={styles.cCOInputIcon} icon="map-marker-outline" color="#AAAAAA" />}
-                    style={styles.cCOInput}
-                    activeUnderlineColor="#00CC66"
-                />
-                {/* Thành phố/khu vực - 市区町村 */}
-                <TextInput mode="flat" underlineColor="transparent"
-                    ref={inputRefs.address2}
-                    error={!!errors.address2}
-                    label="Thành phố/khu vực - 市区町村"
-                    value={address2}
-                    onChangeText={setAddress2}
-                    right={<TextInput.Icon style={styles.cCOInputIcon} icon="map-marker-outline" color="#AAAAAA" />}
-                    style={styles.cCOInput}
-                    activeUnderlineColor="#00CC66"
-                />
-                {/* Địa chỉ cụ thể - 番地・建物名・部屋番号 */}
-                <TextInput mode="flat" underlineColor="transparent"
-                    ref={inputRefs.address3}
-                    error={!!errors.address3}
-                    label="Địa chỉ cụ thể - 番地・建物名・部屋番号"
-                    value={address3}
-                    onChangeText={setAddress3}
-                    right={<TextInput.Icon style={styles.cCOInputIcon} icon="map-marker-outline" color="#AAAAAA" />}
-                    style={styles.cCOInput}
-                    activeUnderlineColor="#00CC66"
-
-                    onFocus={() => setIsGuideShow(true)}
-                    onBlur={() => setIsGuideShow(false)}
-                />
-                {/* Hướng dẫn */}
-                {isGuideShow &&
-                    <Text style={styles.cCOGuideText}>Lưu ý: Nhập cụ thể BANCHI, tên toà nhà và số phòng nếu có (vd: 地数 18-2 マンショウ 101号)</Text>
-                }
-                {/* Số điện thoại */}
-                <TextInput mode="flat" underlineColor="transparent"
-                    label="Số điện thoại (nếu có)"
-                    keyboardType="phone-pad"
-                    value={phone}
-                    onChangeText={setPhone}
-                    right={<TextInput.Icon style={styles.cCOInputIcon} icon="cellphone" color="#AAAAAA" />}
-                    style={styles.cCOInput}
-                    activeUnderlineColor="#00CC66"
-                />
-                {/* Thời gian nhận hàng */}
-                <View style={{ marginBottom: 10 }}>
-                    <Dropdown
-                        label="Thời gian nhận hàng"
-                        placeholder="Thời gian nhận hàng"
-                        options={DELIVERY_TIME}
-                        value={deliveryTime}
-                        onSelect={setDeliveryTime}
-                        mode="outlined"
-                    />
-                </View>
-                {/* Lời nhắn */}
-                <TextInput underlineColor="transparent"
-                    label="Lời nhắn"
-                    value={message}
-                    onChangeText={setMessage}
-                    multiline={true}
-                    mode="outlined"
-                    style={styles.cCOMessInput}
-                    activeOutlineColor="#00CC66"
+                <ShippingInfo
+                    firstName={firstName} setFirstName={setFirstName}
+                    lastName={lastName} setLastName={setLastName}
+                    postalCode={postalCode} setPostalCode={setPostalCode}
+                    address1={address1} setAddress1={setAddress1}
+                    address2={address2} setAddress2={setAddress2}
+                    address3={address3} setAddress3={setAddress3}
+                    phone={phone} setPhone={setPhone}
+                    deliveryTime={deliveryTime} setDeliveryTime={setDeliveryTime}
+                    message={message} setMessage={setMessage}
+                    inputRefs={inputRefs}
+                    errors={errors}
                 />
 
                 {/* Hình thức thanh toán */}

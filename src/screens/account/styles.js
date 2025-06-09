@@ -64,6 +64,14 @@ const styles = StyleSheet.create({
         color: '#007BFF',
         marginLeft: 5,
         fontWeight: 'bold',
+    },
+    cShipTitle: {
+        fontSize: 22,
+        fontWeight: 'bold',
+        marginVertical: 10,
+    },
+    cRPLabel: {
+        marginBottom: 20
     }
 })
 

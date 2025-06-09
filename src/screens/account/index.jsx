@@ -6,10 +6,11 @@ import { Button, Icon, TouchableRipple } from 'react-native-paper';
 import { useNavigation } from '@react-navigation/native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useRootContext } from '../../hooks/rootcontext';
+import { useDialog } from '../../hooks/dialogcontext';
 
 const AccountScreen = () => {
     const navigation = useNavigation();
-
+    const { showDialog } = useDialog();
     const { auth, user } = useRootContext();
 
     const accList = [
@@ -19,9 +20,30 @@ const AccountScreen = () => {
                 navigation.navigate('Recents');
             }
         },
-        { id: 2, name: 'Địa chỉ', subTitle: 'Địa chỉ để nhận hàng', icon: 'map-marker-outline' },
-        { id: 3, name: 'Tích điểm', subTitle: 'Tích điểm cho mỗi đơn hàng', icon: 'star-four-points-outline' },
-        { id: 4, name: 'Voucher', subTitle: 'Tiết kiệm nhiều hơn với mã giảm giá', icon: 'ticket-percent-outline' },
+        {
+            id: 2, name: 'Địa chỉ', subTitle: 'Địa chỉ để nhận hàng', icon: 'map-marker-outline',
+            onPress: () => {
+                auth ?
+                    navigation.navigate('ShipAddress')
+                    :
+                    showDialog({
+                        type: 'confirm',
+                        message: 'Bạn cần đăng nhâp/đăng ký thể thêm địa chỉ?',
+                        onConfirm: () => navigation.navigate('RegisterLogin'),
+                        ok: 'Đăng nhập/đăng ký',
+                    });
+            }
+        },
+        { id: 3, name: 'Tích điểm', subTitle: 'Tích điểm cho mỗi đơn hàng', icon: 'star-four-points-outline',
+            onPress: () => {
+                
+            }
+         },
+        { id: 4, name: 'Voucher', subTitle: 'Tiết kiệm nhiều hơn với mã giảm giá', icon: 'ticket-percent-outline',
+            onPress: () => {
+                navigation.navigate('Voucher');
+            }
+         },
         { id: 5, name: 'Điều khoản sử dụng', subTitle: 'Chính sách sử sụng dịch vụ', icon: 'shield-account-outline' },
         { id: 6, name: 'Liên hệ', subTitle: 'Liên hệ trực tiếp với chúng tôi', icon: 'chat-outline' },
         { id: 7, name: 'Fanpage', subTitle: 'Ghé thăm fanpage chính thức', icon: 'facebook' },

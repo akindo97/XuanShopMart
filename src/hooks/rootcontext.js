@@ -15,19 +15,18 @@ export const RootProvider = ({ children }) => {
   // State kiểm tra đăng nhập
   const [auth, setAuth] = useState(false);
 
-  // State lưu thông tin user và token
+  // State lưu thông tin user, address và token
   const [user, setUser] = useState(null);
   const [token, setToken] = useState(null);
+  const [address, setAddress] = useState(null);
   const [authLoading, setAuthLoading] = useState(true); // State kiểm tra trạng thái loading khi xác thực
 
   // Khi app mở lại, load thông tin từ AsyncStorage và kiểm tra đăng nhập
   useEffect(() => {
     const loadStorage = async () => {
       // Lấy user và token từ AsyncStorage
-      const storedUser = await AsyncStorage.getItem('auth_user');
       const storedToken = await AsyncStorage.getItem('auth_token');
       if (storedToken) {
-        setUser(JSON.parse(storedUser));
         setToken(storedToken);
 
         // Gọi API kiểm tra token hợp lệ
@@ -37,10 +36,11 @@ export const RootProvider = ({ children }) => {
               Authorization: `Bearer ${storedToken}`
             },
           });
-          console.log(res);
-          const { user } = res;
+          
+          const { user, address } = res;
           setAuth(true);
           setUser(user);
+          setAddress(address);
         } catch (err) {
           console.log(err.message || 'Đã có lỗi xảy ra');
         } finally {
@@ -56,22 +56,22 @@ export const RootProvider = ({ children }) => {
 
   // Hàm lưu thông tin user và token vào AsyncStorage
   const setUserInfo = async (info) => {
-    const { token, user } = info;
+    const { token, user, address } = info;
     setAuth(true);
     setUser(user);
+    setAddress(address);
     setToken(token);
-
-    await AsyncStorage.setItem('auth_user', JSON.stringify(user));
+    
     await AsyncStorage.setItem('auth_token', token);
   }
 
   // Logout
   const logoutAccount = async () => {
-    await AsyncStorage.removeItem('auth_user');
     await AsyncStorage.removeItem('auth_token');
 
     setAuth(false);
     setUser(null);
+    setAddress(null);
     setToken(null);
   }
 
@@ -79,8 +79,8 @@ export const RootProvider = ({ children }) => {
   return (
     <RootContext.Provider value={{
       deviceId, category, setCategory,
-      setUserInfo, setUser, logoutAccount,
-      user, token, auth, authLoading
+      setUserInfo, setUser, setAddress, logoutAccount,
+      user, address, token, auth, authLoading
     }}>
       {children}
     </RootContext.Provider>

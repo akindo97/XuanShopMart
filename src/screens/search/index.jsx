@@ -98,7 +98,7 @@ const SearchScreen = () => {
                     <Text style={{ backgroundColor: '#ffffff', marginBottom: 10, padding: 10, fontSize: 16, fontWeight: 'bold' }} >
                         Kết quả tìm kiếm
                     </Text>
-                    <View style={{ backgroundColor: '#ffffff' }}>
+                    <View style={{ backgroundColor: '#ffffff', paddingBottom: 60 }}>
                         <HorizontalList products={products} isHorizontal={false} />
                     </View>
                 </View>

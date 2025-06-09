@@ -9,10 +9,11 @@ import { useNavigation } from '@react-navigation/native';
 import { showMessage } from 'react-native-flash-message';
 import { FullLoading } from '../../components/loading';
 import { useDialog } from '../../hooks/dialogcontext';
+import { isEmail } from '../../utils/utils';
 
 const RegisterLoginScreen = ({ route }) => {
     const navigation = useNavigation();
-    const { showDialog } = useDialog();
+    const { showDialog, showFullLoading } = useDialog();
 
     // Nếu có tham số isLoginScreen thì sử dụng, nếu không thì mặc định là true (đăng nhập)
     const isLoginScreen = route.params?.isLoginScreen ?? true;
@@ -20,7 +21,7 @@ const RegisterLoginScreen = ({ route }) => {
     // Trạng thái loading
     const [loading, setLoading] = useState(false);
 
-    // 
+    // Lấy ID thiết bị
     const { deviceId, setUserInfo } = useRootContext();
 
     // State phân biệt đăng nhập và đăng ký
@@ -41,11 +42,22 @@ const RegisterLoginScreen = ({ route }) => {
     const [lastName, setLastName] = useState("");
     // Số điện thoại
     const [phone, setPhone] = useState("");
+    // Lỗi
+    const [error, setError] = useState("");
 
     // Hàm đăng nhập
     const loginApi = async () => {
+        if (!email || !isEmail(email)) {
+            setError("Email chưa đúng hoặc chưa nhập.");
+            return;
+        }
+        if (!password || password.length < 6) {
+            setError("Mật khẩu phải có trên 6 ký tự");
+            return;
+        }
         setLoading(true);
         try {
+            setError("");
             const res = await apiRequest('/login', {
                 method: 'POST',
                 data: {
@@ -54,10 +66,10 @@ const RegisterLoginScreen = ({ route }) => {
                     password: password
                 }
             });
-            console.log(res);
-            const { token, user } = res;
+            const { token, user, address } = res;
             setUserInfo({
                 user: user,
+                address: address,
                 token: token
             });
 
@@ -74,7 +86,7 @@ const RegisterLoginScreen = ({ route }) => {
                 goHome('Đăng nhập thành công');
             }
         } catch (err) {
-            console.log(err.message || 'Đã có lỗi xảy ra');
+            setError(err.message || 'Đã có lỗi xảy ra');
         } finally {
             setLoading(false);
         }
@@ -82,7 +94,25 @@ const RegisterLoginScreen = ({ route }) => {
 
     // Hàm đăng ký
     const registerApi = async () => {
+        if (!email || !isEmail(email)) {
+            setError("Email chưa đúng hoặc chưa nhập.");
+            return;
+        }
+        if (!password || !rePassword || (password !== rePassword)) {
+            setError("Hãy kiểm tra lại mật khẩu.");
+            return;
+        }
+        if (password.length < 6) {
+            setError("Mật khẩu phải có trên 6 ký tự.");
+            return;
+        }
+        if (!lastName) {
+            setError("Chưa nhập tên của bạn.");
+            return;
+        }
+
         setLoading(true);
+        setError("");
         try {
             const res = await apiRequest('/register', {
                 method: 'POST',
@@ -115,7 +145,7 @@ const RegisterLoginScreen = ({ route }) => {
             }
 
         } catch (err) {
-            console.log(err.message || 'Đã có lỗi xảy ra');
+            setError(err.message || 'Đã có lỗi xảy ra');
         } finally {
             setLoading(false);
         }
@@ -132,7 +162,7 @@ const RegisterLoginScreen = ({ route }) => {
 
     // Hàm đồng bộ đơn hàng nếu có
     const assignOrder = async (token) => {
-        setLoading(true);
+        showFullLoading(true);
         try {
             const res = await apiRequest('/assign-order', {
                 method: 'POST',
@@ -150,9 +180,9 @@ const RegisterLoginScreen = ({ route }) => {
                 type: 'info'
             })
         } catch (err) {
-            console.log(err.message || 'Đã có lỗi xảy ra');
+            setError(err.message || 'Đã có lỗi xảy ra');
         } finally {
-            setLoading(false);
+            showFullLoading(false);
         }
     }
 
@@ -160,7 +190,6 @@ const RegisterLoginScreen = ({ route }) => {
         <ScrollView
             contentContainerStyle={{ flexGrow: 1 }}
             keyboardShouldPersistTaps="handled">
-            {loading ? <FullLoading /> : null}
             <KeyboardAvoidingView
                 behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
                 style={[commonStyles.bgrColor, styles.cRLContainer]}>
@@ -175,6 +204,9 @@ const RegisterLoginScreen = ({ route }) => {
                         <Icon size={86}
                             source={require('../../../assets/icons/logoxshrv.png')} />
                     </View>
+                    <Text style={{ color: 'red', fontWeight: 'bold', alignSelf: 'flex-start' }}>
+                        {error}
+                    </Text>
                     <View style={{ width: '100%', paddingVertical: 10 }}>
                         {/* vùng đăng nhập */}
                         <View>
@@ -201,7 +233,9 @@ const RegisterLoginScreen = ({ route }) => {
                         {
                             isLogin &&
                             (<View style={styles.xRLForgotBlock}>
-                                <TouchableRipple onPress={() => console.log("Quên mật khẩu")}>
+                                <TouchableRipple onPress={() =>
+                                    navigation.navigate("ResetPassword")
+                                }>
                                     <Text style={styles.xRLForgot}>
                                         Quên mật khẩu?
                                     </Text>
@@ -254,6 +288,8 @@ const RegisterLoginScreen = ({ route }) => {
                                 // nếu là đăng nhập thì hiển thị nút đăng nhập và đăng ký
                                 (<View>
                                     <Button mode="contained" style={[commonStyles.buttonColor, styles.cRLButton]}
+                                        loading={loading}
+                                        disabled={loading}
                                         onPress={loginApi}>
                                         Đăng nhập
                                     </Button>
@@ -272,6 +308,8 @@ const RegisterLoginScreen = ({ route }) => {
                                 // nếu là đăng ký thì hiển thị nút đăng ký và đăng nhập
                                 (<View>
                                     <Button mode="contained" style={[commonStyles.buttonColor, styles.cRLButton]}
+                                        loading={loading}
+                                        disabled={loading}
                                         onPress={registerApi}>
                                         Đăng ký
                                     </Button>

@@ -64,7 +64,7 @@ export const DialogProvider = ({ children }) => {
                         {
                             // hiển thị nút OK nếu là alert
                             content.type === 'alert' &&
-                            <Button onPress={hideDialog}>OK</Button>
+                            <Button onPress={confirmBtn}>OK</Button>
                         }
 
                     </Dialog.Actions>
