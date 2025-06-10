@@ -10,6 +10,7 @@ import QuantitySelect from '../../components/quantityselect';
 import { useCartUI } from '../../hooks/useCartOverlay';
 import { useDialog } from '../../hooks/dialogcontext';
 import { MAX_WEIGHT } from '../../config/config';
+import MessengerButton from '../../components/fbmessenger';
 
 const CartScreen = () => {
     const navigation = useNavigation();
@@ -146,6 +147,8 @@ const CartScreen = () => {
                                 onPress={() => navigation.navigate('Home')}>
                                 Shop now
                             </Button>
+                            {/* Messenger button */}
+                            <MessengerButton />
                         </>
                 }
             </View >

@@ -7,6 +7,7 @@ import { XproductCatalog } from '../../utils/fakeapi';
 import commonStyles from '../../utils/commonstyles';
 import HorizontalList from '../../components/horizontallist';
 import { useRootContext } from '../../hooks/rootcontext';
+import MessengerButton from '../../components/fbmessenger';
 
 const StoreScreen = ({ route }) => {
     const categoryId = route?.params?.categoryId ?? 0;
@@ -98,6 +99,8 @@ const StoreScreen = ({ route }) => {
                     />
                 </View>
             </View>
+            {/* Messenger button */}
+            <MessengerButton />
         </>
     )
 }

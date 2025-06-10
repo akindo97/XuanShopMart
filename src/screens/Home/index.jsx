@@ -9,6 +9,7 @@ import commonStyles from '../../utils/commonstyles';
 import { apiRequest } from '../../api';
 import { useRootContext } from '../../hooks/rootcontext';
 import { Loading } from '../../components/loading';
+import MessengerButton from '../../components/fbmessenger';
 
 const HomeScreens = () => {
     const navigation = useNavigation();
@@ -90,6 +91,8 @@ const HomeScreens = () => {
 
                 )}
             />
+            {/* Messenger button */}
+            <MessengerButton />
         </>
     );
 }

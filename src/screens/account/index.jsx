@@ -7,6 +7,7 @@ import { useNavigation } from '@react-navigation/native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useRootContext } from '../../hooks/rootcontext';
 import { useDialog } from '../../hooks/dialogcontext';
+import { openMessenger, openFanpage } from '../../components/fbmessenger';
 
 const AccountScreen = () => {
     const navigation = useNavigation();
@@ -34,19 +35,26 @@ const AccountScreen = () => {
                     });
             }
         },
-        { id: 3, name: 'Tích điểm', subTitle: 'Tích điểm cho mỗi đơn hàng', icon: 'star-four-points-outline',
+        {
+            id: 3, name: 'Tích điểm', subTitle: 'Tích điểm cho mỗi đơn hàng', icon: 'star-four-points-outline',
             onPress: () => {
-                
+                console.log('Tích điểm');
             }
-         },
-        { id: 4, name: 'Voucher', subTitle: 'Tiết kiệm nhiều hơn với mã giảm giá', icon: 'ticket-percent-outline',
+        },
+        {
+            id: 4, name: 'Voucher', subTitle: 'Tiết kiệm nhiều hơn với mã giảm giá', icon: 'ticket-percent-outline',
             onPress: () => {
                 navigation.navigate('Voucher');
             }
-         },
+        },
         { id: 5, name: 'Điều khoản sử dụng', subTitle: 'Chính sách sử sụng dịch vụ', icon: 'shield-account-outline' },
-        { id: 6, name: 'Liên hệ', subTitle: 'Liên hệ trực tiếp với chúng tôi', icon: 'chat-outline' },
-        { id: 7, name: 'Fanpage', subTitle: 'Ghé thăm fanpage chính thức', icon: 'facebook' },
+        {
+            id: 6, name: 'Liên hệ', subTitle: 'Liên hệ trực tiếp với chúng tôi', icon: 'chat-outline',
+            onPress: () => openMessenger()
+        },
+        { id: 7, name: 'Fanpage', subTitle: 'Ghé thăm fanpage chính thức', icon: 'facebook',
+            onPress:  () => openFanpage()
+         },
     ];
 
     return (

@@ -1,12 +1,15 @@
 // URL API
-// export const BASE_URL = 'https://api.xuanshopvietnhatmart.com/api'; // Product
-export const BASE_URL = 'https://6a7b-240b-c020-4d6-252d-a587-c922-adc9-6d63.ngrok-free.app/api'; // Test
+export const BASE_URL = 'https://api.xuanshopvietnhatmart.com/api'; // Product
+// export const BASE_URL = 'https://6a7b-240b-c020-4d6-252d-a587-c922-adc9-6d63.ngrok-free.app/api'; // Test
 
 // Số lượng item hiển thị khi tạo list ngang
 export const MAX_ITEM = 10;
 
 // Tổng cân nặng có thể vận chuyển
 export const MAX_WEIGHT = 24.5;
+
+// ID messenger FB
+export const FB_ID = '118002461221056';
 
 // Thời gian nhận hàng
 export const DELIVERY_TIME = [
