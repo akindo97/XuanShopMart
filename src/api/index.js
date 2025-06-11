@@ -7,8 +7,6 @@ export async function apiRequest(endpoint, options = {}) {
     const { method = 'GET', data, headers = {} } = options;
 
     try {
-        const token = await AsyncStorage.getItem('token');
-
         const fetchOptions = {
             method,
             headers: {
@@ -16,7 +14,7 @@ export async function apiRequest(endpoint, options = {}) {
                 Accept: 'application/json',
                 'X-Requested-With': 'XMLHttpRequest',
                 ...headers,
-                ...(token ? { Authorization: `Bearer ${token}` } : {}),
+                // ...(auth && token ? { Authorization: `Bearer ${token}` } : {}),
             },
         };
 

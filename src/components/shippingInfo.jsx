@@ -136,6 +136,7 @@ const ShippingInfo = ({
                     mode="outlined"
                     style={styles.cCOMessInput}
                     activeOutlineColor="#00CC66"
+                    maxLength={255}
                 /> : null
             }
         </>
