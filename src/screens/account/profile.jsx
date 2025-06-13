@@ -153,6 +153,7 @@ export default function ProfileScreen() {
                     right={<TextInput.Icon icon="email" color="#AAAAAA" />}
                     style={styles.cRLInput}
                     activeUnderlineColor="#00CC66"
+                    disabled
                 />
 
                 <View style={{ flexDirection: 'row' }}>
