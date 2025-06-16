@@ -2,7 +2,7 @@ import { StyleSheet, Dimensions } from 'react-native';
 
 // tính toán kích thước của item dựa trên chiều rộng
 const screenWidth = Dimensions.get('window').width;
-const itemWidth = screenWidth / 5;
+const itemWidth = screenWidth / 4;
 
 export default StyleSheet.create({
     listContainer: {
@@ -20,7 +20,7 @@ export default StyleSheet.create({
         width: itemWidth,
         alignItems: 'center',
         justifyContent: 'center',
-        marginVertical: 8,
+        paddingVertical: 6,
         overflow: 'hidden',
     },
     card: {
@@ -32,13 +32,14 @@ export default StyleSheet.create({
         backgroundColor: '#f5f5f5',
     },
     icon: {
-        width: "100%",
-        height: "100%",
+        width: "96%",
+        height: "96%",
+        borderRadius: 10,
         resizeMode: 'contain',
     },
     text: {
         fontSize: 12,
-        marginTop: 10,
+        marginTop: 6,
         textAlign: 'center',
     },
     cCatBlock: {

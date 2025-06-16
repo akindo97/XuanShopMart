@@ -2,6 +2,9 @@
 export const BASE_URL = 'https://api.xuanshopvietnhatmart.com/api'; // Product
 // export const BASE_URL = 'https://6a7b-240b-c020-4d6-252d-a587-c922-adc9-6d63.ngrok-free.app/api'; // Test
 
+// URL ảnh
+export const IMAGE_URL = 'https://api.xuanshopvietnhatmart.com'; // Product
+
 // Số lượng item hiển thị khi tạo list ngang
 export const MAX_ITEM = 10;
 
@@ -9,7 +12,7 @@ export const MAX_ITEM = 10;
 export const MAX_WEIGHT = 24.5;
 
 // ID messenger FB
-export const FB_ID = '118002461221056';
+export const FB_ID = '449307281591006';
 
 // Thời gian nhận hàng
 export const DELIVERY_TIME = [

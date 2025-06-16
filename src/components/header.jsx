@@ -2,9 +2,9 @@ import { View, Text, StyleSheet } from 'react-native';
 import { Appbar, Searchbar, Avatar, useTheme, Icon } from 'react-native-paper';
 import { useNavigation } from '@react-navigation/native';
 
-import { apiRequest } from '../api';
+import logo from '../../assets/icons/xslogo.jpg';
 
-const Header = ({ searchQuery, setSearchQuery, title }) => {
+const Header = ({ title }) => {
   const navigation = useNavigation();
 
   return (
@@ -17,10 +17,12 @@ const Header = ({ searchQuery, setSearchQuery, title }) => {
         <>
           {/* Logo bên trái */}
           <View style={styles.cHeaLogo}>
-            <Icon
-              size={58}
-              source={require('../../assets/icons/logoxshrv.png')} // Thay bằng logo thật
-            />
+            <View style={styles.cHeaLogoIcon}>
+              <Icon
+                size={36}
+                source={logo}
+              />
+            </View>
           </View>
 
           {/* Thanh tìm kiếm */}
@@ -65,6 +67,12 @@ const styles = StyleSheet.create({
   cHeaLogo: {
     paddingLeft: 8,
     backgroundColor: 'transparent',
+  },
+  cHeaLogoIcon: {
+    borderRadius: 10,
+    overflow: 'hidden',
+    borderWidth: 1,
+    borderColor: '#ccc'
   },
   cHeaSearchCtn: {
     flex: 1,

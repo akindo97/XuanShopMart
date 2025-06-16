@@ -4,7 +4,7 @@ import { Text, FlatList, TouchableOpacity, StyleSheet, View } from 'react-native
 import { Card, Icon } from 'react-native-paper';
 import { useCartUI } from '../hooks/useCartOverlay';
 import { useNavigation } from '@react-navigation/native';
-import { fToYen } from '../utils/utils';
+import { fToYen, shuffleArray } from '../utils/utils';
 import commonStyles from '../utils/commonstyles';
 import { MAX_ITEM } from '../config/config';
 
@@ -22,16 +22,16 @@ const HorizontalList = (props) => {
     const isHorizontal = props.isHorizontal ?? true; // mặc định là hiển thị ngang
 
     // Nếu isHorizontal === true thì lấy tối đa 8 item + thêm item "xem thêm"
-    let renderList;
+    let renderList = shuffleArray(products); // Xáo trộn
     if (isHorizontal) {
-        renderList = products.slice(0, MAX_ITEM);
+        renderList = renderList.slice(0, MAX_ITEM);
         // thêm item "Xem thêm" vào cuối danh sách
         renderList.push({
             isSeeMore: true,
             id: -1
         });
     } else {
-        renderList = products;
+        // renderList = products;
     }
 
     // danh mục chi tiết

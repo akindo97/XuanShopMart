@@ -63,3 +63,13 @@ export const formatDate = (timestamp, withTime = false) => {
 export const toMySQLDate = (dateObj) => {
   return dateObj.toISOString().slice(0, 10);
 };
+
+// Xáo trộn mảng
+export const shuffleArray = (array) => {
+  const result = [...array]; // sao chép để không làm thay đổi mảng gốc
+  for (let i = result.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [result[i], result[j]] = [result[j], result[i]]; // hoán đổi
+  }
+  return result;
+}

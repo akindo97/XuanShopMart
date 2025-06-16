@@ -24,7 +24,7 @@ const CheckOutScreen = ({ params }) => {
     const { cartItems, clearCart } = useCartUI();
 
     // Thông tin tính toán nhận được từ API
-    const [calculate, setCalculate] = useState([]);
+    const [calculate, setCalculate] = useState({});
 
     // E-mail
     const [email, setEmail] = useState(user?.email ?? "");
@@ -180,7 +180,7 @@ const CheckOutScreen = ({ params }) => {
                     }
                 });
                 console.log(res);
-                result = res.data;
+                const result = res.data;
                 // Xóa toàn bộ sản phẩm nếu đặt hàng thành công
                 clearCart();
                 // Sang trang báo thành công

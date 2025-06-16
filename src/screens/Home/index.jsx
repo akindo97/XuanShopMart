@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Text, Image, View, FlatList, TouchableOpacity } from 'react-native';
+import { Text, Image, View, FlatList, TouchableOpacity, ScrollView } from 'react-native';
 import { TouchableRipple, Surface, Icon, ActivityIndicator } from 'react-native-paper';
 import Header from '../../components/header';
 import { useNavigation } from '@react-navigation/native';
@@ -10,6 +10,7 @@ import { apiRequest } from '../../api';
 import { useRootContext } from '../../hooks/rootcontext';
 import { Loading } from '../../components/loading';
 import MessengerButton from '../../components/fbmessenger';
+import { IMAGE_URL } from '../../config/config';
 
 const HomeScreens = () => {
     const navigation = useNavigation();
@@ -40,7 +41,7 @@ const HomeScreens = () => {
         <TouchableRipple onPress={() => navigation.navigate('Store', { categoryId: item.id })}>
             <View style={styles.item}>
                 <Surface style={styles.card} elevation={2}>
-                    <Image source={{ uri: item.thumbnail_url }} style={styles.icon} />
+                    <Image source={{ uri: `${IMAGE_URL}/${item.thumbnail_url}`}} style={styles.icon} />
                 </Surface>
                 <Text style={styles.text}>{item.name}</Text>
             </View>
@@ -64,7 +65,7 @@ const HomeScreens = () => {
                         data={category}
                         renderItem={catalogItem}
                         keyExtractor={(item, index) => 'cat' + index}
-                        numColumns={5}
+                        numColumns={4}
                         contentContainerStyle={styles.listContainer}
                     />
                 }
