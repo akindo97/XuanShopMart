@@ -1,5 +1,5 @@
 
-import React, { useState } from 'react';
+import React, { useState, memo } from 'react';
 import { Text, FlatList, TouchableOpacity, StyleSheet, View } from 'react-native';
 import { Card, Icon } from 'react-native-paper';
 import { useCartUI } from '../hooks/useCartOverlay';
@@ -7,22 +7,23 @@ import { useNavigation } from '@react-navigation/native';
 import { fToYen, shuffleArray } from '../utils/utils';
 import commonStyles from '../utils/commonstyles';
 import { MAX_ITEM } from '../config/config';
+import { AddToCartButton } from './addtocart';
 
 const HorizontalList = (props) => {
-    // console.log('props', props);
-    /////// hãy check các props //////
+    // Có random hay khôgn
+    const random = props?.random ?? true;
     // Các sản phẩm trong danh mục
     const products = props?.products ?? [];
 
     // sử dụng hook để lấy hàm show từ useCartUI
-    const { addToCartShow } = useCartUI();
+    const { addToCartShow, selectId, setSelectId } = useCartUI();
     const navigation = useNavigation();
 
     // kiểm tra xem có truyền thuộc tính isHorizontal không, nếu không thì mặc định là true
     const isHorizontal = props.isHorizontal ?? true; // mặc định là hiển thị ngang
 
     // Nếu isHorizontal === true thì lấy tối đa 8 item + thêm item "xem thêm"
-    let renderList = shuffleArray(products); // Xáo trộn
+    let renderList = random ? shuffleArray(products) : products; // Xáo trộn
     if (isHorizontal) {
         renderList = renderList.slice(0, MAX_ITEM);
         // thêm item "Xem thêm" vào cuối danh sách
@@ -60,10 +61,13 @@ const HorizontalList = (props) => {
                 }}>
                 {/* Nếu hết hàng thì không cho phép thêm vào giỏ hàng */}
                 {item.is_active ?
-                    <TouchableOpacity style={styles.cCatPlus}
-                        onPress={() => addToCartShow(item)}>
-                        <Icon source="cart-plus" size={25} color='#FFF' />
-                    </TouchableOpacity>
+                    // <TouchableOpacity style={styles.cCatPlus}
+                    //     onPress={() => addToCartShow(item)}>
+                    //     <Icon source="cart-plus" size={25} color='#FFF' />
+                    // </TouchableOpacity>
+                    <View style={styles.cCatPlus}>
+                        <AddToCartButton id={item.id} />
+                    </View>
                     :
                     <Text style={styles.cCatOut}>Hết hàng</Text>
                 }
@@ -131,11 +135,12 @@ const styles = StyleSheet.create({
     },
     cCatPlus: {
         position: 'absolute',
-        end: 0,
+        end: 3,
+        top: 3,
         zIndex: 1,
-        borderRadius: 12,
-        backgroundColor: '#00CC66ff',
-        padding: 3,
+        // borderRadius: 12,
+        // backgroundColor: '#00CC66ff',
+        // padding: 3,
     },
     cCatOut: {
         position: 'absolute',
@@ -190,4 +195,4 @@ const styles = StyleSheet.create({
     }
 })
 
-export default HorizontalList;
+export default memo(HorizontalList);

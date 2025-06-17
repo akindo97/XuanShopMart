@@ -62,5 +62,30 @@ export default StyleSheet.create({
     },
     fwbold: {
         fontWeight: 'bold'
-    }
+    },
+    cBannerBlock: {
+        position: 'relative',
+        marginBottom: 10,
+        backgroundColor: '#fff',
+        padding: 10,
+    },
+    cBannerImage: {
+        borderRadius: 10,
+    },
+    dotContainer: {
+        position: 'absolute',
+        start: 0,
+        end: 0,
+        bottom: 16,
+        flexDirection: 'row',
+        justifyContent: 'center',
+
+    },
+    dot: {
+        height: 8,
+        width: 8,
+        borderRadius: 4,
+        backgroundColor: '#333',
+        marginHorizontal: 5,
+    },
 });

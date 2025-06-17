@@ -18,6 +18,7 @@ import ShipAddressScreen from './src/screens/account/shipaddress';
 import ResetPasswordScreen from './src/screens/account/resetpassword';
 import VoucherScreen from './src/screens/account/voucher';
 import FlashMessage from "react-native-flash-message";
+import { useEffect } from 'react';
 
 const Stack = createNativeStackNavigator();
 
@@ -72,9 +73,9 @@ export default function App() {
     <PaperProvider theme={theme}>
       <DialogProvider>
         <RootProvider>
-        <CartUIProvider>
-          <MainContent />
-        </CartUIProvider>
+          <CartUIProvider>
+            <MainContent />
+          </CartUIProvider>
         </RootProvider>
       </DialogProvider>
     </PaperProvider>

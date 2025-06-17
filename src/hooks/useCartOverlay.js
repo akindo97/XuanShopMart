@@ -22,6 +22,8 @@ export const CartUIProvider = ({ children }) => {
   const [getbonusPoint, setGetBonusPoint] = useState(0);
   // State để tổng cân nặng
   const [totalWeight, setTotalWeight] = useState(0);
+  // 
+  const [selectId, setSelectId] = useState(0);
 
   // Hàm hiển thị thông tin sản phẩm để thêm vào giỏ hàng
   const addToCartShow = (productDetail) => {
@@ -119,7 +121,8 @@ export const CartUIProvider = ({ children }) => {
     <CartUIContext.Provider value={{
       visible, productDetail, addToCartShow, addToCartHide,
       cartItems, totalQuantity, totalPrice, getbonusPoint, totalWeight,
-      setCartItems, addToCart, changeQuantity, removeFromCart, clearCart
+      setCartItems, addToCart, changeQuantity, removeFromCart, clearCart,
+      selectId, setSelectId
     }}>
       {children}
     </CartUIContext.Provider>

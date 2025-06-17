@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { View, Text, FlatList, Image, Dimensions, StyleSheet, TouchableOpacity } from 'react-native';
 import { Icon, Button } from 'react-native-paper';
 import { useCartUI } from '../../hooks/useCartOverlay';
@@ -7,17 +7,16 @@ import commonStyles from '../../utils/commonstyles';
 import { useNavigation } from '@react-navigation/native';
 import { fToYen } from '../../utils/utils';
 import { useRootContext } from '../../hooks/rootcontext';
+import { apiRequest } from '../../api';
+import { IMAGE_URL } from '../../config/config';
+import { Loading } from '../../components/loading';
+import noImage from '../../../assets/icons/picture.png';
 
 const { width } = Dimensions.get('window');
 
-const images = [
-    { id: '1', uri: 'https://cdn-media.sforum.vn/storage/app/media/anh-dep-16.jpg' },
-    { id: '2', uri: 'https://cdn-media.sforum.vn/storage/app/media/anh-dep-15.jpg' },
-    { id: '3', uri: 'https://cdn-media.sforum.vn/storage/app/media/anh-dep-14.jpg' },
-];
-
 export default function ProductScreen({ route }) {
     const navigation = useNavigation();
+    const [loading, setLoading] = useState(true);
 
     // lấy toàn bộ danh sách sản phẩm
     const { category } = useRootContext();
@@ -30,8 +29,45 @@ export default function ProductScreen({ route }) {
     // State để quản lý chỉ mục hiện tại của ảnh
     const [currentIndex, setCurrentIndex] = useState(0);
 
-    // lấy danh sách liên quan
-    const relatedProducts = category.find((item) => item.id === product.category_id);
+    // Danh sách liên quan
+    const [relatedProducts, setRelatedProducts] = useState([]);
+
+    // State lưu mô tả
+    const [description, setDescription] = useState();
+    // State lưu ảnh
+    const [productImages, setProductImages] = useState([]);
+
+    // Lấy mô tả và hình ảnh chi tiết sản phẩm từ api
+    useEffect(() => {
+        const productDetail = async () => {
+            try {
+                setLoading(true);
+                const res = await apiRequest('/product-detail', {
+                    method: 'POST',
+                    data: {
+                        id: product.id,
+                    },
+                });
+                const { data } = res;
+                console.log(data);
+                setDescription(data.description);
+                setProductImages(data.images);
+
+            } catch (err) {
+                console.log(err.message || 'Đã có lỗi xảy ra');
+            } finally {
+                setLoading(false);
+            }
+        }
+
+        productDetail();
+    }, []);
+
+    // Lấy danh sách liên quan
+    useState(() => {
+        const related = category.find((item) => item.id === product.category_id);
+        setRelatedProducts(related);
+    }, [])
 
     // Hàm xử lý sự kiện cuộn để cập nhật chỉ mục hiện tại
     const onScroll = (event) => {
@@ -41,38 +77,86 @@ export default function ProductScreen({ route }) {
 
     return (
         <View style={styles.container}>
-            <View>
-                <FlatList
-                    data={images}
-                    horizontal
-                    pagingEnabled
-                    showsHorizontalScrollIndicator={false}
-                    keyExtractor={(item) => item.id}
-                    renderItem={({ item }) => (
-                        <Image source={{ uri: item.uri }} style={styles.cProImage} />
-                    )}
-                    onScroll={onScroll}
-                    scrollEventThrottle={16}
-                />
+            <View style={styles.cProImageBlock}>
+                {loading ?
+                    <Loading text={''} top={60} />
+                    :
+                    productImages.length ? 
+                    <FlatList
+                        data={productImages}
+                        horizontal
+                        pagingEnabled
+                        showsHorizontalScrollIndicator={false}
+                        keyExtractor={(item) => item.id}
+                        renderItem={({ item }) => (
+                            <Image source={{ uri: `${IMAGE_URL}/${item.image_url}` }} style={styles.cProImage} />
+                        )}
+                        onScroll={onScroll}
+                        scrollEventThrottle={16}
+                    /> :
+                    <Image source={ noImage } style={styles.cProImage} />
+                }
+
                 <View style={styles.cProCounter}>
-                    <Text style={styles.cProCounText}>{currentIndex + 1}/{images.length}</Text>
+                    <Text style={styles.cProCounText}>{currentIndex + 1}/{productImages.length}</Text>
                 </View>
             </View>
             <View style={styles.CproDelBlock}>
                 <View style={styles.cProHov}>
                     <View style={{ flexDirection: 'row', alignItems: 'flex-end' }}>
-                        <Text style={styles.cProPrice}>￥{fToYen(product.price)}</Text>
-                        <Text style={[commonStyles.oldPrice, commonStyles.pLeft10]}>￥{fToYen(1200)}</Text>
-                        <Text style={styles.cProSale}>　|　Sale</Text>
+                        {/* Giá */}
+                        <Text style={styles.cProPrice}>
+                            ￥{fToYen(product.price)}
+                        </Text>
+                        {/* Giá gốc */}
+                        <Text style={[commonStyles.oldPrice, commonStyles.pLeft10]}>
+                            {product.old_price != 0 ? '￥' + fToYen(product.old_price) : null}
+                        </Text>
+                        {product.is_sale ?
+                            <Text style={styles.cProSale}>　|　Sale</Text> : null
+                        }
                     </View>
-                    <Text style={styles.cProStatus}>còn hàng</Text>
+                    {/* Còn hàng / hết hàng */}
+                    {
+                        product.is_active ?
+                            <Text style={[styles.cProStatus, styles.cInStock]}>còn hàng</Text>
+                            :
+                            <Text style={[styles.cProStatus, styles.cOutStock]}>Hết hàng</Text>
+
+                    }
                 </View>
-                <Text style={styles.cProName}>{product.name}</Text>
-                <Text style={styles.cProId}>ID: 12356</Text>
+                {/* Tên sản phẩm */}
+                <Text style={styles.cProName}>
+                    {product.name}
+                </Text>
+                {/* Mã sản phẩm */}
+                <Text style={styles.cProId}>
+                    ID: {product.sku}
+                </Text>
             </View>
-            <View style={styles.cProDesBlock}>
-                <Text style={styles.CProDesTit}>Mô tả</Text>
-                <Text>Sản phẩm này là 1 sản phẩm ngon siêu cấp vip pro</Text>
+            <View style={[styles.cProDesBlock, { minHeight: 100 }]}>
+                <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+                    <Text style={styles.CProDesTit}>Mô tả</Text>
+                    <Text style={{ fontWeight: 'bold', marginTop: 8 }}>
+                        {product.is_frozen ? 'Hàng đông lạnh' : null}
+                    </Text>
+                </View>
+
+                <View>
+                    {
+                        loading ?
+                            <Loading text={''} top={0} size={30} />
+                            :
+                            <Text>
+                                {
+                                    description ?
+                                        description
+                                        :
+                                        'Chưa cập nhật'
+                                }
+                            </Text>
+                    }
+                </View>
             </View>
 
             <View style={styles.cProDesBlock}>
@@ -150,9 +234,12 @@ const styles = StyleSheet.create({
     CproTopBlock: {
         backgroundColor: '#fff',
     },
+    cProImageBlock: {
+        height: 230
+    },
     cProImage: {
         width: width,
-        height: 300,
+        height: '100%',
         resizeMode: 'cover',
     },
     cProCounter: {
@@ -201,16 +288,23 @@ const styles = StyleSheet.create({
     },
     cProStatus: {
         fontSize: 13,
-        backgroundColor: '#00CC6699',
-        color: '#fff',
         alignSelf: 'flex-start',
         paddingHorizontal: 6,
         borderRadius: 7,
         padding: 2,
         marginTop: 6,
     },
+    cInStock: {
+        backgroundColor: '#00CC6699',
+        color: '#fff',
+    },
+    cOutStock: {
+        backgroundColor: '#66666699',
+        color: '#fff',
+    },
     cProId: {
-        fontSize: 12,
+        marginTop: 3,
+        fontSize: 10,
         color: '#666',
     },
     cProDesBlock: {
@@ -224,6 +318,9 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
     },
     cCatTitle: {
+        flexDirection: 'row',
+    },
+    cLoadCenter: {
         flexDirection: 'row',
     },
     cCatTitTex: {

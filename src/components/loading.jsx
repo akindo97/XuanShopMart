@@ -4,11 +4,12 @@ import { ActivityIndicator } from "react-native-paper";
 export const Loading = (props) => {
     const loadText = props?.text ?? "Đang tải dữ liệu...";
     const loadSize = props?.size ?? 80;
+    const loadTop = props?.top ?? 20;
 
     return (
-            <View style={{ justifyContent: 'center', alignItems: 'center', paddingTop: 100 }}>
+            <View style={{ justifyContent: 'center', alignItems: 'center', paddingTop: loadTop }}>
                 <ActivityIndicator size={loadSize} animating={true} color="#00CC66" />
-                <Text style={{marginTop: 20, fontSize: 16}}>{loadText}</Text>
+                <Text style={{fontSize: 16}}>{loadText}</Text>
             </View>
         );
 }
