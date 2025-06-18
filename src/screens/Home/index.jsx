@@ -11,6 +11,7 @@ import { useRootContext } from '../../hooks/rootcontext';
 import { Loading } from '../../components/loading';
 import MessengerButton from '../../components/fbmessenger';
 import { IMAGE_URL } from '../../config/config';
+import NotificationScreen from '../../components/pushnotification';
 
 const { width } = Dimensions.get('window');
 const images = [
@@ -97,7 +98,7 @@ const HomeScreens = () => {
     return (
         <>
             <Header />
-
+            {/* <NotificationScreen /> */}
             <FlatList
                 data={category}
                 keyExtractor={(item, index) => index.toString()}
