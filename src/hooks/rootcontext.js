@@ -1,17 +1,18 @@
 import React, { createContext, useState, useContext, useEffect } from 'react';
 import { apiRequest } from '../api';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import uuid from 'react-native-uuid';
 
 // Tạo context gốc
 const RootContext = createContext(null);
 
 // Provider cho context
 export const RootProvider = ({ children }) => {
-  const [deviceId, setDeviceId] = useState('999999999');
+  const [deviceId, setDeviceId] = useState(null);
 
   // State lưu danh mục sản phẩm
   const [category, setCategory] = useState([]);
-    // State lưu các banner image
+  // State lưu các banner image
   const [banner, setBanner] = useState([]);
 
   // State kiểm tra đăng nhập
@@ -38,7 +39,7 @@ export const RootProvider = ({ children }) => {
               Authorization: `Bearer ${storedToken}`
             },
           });
-          
+
           const { user, address } = res;
           setAuth(true);
           setUser(user);
@@ -63,7 +64,7 @@ export const RootProvider = ({ children }) => {
     setUser(user);
     setAddress(address);
     setToken(token);
-    
+
     await AsyncStorage.setItem('auth_token', token);
   }
 
@@ -76,6 +77,27 @@ export const RootProvider = ({ children }) => {
     setAddress(null);
     setToken(null);
   }
+
+  // Lấy hoặc tạo ID thiết bị
+  useEffect(() => {
+    const loadDeviceId = async () => {
+      try {
+        const savedId = await AsyncStorage.getItem('device_id');
+
+        if (savedId) {
+          setDeviceId(savedId);
+        } else {
+          const newId = uuid.v4(); // Tạo UUID mới
+          await AsyncStorage.setItem('device_id', newId);
+          setDeviceId(newId);
+        }
+      } catch (error) {
+        console.error('Lỗi khi lấy deviceId:', error);
+      }
+    };
+
+    loadDeviceId();
+  }, []);
 
   // Truyền các giá trị xuống các component con
   return (

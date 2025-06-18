@@ -32,9 +32,9 @@ export default StyleSheet.create({
         backgroundColor: '#f5f5f5',
     },
     icon: {
-        width: "96%",
-        height: "96%",
-        borderRadius: 10,
+        width: "100%",
+        height: "100%",
+        borderRadius: 13,
         resizeMode: 'contain',
     },
     text: {

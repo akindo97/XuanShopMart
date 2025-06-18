@@ -25,6 +25,10 @@ export const CartUIProvider = ({ children }) => {
   // 
   const [selectId, setSelectId] = useState(0);
 
+  useEffect(() => {
+    console.log(cartItems);
+  }, [cartItems])
+
   // Hàm hiển thị thông tin sản phẩm để thêm vào giỏ hàng
   const addToCartShow = (productDetail) => {
     setproductDetail(productDetail);
@@ -89,7 +93,7 @@ export const CartUIProvider = ({ children }) => {
     // Lưu giỏ hàng vào AsyncStorage
     // chưa xử lý lỗi
     AsyncStorage.setItem('cartItems', JSON.stringify(cartItems)).catch(console.error);
-    console.log('Giỏ hàng đã được lưu vào AsyncStorage:', cartItems);
+
   }, [cartItems]);
 
 

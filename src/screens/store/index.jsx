@@ -1,6 +1,6 @@
 
-import React, { useEffect, useState, useRef } from 'react';
-import { View, ScrollView, StyleSheet, TouchableOpacity } from 'react-native';
+import React, { useEffect, useState, useRef, useMemo } from 'react';
+import { View, ScrollView, StyleSheet, TouchableOpacity, InteractionManager } from 'react-native';
 import Header from '../../components/header';
 import { Text } from 'react-native-paper';
 import { XproductCatalog } from '../../utils/fakeapi';
@@ -14,8 +14,28 @@ const StoreScreen = ({ route }) => {
 
     const { category } = useRootContext();
 
-    // tìm kiếm
-    const [searchQuery, setSearchQuery] = useState('');
+    const [loading, setLoading] = useState(false);
+
+    // Các sản phẩm đang hiển thị
+    const [displayProducts, setDisplayProducts] = useState([]);
+    const [page, setPage] = useState(1);
+    const itemsPerPage = 30;
+
+    // Danh sách mới
+    const newCategory = useMemo(() => {
+        // Gom tât cả sản phẩm từ các danh mục để tạo danh sách tất cả sản phẩm
+        const allProduct = category.flatMap((catalog) => catalog.products);
+        // Tạo danh sách mới với mục "Tất cả" ở đầu
+        return (
+            [
+                {
+                    id: 0,
+                    name: 'Tất cả',
+                    products: allProduct,
+                },
+                ...category]
+        );
+    }, [category])
 
     // Lưu trữ danh mục đã chọn
     // Mặc định là 0 (Tất cả)
@@ -28,6 +48,7 @@ const StoreScreen = ({ route }) => {
 
     // Khi người dùng chọn một danh mục, mặc định là 0 (Tất cả)
     useEffect(() => {
+        setPage(1); // Reset page
         setSelected(categoryId);
 
         // Tìm index của categoryId trong danh sách tab
@@ -39,26 +60,46 @@ const StoreScreen = ({ route }) => {
                     // `px` là vị trí X tuyệt đối trên màn hình
                     scrollRef.current.scrollTo({ x: px - 16, animated: true }); // scroll tới đó, có thể trừ thêm padding nếu cần
                 });
-            }, 0); // delay 0 để đảm bảo tab đã được render xong
+            }, 100); // delay 100 để đảm bảo tab đã được render xong
         }
     }, [categoryId]);
 
 
+    useEffect(() => {
+        const showNow = newCategory.find((item) => item.id === selected);
 
-    // Gom tât cả sản phẩm từ các danh mục để tạo danh sách tất cả sản phẩm
-    const allProduct = category.flatMap((catalog) => catalog.products);
-    // Tạo danh sách mới với mục "Tất cả" ở đầu
-    let newCategory = [
-        {
-            id: 0,
-            name: 'Tất cả',
-            products: allProduct,
-        },
-        ...category];
+        if (showNow) {
+            const firstPage = showNow.products.slice(0, itemsPerPage);
+            setDisplayProducts(firstPage);
+            setPage(1);
+        }
+    }, [selected, newCategory]);
+
+    const handleLoadMore = () => {
+        if (loading) return; // tránh gọi liên tục
+
+        InteractionManager.runAfterInteractions(() => {
+            const currentCategory = newCategory.find((item) => item.id === selected);
+            const totalProducts = currentCategory.products;
+            const nextPage = page + 1;
+            const nextItems = totalProducts.slice(0, nextPage * itemsPerPage);
+
+            if (nextItems.length === displayProducts.length) return;
+
+            setLoading(true);
+
+            // Giả lập delay tải (giống fetch API)
+            setTimeout(() => {
+                setDisplayProducts(nextItems);
+                setPage(nextPage);
+                setLoading(false);
+            }, 300); // 300ms delay cho mượt
+        });
+    };
 
     return (
         <>
-            <Header searchQuery={searchQuery} setSearchQuery={setSearchQuery} />
+            <Header />
             <View style={[commonStyles.bgrColor, commonStyles.flex1]}>
                 {/* danh sách menu category trượt ngang */}
                 <View>
@@ -77,7 +118,7 @@ const StoreScreen = ({ route }) => {
                                     styles.tab,
                                     selected === category.id && styles.selectedTab,
                                 ]}
-                                >
+                            >
                                 <Text
                                     style={[
                                         styles.text,
@@ -92,10 +133,13 @@ const StoreScreen = ({ route }) => {
                     </ScrollView>
                 </View>
 
-                <View style={[commonStyles.bgrWhite, commonStyles.flex1, {paddingTop: 8}]}>
+                <View style={[commonStyles.bgrWhite, commonStyles.flex1, { paddingTop: 8 }]}>
                     <HorizontalList isHorizontal={false}
                         // Các sản phẩm trong danh mục
-                        products={newCategory[selected].products}
+                        products={displayProducts}
+                        // Khi cuộn tới gần cuối
+                        onEndReached={() => handleLoadMore()}
+                        loading={loading}
                     />
                 </View>
             </View>

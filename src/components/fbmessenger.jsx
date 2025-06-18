@@ -61,7 +61,7 @@ const MessengerButton = (props) => {
         style={{
           backgroundColor: '#00CC66',
           padding: 10,
-          borderRadius: '50%',
+          borderRadius: 50,
         }}
       >
         <Icon source="facebook-messenger" size={38} color='#ffffff' />

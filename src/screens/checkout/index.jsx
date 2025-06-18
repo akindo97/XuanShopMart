@@ -16,7 +16,7 @@ import ShippingInfo from "../../components/shippingInfo";
 
 const CheckOutScreen = ({ params }) => {
     const navigation = useNavigation();
-    const { auth, user, token, address } = useRootContext();
+    const { auth, user, token, address, deviceId } = useRootContext();
     const { showFullLoading } = useDialog();
 
 
@@ -166,7 +166,7 @@ const CheckOutScreen = ({ params }) => {
                         items: postItems,
                         shipping_method: 'standard',
                         payment_method: paymentMethod,
-                        device_id: "999999999",
+                        device_id: deviceId,
                         contact_email: email,
                         shipping_first_name: firstName,
                         shipping_last_name: lastName,

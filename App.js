@@ -2,7 +2,7 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { PaperProvider, DefaultTheme } from 'react-native-paper';
 import Footer from './src/components/footer';
-import AddToCartModal from './src/components/addtocart';
+// import AddToCartModal from './src/components/addtocart';
 import { CartUIProvider, useCartUI } from './src/hooks/useCartOverlay';
 import { DialogProvider } from './src/hooks/dialogcontext';
 import NotificationScreen from './src/screens/notification';
@@ -62,7 +62,7 @@ const MainContent = () => {
           <Stack.Screen name="Voucher" component={VoucherScreen} options={{ title: 'Voucher của tôi' }} />
         </Stack.Navigator>
       </NavigationContainer>
-      {visible && <AddToCartModal />}
+      {/* {visible && <AddToCartModal />} */}
       <FlashMessage position="top" />
     </>
   );

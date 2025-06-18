@@ -80,7 +80,9 @@ const HomeScreens = () => {
         <TouchableRipple onPress={() => navigation.navigate('Store', { categoryId: item.id })}>
             <View style={styles.item}>
                 <Surface style={styles.card} elevation={2}>
-                    <Image source={{ uri: `${IMAGE_URL}/${item.thumbnail_url}` }} style={styles.icon} />
+                    <Image source={{ uri: `${IMAGE_URL}/${item.thumbnail_url}` }}
+                    style={styles.icon}
+                    resizeMode="cover"/>
                 </Surface>
                 <Text style={styles.text}>{item.name}</Text>
             </View>

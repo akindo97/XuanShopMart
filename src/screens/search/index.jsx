@@ -1,4 +1,4 @@
-import React, { useEffect, useLayoutEffect, useState } from 'react';
+import React, { useEffect, useLayoutEffect, useState, useRef } from 'react';
 import { TextInput, Searchbar, Button } from 'react-native-paper';
 import { View, StyleSheet, Text } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
@@ -13,6 +13,8 @@ const SearchScreen = () => {
     // Trạng thái loading
     const [loading, setLoading] = useState(false);
     const [keywordToAdd, setKeywordToAdd] = useState('');
+
+    const searchRef = useRef(null);
 
     // các từ khoá phổ biến
     const popular = [
@@ -31,37 +33,41 @@ const SearchScreen = () => {
         if (!keyword) return;
         setKeywordToAdd(keyword.trim());
         handleKeywordSelect(keyword.trim());
-        setKeyword('');
+        // setKeyword('');
     };
 
     const handleKeywordSelect = (keyword) => {
         if (!keyword) return;
+        searchRef.current?.blur();
         // Thực hiện tìm kiếm lại với từ khoá được chọn
         console.log('Selected:', keyword);
         searchProducts(keyword);
+        setKeyword(keyword);
     };
 
     useLayoutEffect(() => {
-        let inputRef = null;
+        // let inputRef = null;
         navigation.setOptions({
             headerTitle: () => (
                 <View style={{ flex: 1, paddingTop: 3 }}>
                     <Searchbar
-                        ref={ref => { inputRef = ref; }}
+                        ref={searchRef}
                         placeholder="Tìm kiếm sản phẩm..."
                         value={keyword}
                         onChangeText={setKeyword}
                         style={styles.cSearchBar}
                         inputStyle={styles.inputStyle}
-                        onSubmitEditing={() => handleSearch()}
+                        onSubmitEditing={() => {
+                            handleSearch();
+                        }}
                     />
                 </View>
             ),
         });
         // Focus vào input khi component mount
         setTimeout(() => {
-            if (inputRef && inputRef.focus) {
-                inputRef.focus();
+            if (searchRef && !keyword) {
+                searchRef.current.focus();
             }
         }, 300);
     }, [navigation, keyword]);
@@ -96,10 +102,10 @@ const SearchScreen = () => {
             {products.length && !loading ?
                 <View style={{ flex: 1 }}>
                     <Text style={{ backgroundColor: '#ffffff', marginBottom: 10, padding: 10, fontSize: 16, fontWeight: 'bold' }} >
-                        Kết quả tìm kiếm
+                        Kết quả tìm kiếm {keyword}
                     </Text>
                     <View style={{ backgroundColor: '#ffffff', paddingBottom: 60 }}>
-                        <HorizontalList products={products} isHorizontal={false} />
+                        <HorizontalList products={products} isHorizontal={false} random={false} />
                     </View>
                 </View>
                 :

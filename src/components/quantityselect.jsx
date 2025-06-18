@@ -1,33 +1,53 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { StyleSheet, Text, View, TouchableOpacity, Pressable } from 'react-native';
 import commonStyles from '../utils/commonstyles';
 import { Icon } from 'react-native-paper';
 
-const QuantitySelect = ({ defaultQlt = 1, size = 18, min = 0, max = 100, onChange = () => { } }) => {
-    
+const QuantitySelect = ({ defaultQlt = 1, size = 0, min = 0, max = 100, onChange = () => { } }) => {
+
     // Sử dụng state để quản lý số lượng
     const [quantity, setQuantity] = useState(defaultQlt);
 
+    const didMount = useRef(false); // dùng để kiểm tra mount
+
+    // Cập nhật giá trị khi defaultQlt thay đổi từ bên ngoài
+    useEffect(() => {
+        setQuantity(defaultQlt);
+    }, [defaultQlt]);
+
     // Cập nhật số lượng khi giá trị quantity thay đổi
     useEffect(() => {
-        onChange(quantity);
+        if (didMount.current) {
+            onChange(quantity);
+        } else {
+            didMount.current = true; // lần đầu mount thì không gọi onChange
+        }
     }, [quantity]);
     return (
         <Pressable style={styles.cAddBlock} onPress={(e) => {
             e.stopPropagation();
         }}>
             <TouchableOpacity onPress={() => setQuantity(quantity > min ? quantity - 1 : min)} style={quantity <= min ? commonStyles.disableCss : {}}>
-                <Text style={[styles.cAddQtyInput, commonStyles.buttonColor, commonStyles.fwblob, { fontSize: size }]}>
-                    {quantity !== 1 ?
+                <Text
+                    style={[styles.cAddQtyInput, commonStyles.buttonColor,
+                    { fontSize: 19 + size, width: 30 + size, height: 30 + size, lineHeight: 30 + size }
+                    ]}>
+                    {quantity !== 1 || min === 1 ?
                         'ー'
                         :
-                        <Icon size={20} source={'trash-can-outline'} color='#ffffff' />
+                        <Icon size={27 + size} source={'trash-can-outline'} color='#ffffff' />
                     }
                 </Text>
             </TouchableOpacity>
-            <Text style={[styles.cAddQtyValue, commonStyles.fwblob, { fontSize: size }]}>{quantity}</Text>
+            <Text
+                style={[styles.cAddQtyValue, { fontSize: 19 + size, width: 62 + size }]}>
+                {quantity}
+            </Text>
             <TouchableOpacity onPress={() => setQuantity(quantity + 1)} style={quantity >= max ? commonStyles.disableCss : {}}>
-                <Text style={[styles.cAddQtyInput, commonStyles.buttonColor, commonStyles.fwblob, { fontSize: size }]}>
+                <Text
+                    style={[styles.cAddQtyInput, commonStyles.buttonColor,
+                    { fontSize: 19 + size, width: 30 + size, height: 30 + size, lineHeight: 30 + size }
+                    ]}>
                     ＋
                 </Text>
             </TouchableOpacity>
@@ -43,21 +63,20 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         paddingVertical: 2,
         paddingHorizontal: 2,
-        borderTopRightRadius: 16,
-        borderBottomRightRadius: 16,
-        borderTopLeftRadius: 16,
-        borderBottomLeftRadius: 16,
+        borderTopRightRadius: 20,
+        borderBottomRightRadius: 20,
+        borderTopLeftRadius: 20,
+        borderBottomLeftRadius: 20,
     },
     cAddQtyValue: {
-        width: 60,
+        fontWeight: 'bold',
         textAlign: 'center',
     },
     cAddQtyInput: {
-        padding: 5,
-        width: 30,
+        fontWeight: 'bold',
         textAlign: 'center',
-        borderRadius: '50%',
-        borderColor: '#BEBEBE'
+        borderRadius: 20,
+        borderColor: '#BEBEBE',
     },
 });
 

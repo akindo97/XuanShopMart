@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from 'react';
-import { View, Text, FlatList, Image, Dimensions, StyleSheet, TouchableOpacity } from 'react-native';
+import React, { useEffect, useState, useCallback, useMemo } from 'react';
+import { View, Text, FlatList, Image, TouchableOpacity,Dimensions } from 'react-native';
 import { Icon, Button } from 'react-native-paper';
 import { useCartUI } from '../../hooks/useCartOverlay';
 import HorizontalList from '../../components/horizontallist';
@@ -11,6 +11,9 @@ import { apiRequest } from '../../api';
 import { IMAGE_URL } from '../../config/config';
 import { Loading } from '../../components/loading';
 import noImage from '../../../assets/icons/picture.png';
+import QuantitySelect from '../../components/quantityselect';
+import styles from './styles';
+import { openMessenger } from '../../components/fbmessenger';
 
 const { width } = Dimensions.get('window');
 
@@ -24,8 +27,9 @@ export default function ProductScreen({ route }) {
     // lấy thông tin sản phẩm từ params của route
     const { product } = route.params;
 
-    // sử dụng hook để lấy hàm addToCartShow từ useCartUI
-    const { addToCartShow, totalQuantity } = useCartUI();
+    // sử dụng hook để lấy các hàm từ useCartUI
+    const { cartItems, totalQuantity, addToCart, changeQuantity, removeFromCart } = useCartUI();
+
     // State để quản lý chỉ mục hiện tại của ảnh
     const [currentIndex, setCurrentIndex] = useState(0);
 
@@ -36,6 +40,12 @@ export default function ProductScreen({ route }) {
     const [description, setDescription] = useState();
     // State lưu ảnh
     const [productImages, setProductImages] = useState([]);
+
+    // Lấy số lượng sản phẩm hiện tại trong giỏ hàng
+    const quantity = useMemo(() => {
+        const item = cartItems.find((item) => item.id === product.id);
+        return item?.quantity ?? 0;
+    }, [cartItems]);
 
     // Lấy mô tả và hình ảnh chi tiết sản phẩm từ api
     useEffect(() => {
@@ -63,6 +73,21 @@ export default function ProductScreen({ route }) {
         productDetail();
     }, []);
 
+    // Xử lý khi thay đổi số lượng sản phẩm
+    const handleChangeQuantity = useCallback((id, newQty) => {
+        // Thêm nếu hơn 0 và remove nếu == 0
+        if (newQty > 0) {
+            changeQuantity(id, newQty);
+        } else {
+            removeFromCart(id)
+        }
+    }, [changeQuantity]);
+
+    // Xử lý khi nhấn nút thêm vào giỏ hàng
+    const increase = (product) => {
+        addToCart(1, product);
+    };
+
     // Lấy danh sách liên quan
     useState(() => {
         const related = category.find((item) => item.id === product.category_id);
@@ -77,24 +102,25 @@ export default function ProductScreen({ route }) {
 
     return (
         <View style={styles.container}>
+            {/* Slide các ảnh sản phẩm */}
             <View style={styles.cProImageBlock}>
                 {loading ?
                     <Loading text={''} top={60} />
                     :
-                    productImages.length ? 
-                    <FlatList
-                        data={productImages}
-                        horizontal
-                        pagingEnabled
-                        showsHorizontalScrollIndicator={false}
-                        keyExtractor={(item) => item.id}
-                        renderItem={({ item }) => (
-                            <Image source={{ uri: `${IMAGE_URL}/${item.image_url}` }} style={styles.cProImage} />
-                        )}
-                        onScroll={onScroll}
-                        scrollEventThrottle={16}
-                    /> :
-                    <Image source={ noImage } style={styles.cProImage} />
+                    productImages.length ?
+                        <FlatList
+                            data={productImages}
+                            horizontal
+                            pagingEnabled
+                            showsHorizontalScrollIndicator={false}
+                            keyExtractor={(item) => item.id}
+                            renderItem={({ item }) => (
+                                <Image source={{ uri: `${IMAGE_URL}/${item.image_url}` }} style={styles.cProImage} />
+                            )}
+                            onScroll={onScroll}
+                            scrollEventThrottle={16}
+                        /> :
+                        <Image source={noImage} style={styles.cProImage} />
                 }
 
                 <View style={styles.cProCounter}>
@@ -179,15 +205,17 @@ export default function ProductScreen({ route }) {
                 <HorizontalList
                     // Các sản phẩm trong danh mục
                     products={relatedProducts.products}
+                    // Ẩn sản phẩm hiện tại
+                    hideId={product.id}
                 />
             </View>
 
             <View style={styles.cProBotBlocck}>
                 {/* nút chat */}
-                <View style={styles.cProBotFlex}>
+                <TouchableOpacity style={styles.cProBotFlex} onPress={openMessenger}>
                     <Icon source="facebook-messenger" size={23} />
                     <Text style={styles.cProBotText}>Liên hệ</Text>
-                </View>
+                </TouchableOpacity>
                 {/* Nút giỏ hàng */}
                 <TouchableOpacity style={styles.cProBotFlex}
                     // Chuyển hướng tới giỏ hàng khi nhấn nút
@@ -205,16 +233,23 @@ export default function ProductScreen({ route }) {
                     product.is_active ?
                         // nút thêm vào giỏ hàng
                         <View style={styles.cProBotBtn}>
-                            <Button mode="contained" style={{ backgroundColor: '#000' }}
-                                onPress={() => addToCartShow(product)}>
-                                Thêm vào giỏ hàng
-                            </Button>
+                            {quantity === 0 ?
+                                <Button mode="contained" style={{ backgroundColor: '#000' }}
+                                    onPress={() => increase(product)}>
+                                    <Text style={styles.cProButText}>Thêm vào giỏ hàng</Text>
+                                </Button>
+                                :
+                                <QuantitySelect size={5}
+                                    defaultQlt={quantity}
+                                    onChange={(newQty) => handleChangeQuantity(product.id, newQty)}
+                                />
+                            }
                         </View>
                         :
                         // Nếu hết hàng
                         <View style={styles.cProBotBtn}>
                             <Button mode="contained" style={{ backgroundColor: '#666666' }}>
-                                Hết hàng
+                                <Text style={styles.cProButText}>Hết hàng</Text>
                             </Button>
                         </View>
                 }
@@ -224,148 +259,3 @@ export default function ProductScreen({ route }) {
         </View>
     );
 }
-
-const styles = StyleSheet.create({
-    container: {
-        backgroundColor: '#DDDDDD',
-        flex: 1,
-        position: 'relative',
-    },
-    CproTopBlock: {
-        backgroundColor: '#fff',
-    },
-    cProImageBlock: {
-        height: 230
-    },
-    cProImage: {
-        width: width,
-        height: '100%',
-        resizeMode: 'cover',
-    },
-    cProCounter: {
-        position: 'absolute',
-        bottom: 10,
-        right: 10,
-        backgroundColor: 'rgba(0,0,0,0.5)',
-        paddingHorizontal: 10,
-        paddingVertical: 5,
-        borderRadius: 12,
-    },
-    cProCounText: {
-        color: '#fff',
-        fontSize: 14,
-    },
-    CproDelBlock: {
-        backgroundColor: '#fff',
-        padding: 10
-    },
-    cProName: {
-        fontSize: 18,
-        paddingTop: 10,
-    },
-    cProHov: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        justifyContent: 'space-between',
-    },
-    cProPrice: {
-        fontSize: 23,
-        color: 'red',
-        fontWeight: 'bold',
-    },
-    // cProOldPrice: {
-    //     fontSize: 13,
-    //     textDecorationLine: 'line-through',
-    //     color: '#666',
-    //     paddingLeft: 10,
-    //     paddingBottom: 2,
-    // },
-    cProSale: {
-        fontSize: 13,
-        color: '#00CC66',
-        paddingLeft: 10,
-        paddingBottom: 2,
-    },
-    cProStatus: {
-        fontSize: 13,
-        alignSelf: 'flex-start',
-        paddingHorizontal: 6,
-        borderRadius: 7,
-        padding: 2,
-        marginTop: 6,
-    },
-    cInStock: {
-        backgroundColor: '#00CC6699',
-        color: '#fff',
-    },
-    cOutStock: {
-        backgroundColor: '#66666699',
-        color: '#fff',
-    },
-    cProId: {
-        marginTop: 3,
-        fontSize: 10,
-        color: '#666',
-    },
-    cProDesBlock: {
-        backgroundColor: '#fff',
-        marginTop: 10,
-        padding: 10,
-    },
-    CProDesTit: {
-        fontSize: 16,
-        paddingBottom: 3,
-        fontWeight: 'bold',
-    },
-    cCatTitle: {
-        flexDirection: 'row',
-    },
-    cLoadCenter: {
-        flexDirection: 'row',
-    },
-    cCatTitTex: {
-        fontSize: 16,
-    },
-    cCatShowTex: {
-        fontSize: 16,
-    },
-    cProBotBlocck: {
-        position: 'absolute',
-        bottom: 0,
-        left: 0,
-        right: 0,
-        paddingVertical: 6,
-        paddingHorizontal: 10,
-        backgroundColor: '#fff',
-        borderColor: '#BEBEBE',
-        borderTopWidth: 1,
-        flexDirection: 'row',
-        paddingBottom: 20,
-    },
-    cProBotFlex: {
-        alignItems: 'center',
-        borderRightWidth: 1,
-        borderRightColor: '#BEBEBE',
-        marginRight: 10,
-        paddingRight: 10,
-    },
-    cProBadge: {
-        position: 'absolute',
-        top: -3,
-        right: -10,
-        backgroundColor: '#FF0000',
-        borderRadius: 10,
-        paddingHorizontal: 5,
-        color: '#fff',
-        fontSize: 12,
-    },
-    cProBotText: {
-        fontSize: 12,
-    },
-    cProBotBtn: {
-        flex: 1,
-    },
-    fwbold: {
-        fontWeight: 'bold'
-    }
-});

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo, useCallback, memo } from 'react';
 import { StyleSheet, Text, Image, View, FlatList, Dimensions, ScrollView, TouchableOpacity } from 'react-native';
 import { Card, Icon, Button } from 'react-native-paper';
 import { useCartUI } from '../hooks/useCartOverlay';
@@ -10,97 +10,49 @@ import { fToYen } from '../utils/utils';
 import QuantitySelect from './quantityselect';
 import commonStyles from '../utils/commonstyles';
 
-const AddToCartModal = ({ }) => {
-    // Lấy thông tin sản phẩm và các hàm từ context
-    const { addToCartHide, productDetail, addToCart } = useCartUI();
+const AddToCartButton = ({ id, product }) => {
+    const { selectId, setSelectId, cartItems, addToCart, changeQuantity, removeFromCart } = useCartUI();
 
-    // Sử dụng state để quản lý số lượng
-    const [quantity, setQuantity] = useState(0);
+    // Lấy số lượng sản phẩm hiện tại trong giỏ hàng
+    const quantity = useMemo(() => {
+        const item = cartItems.find((item) => item.id === id);
+        return item?.quantity ?? 0;
+    }, [cartItems, id]);
 
-    // Khởi tạo giá trị chia sẻ cho hiệu ứng trượt
-    const translateY = useSharedValue(200); // bắt đầu dưới màn hình
-    useEffect(() => {
-        translateY.value = withTiming(0, { duration: 200 }); // trượt lên
-    }, []);
-    const animatedStyle = useAnimatedStyle(() => ({
-        transform: [{ translateY: translateY.value }],
-    }));
-
-    return (
-        <View style={styles.container}>
-
-            <View style={{ flex: 1 }}>
-                <TouchableOpacity onPress={addToCartHide} style={{ flex: 1 }}></TouchableOpacity>
-            </View>
-            <Animated.View style={[styles.cAddBlock, animatedStyle]}>
-                <View style={styles.cAddUp}>
-                    <Card.Cover source={{ uri: productDetail.thumbnail_url }} style={styles.cAddImage} />
-                    <Card.Content style={styles.cAddContent}>
-                        <Text style={styles.cAddName}>{productDetail.name}</Text>
-                        <Text style={styles.cAddPrice}>￥{fToYen(productDetail.price)}</Text>
-                    </Card.Content>
-                    <TouchableOpacity onPress={addToCartHide}>
-                        <Icon source="close" size={30} />
-                    </TouchableOpacity>
-                </View>
-                <View style={[styles.cAddUp, styles.cAddCenter]}>
-                    <Text style={styles.cAddQty}>Số lượng</Text>
-                    <View>
-                        {/* Các nút tăng/giảm số lượng */}
-                        <QuantitySelect onChange={(quantity) => setQuantity(quantity)} />
-                    </View>
-                </View>
-                <Button mode="contained" style={commonStyles.buttonColor}
-                    onPress={() => addToCart(quantity, productDetail)}>
-                    Thêm vào giỏ hàng
-                </Button>
-            </Animated.View>
-        </View>
-    );
-}
-
-
-export const AddToCartButton = ({ id }) => {
-    const { selectId, setSelectId, cartItems } = useCartUI();
-
-    const [quantity, setQuantity] = useState(0);
-
-    const increase = () => {
-        setQuantity(prev => prev + 1);
-        setSelectId(id);
-    };
-    const decrease = () => setQuantity(prev => (prev > 0 ? prev - 1 : 0));
-
-    useEffect(() => {
-        const thisQuantity = cartItems.find((item) => id === item.id);
-        if (thisQuantity) {
-            console.log('thisQuantity', thisQuantity.quantity);
-            setQuantity(thisQuantity.quantity);
+    // Xử lý khi thay đổi số lượng sản phẩm
+    const handleChangeQuantity = useCallback((newQty) => {
+        // Thêm nếu hơn 0 và remove nếu == 0
+        if (newQty > 0) {
+            changeQuantity(id, newQty);
+        } else {
+            removeFromCart(id)
         }
+    }, [id, changeQuantity]);
 
-    }, [cartItems])
+    // Xử lý khi nhấn nút thêm vào giỏ hàng
+    const increase = () => {
+        setSelectId(id);
+        addToCart(1, product);
+    };
 
     return (
-        <Animated.View layout={LinearTransition.duration(300)} >
+        <View>
             {quantity === 0 ? (
-                <Animated.View key="button" entering={FadeIn} exiting={FadeOut} >
-                    <TouchableOpacity style={styles.addButton} onPress={increase}>
-                        <Icon source="cart-plus" size={25} color='#FFF' />
-                        {/* <Text style={styles.addText}>Thêm vào giỏ</Text> */}
-                    </TouchableOpacity>
-                </Animated.View>
+                <TouchableOpacity style={styles.addButton} onPress={increase}>
+                    <Icon source="cart-plus" size={25} color='#FFF' />
+                </TouchableOpacity>
             ) : (
                 selectId === id ?
-                    // Các nút tăng/giảm số lượng
-                    <Animated.View key="quantity" entering={FadeIn} >
-                        <QuantitySelect onChange={(quantity) => setQuantity(quantity)} />
-                    </Animated.View>
+                    <QuantitySelect
+                        defaultQlt={quantity}
+                        onChange={handleChangeQuantity}
+                    />
                     :
                     <TouchableOpacity onPress={() => setSelectId(id)} style={styles.cQuanValueCtn}>
                         <Text style={styles.cQuanValueText}>{quantity}</Text>
                     </TouchableOpacity>
             )}
-        </Animated.View>
+        </View>
     );
 };
 
@@ -130,10 +82,10 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
     },
     cQuanValueCtn: {
-        padding: 5,
+        paddingVertical: 4,
         backgroundColor: '#00CC66',
         borderRadius: 16,
-        width: 35,
+        width: 33,
     },
     cQuanValueText: {
         fontSize: 20,
@@ -142,7 +94,54 @@ const styles = StyleSheet.create({
     }
 });
 
+// const AddToCartModal = ({ }) => {
+//     // Lấy thông tin sản phẩm và các hàm từ context
+//     const { addToCartHide, productDetail, addToCart } = useCartUI();
 
+//     // Sử dụng state để quản lý số lượng
+//     const [quantity, setQuantity] = useState(0);
+
+//     // Khởi tạo giá trị chia sẻ cho hiệu ứng trượt
+//     const translateY = useSharedValue(200); // bắt đầu dưới màn hình
+//     useEffect(() => {
+//         translateY.value = withTiming(0, { duration: 200 }); // trượt lên
+//     }, []);
+//     const animatedStyle = useAnimatedStyle(() => ({
+//         transform: [{ translateY: translateY.value }],
+//     }));
+
+//     return (
+//         <View style={styles.container}>
+
+//             <View style={{ flex: 1 }}>
+//                 <TouchableOpacity onPress={addToCartHide} style={{ flex: 1 }}></TouchableOpacity>
+//             </View>
+//             <Animated.View style={[styles.cAddBlock, animatedStyle]}>
+//                 <View style={styles.cAddUp}>
+//                     <Card.Cover source={{ uri: productDetail.thumbnail_url }} style={styles.cAddImage} />
+//                     <Card.Content style={styles.cAddContent}>
+//                         <Text style={styles.cAddName}>{productDetail.name}</Text>
+//                         <Text style={styles.cAddPrice}>￥{fToYen(productDetail.price)}</Text>
+//                     </Card.Content>
+//                     <TouchableOpacity onPress={addToCartHide}>
+//                         <Icon source="close" size={30} />
+//                     </TouchableOpacity>
+//                 </View>
+//                 <View style={[styles.cAddUp, styles.cAddCenter]}>
+//                     <Text style={styles.cAddQty}>Số lượng</Text>
+//                     <View>
+//                         {/* Các nút tăng/giảm số lượng */}
+//                         <QuantitySelect onChange={(quantity) => setQuantity(quantity)} />
+//                     </View>
+//                 </View>
+//                 <Button mode="contained" style={commonStyles.buttonColor}
+//                     onPress={() => addToCart(quantity, productDetail)}>
+//                     Thêm vào giỏ hàng
+//                 </Button>
+//             </Animated.View>
+//         </View>
+//     );
+// }
 
 // const styles = StyleSheet.create({
 //     container: {
@@ -208,4 +207,4 @@ const styles = StyleSheet.create({
 //     },
 // })
 
-export default AddToCartModal;
+export default memo(AddToCartButton);

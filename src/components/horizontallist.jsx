@@ -1,5 +1,5 @@
 
-import React, { useState, memo } from 'react';
+import React, { useState, memo, useEffect } from 'react';
 import { Text, FlatList, TouchableOpacity, StyleSheet, View } from 'react-native';
 import { Card, Icon } from 'react-native-paper';
 import { useCartUI } from '../hooks/useCartOverlay';
@@ -7,36 +7,41 @@ import { useNavigation } from '@react-navigation/native';
 import { fToYen, shuffleArray } from '../utils/utils';
 import commonStyles from '../utils/commonstyles';
 import { MAX_ITEM } from '../config/config';
-import { AddToCartButton } from './addtocart';
+import AddToCartButton from './addtocart';
+import { ActivityIndicator } from 'react-native-paper';
 
-const HorizontalList = (props) => {
-    // Có random hay khôgn
-    const random = props?.random ?? true;
-    // Các sản phẩm trong danh mục
-    const products = props?.products ?? [];
+const HorizontalList = ({ 
+    products = [], isHorizontal = true, random = true, hideId = null, onEndReached, loading = false 
+}) => {
+    // Có random hay không - random
+    // Các sản phẩm trong danh mục - products
+    // Sản phẩm muốn ẩn - hideId
+    // kiểm tra xem có truyền thuộc tính isHorizontal không, nếu không thì mặc định là true
 
-    // sử dụng hook để lấy hàm show từ useCartUI
-    const { addToCartShow, selectId, setSelectId } = useCartUI();
     const navigation = useNavigation();
 
-    // kiểm tra xem có truyền thuộc tính isHorizontal không, nếu không thì mặc định là true
-    const isHorizontal = props.isHorizontal ?? true; // mặc định là hiển thị ngang
+    // State lưu trữ list sản phẩm hiển thị
+    const [renderList, setRenderList] = useState([]);
 
     // Nếu isHorizontal === true thì lấy tối đa 8 item + thêm item "xem thêm"
-    let renderList = random ? shuffleArray(products) : products; // Xáo trộn
-    if (isHorizontal) {
-        renderList = renderList.slice(0, MAX_ITEM);
-        // thêm item "Xem thêm" vào cuối danh sách
-        renderList.push({
-            isSeeMore: true,
-            id: -1
-        });
-    } else {
-        // renderList = products;
-    }
+    useEffect(() => {
+        let handelList = random ? shuffleArray(products) : products; // Xáo trộn
+        if (hideId) {
+            handelList = handelList.filter(item => item.id !== hideId)
+        }
+        if (isHorizontal) {
+            handelList = handelList.slice(0, MAX_ITEM);
+            // thêm item "Xem thêm" vào cuối danh sách
+            handelList.push({
+                isSeeMore: true,
+                id: -1
+            });
+        }
+        setRenderList(handelList);
+    }, [isHorizontal, products])
 
     // danh mục chi tiết
-    const detailedProduct = ({ item }) => {
+    const ProductCard = React.memo(({ item }) => {
         if (item.isSeeMore) {
             // nếu là item "Xem thêm" thì hiển thị nút xem thêm
             return (
@@ -57,7 +62,7 @@ const HorizontalList = (props) => {
             <Card style={isHorizontal ? styles.cCatCardHor : styles.cCatCardVer}
                 // khi ấn vào sẽ chuyển đến trang sản phẩm
                 onPress={() => {
-                    navigation.navigate('Product', { product: item, categoryId: item.category_id })
+                    navigation.push('Product', { product: item, categoryId: item.category_id })
                 }}>
                 {/* Nếu hết hàng thì không cho phép thêm vào giỏ hàng */}
                 {item.is_active ?
@@ -66,7 +71,7 @@ const HorizontalList = (props) => {
                     //     <Icon source="cart-plus" size={25} color='#FFF' />
                     // </TouchableOpacity>
                     <View style={styles.cCatPlus}>
-                        <AddToCartButton id={item.id} />
+                        <AddToCartButton id={item.id} product={item} />
                     </View>
                     :
                     <Text style={styles.cCatOut}>Hết hàng</Text>
@@ -90,17 +95,29 @@ const HorizontalList = (props) => {
                 </Card.Content>
             </Card>
         );
-    }
+    });
 
     return (
         <FlatList
             data={renderList}
-            renderItem={detailedProduct}
-            keyExtractor={(i) => i.id.toString()}
+            renderItem={({ item }) => <ProductCard item={item} />}
+            keyExtractor={(item, index) => `${item.id}_${index}`}
             horizontal={isHorizontal}
             numColumns={isHorizontal ? 1 : 2}
             showsHorizontalScrollIndicator={false}
-            contentContainerStyle={{ paddingHorizontal: 8 }}
+            contentContainerStyle={{ paddingHorizontal: 8, paddingBottom: isHorizontal ? 0 : 16 }}
+            onEndReached={onEndReached}
+            onEndReachedThreshold={0.2}
+            showsVerticalScrollIndicator={false}
+            ListFooterComponent={loading && <ActivityIndicator size="large" />}
+
+            // Tối ưu performance
+            initialNumToRender={10}               // Số item render ban đầu
+            maxToRenderPerBatch={10}             // Số item tối đa mỗi lần batch render
+            windowSize={5}                       // Vùng render trước và sau màn hình
+
+            removeClippedSubviews={true}         // Tự động remove item đã cuộn khỏi view
+            updateCellsBatchingPeriod={500}       // Delay thời gian render batch tiếp theo
         />
     );
 }
@@ -123,7 +140,7 @@ const styles = StyleSheet.create({
     },
     cCatMoreIcon: {
         backgroundColor: '#EEEEEE',
-        borderRadius: '50%',
+        borderRadius: 50,
         padding: 8,
     },
     cCatCardVer: {

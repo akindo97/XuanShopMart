@@ -20,6 +20,16 @@ const CartScreen = () => {
     // Lấy hàm hiển thị dialog từ context
     const { showDialog } = useDialog();
 
+    // Hàm xử lý khi thay đổi số lượng
+    // Thêm nếu hơn 0 và remove nếu == 0
+    const onChangeQty = (id, quantity) => {
+        if (quantity > 0) {
+            changeQuantity(id, quantity);
+        } else {
+            removeButon(id);
+        }
+    }
+
     // Hàm hiển thị dialog xác nhận xóa sản phẩm khỏi giỏ hàng
     const removeButon = (id) => {
         showDialog({
@@ -38,9 +48,9 @@ const CartScreen = () => {
                         <>
                             <ScrollView style={styles.cCartScroll}>
                                 {/* Danh sách sản phẩm trong giỏ hàng */}
-                                {cartItems.map((item, index) =>
+                                {cartItems.map((item) =>
                                 (
-                                    <View key={index} style={styles.cCartProBlock}>
+                                    <View key={item.id} style={styles.cCartProBlock}>
                                         {/* ảnh sản phẩm */}
                                         <View style={commonStyles.pRelative}>
                                             <Image source={{ uri: item.thumbnail_url }} style={styles.cCartImage} />
@@ -76,9 +86,9 @@ const CartScreen = () => {
                                                 </View>
                                                 <View>
                                                     {/* Chọn số lượng sản phẩm */}
-                                                    <QuantitySelect size={16}
-                                                        valueQuantity={item.quantity}
-                                                        onChange={(quantity) => changeQuantity(item.id, quantity)} />
+                                                    <QuantitySelect size={5} min={1}
+                                                        defaultQlt={item.quantity}
+                                                        onChange={(quantity) => onChangeQty(item.id, quantity)} />
                                                 </View>
                                             </View>
                                         </View>
