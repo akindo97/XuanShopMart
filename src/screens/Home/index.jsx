@@ -11,7 +11,7 @@ import { useRootContext } from '../../hooks/rootcontext';
 import { Loading } from '../../components/loading';
 import MessengerButton from '../../components/fbmessenger';
 import { IMAGE_URL } from '../../config/config';
-import NotificationScreen from '../../components/pushnotification';
+// import NotificationScreen from '../../components/pushnotification';
 
 const { width } = Dimensions.get('window');
 const images = [
