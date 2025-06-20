@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "783410810401",
+    "project_id": "xuanshopvietnhat-330a4",
+    "storage_bucket": "xuanshopvietnhat-330a4.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:783410810401:android:c9d7a416c4764a4ee31d60",
+        "android_client_info": {
+          "package_name": "com.anonymous.XuanShopMart"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCxJvTpm1Xl67W0K7cN9JmpF_Qo1Tos04o"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

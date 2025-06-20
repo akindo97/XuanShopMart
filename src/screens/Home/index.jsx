@@ -11,7 +11,6 @@ import { useRootContext } from '../../hooks/rootcontext';
 import { Loading } from '../../components/loading';
 import MessengerButton from '../../components/fbmessenger';
 import { IMAGE_URL } from '../../config/config';
-// import NotificationScreen from '../../components/pushnotification';
 
 const { width } = Dimensions.get('window');
 const images = [
@@ -82,8 +81,8 @@ const HomeScreens = () => {
             <View style={styles.item}>
                 <Surface style={styles.card} elevation={2}>
                     <Image source={{ uri: `${IMAGE_URL}/${item.thumbnail_url}` }}
-                    style={styles.icon}
-                    resizeMode="cover"/>
+                        style={styles.icon}
+                        resizeMode="cover" />
                 </Surface>
                 <Text style={styles.text}>{item.name}</Text>
             </View>
@@ -98,7 +97,6 @@ const HomeScreens = () => {
     return (
         <>
             <Header />
-            {/* <NotificationScreen /> */}
             <FlatList
                 data={category}
                 keyExtractor={(item, index) => index.toString()}
@@ -116,7 +114,7 @@ const HomeScreens = () => {
                                 showsHorizontalScrollIndicator={false}
                                 renderItem={({ item }) => (
                                     <Image
-                                        source={{ uri: `${IMAGE_URL}/${item.image_url}`}}
+                                        source={{ uri: `${IMAGE_URL}/${item.image_url}` }}
                                         style={[{ width, height: 160 }]}
                                         resizeMode="cover"
                                     />
@@ -167,7 +165,7 @@ const HomeScreens = () => {
                                     <Icon source="chevron-right" size={23} color="#00CC66" />
                                 </TouchableOpacity>
                             </View>
-                            <HorizontalList products={item.products} categoryId={item.id} random={false}/>
+                            <HorizontalList products={item.products} categoryId={item.id} random={false} />
                         </View>
                     </View>
 
