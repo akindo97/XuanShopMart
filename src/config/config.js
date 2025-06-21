@@ -49,11 +49,15 @@ export const ORDER_STATUS = {
     },
     1: {
         label: 'Đợi xác nhận',
-        color: '#FF0000',
+        color: '#33FF00',
     },
     2: {
-        label: 'Đang giao',
-        color: '#33CCFF',
+        label: 'Đã xác nhận',
+        color: '#FF9900',
+    },
+    3: {
+        label: 'Đã vận chuyển',
+        color: '#33FF00',
     },
     5: {
         label: 'Hoàn thành',

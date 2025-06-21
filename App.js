@@ -19,7 +19,7 @@ import ResetPasswordScreen from './src/screens/account/resetpassword';
 import VoucherScreen from './src/screens/account/voucher';
 import FlashMessage from "react-native-flash-message";
 import { useEffect } from 'react';
-import { checkAndGetFcmToken } from './src/firebase/firebaseNotification';
+// import { checkAndGetFcmToken } from './src/firebase/firebaseNotification';
 
 const Stack = createNativeStackNavigator();
 
@@ -70,9 +70,9 @@ const MainContent = () => {
 };
 
 export default function App() {
-  useEffect(() => {
-    checkAndGetFcmToken();
-  }, []);
+  // useEffect(() => {
+  //   checkAndGetFcmToken();
+  // }, []);
 
   return (
     <PaperProvider theme={theme}>

@@ -1,10 +1,13 @@
 import { BASE_URL } from '../config/config';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { Platform } from 'react-native';
 
 // Hàm call API
 export async function apiRequest(endpoint, options = {}) {
     const url = BASE_URL + endpoint;
     const { method = 'GET', data, headers = {} } = options;
+    const platform = Platform.OS; // 'ios' hoặc 'android'
+    const deviceId = await AsyncStorage.getItem('device_id');
 
     try {
         const fetchOptions = {
@@ -13,6 +16,8 @@ export async function apiRequest(endpoint, options = {}) {
                 'Content-Type': 'application/json',
                 Accept: 'application/json',
                 'X-Requested-With': 'XMLHttpRequest',
+                'X-Device-ID': deviceId,
+                'X-Platform': platform,
                 ...headers,
                 // ...(auth && token ? { Authorization: `Bearer ${token}` } : {}),
             },
