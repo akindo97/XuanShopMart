@@ -52,6 +52,11 @@ export const RootProvider = ({ children }) => {
 
       } else {
         setAuthLoading(false);
+        // Ghi log để phân tích nếu chưa đăng nhập
+        try {
+          apiRequest('/access-log');
+        } catch (err) {
+        }
       }
     };
     loadStorage();

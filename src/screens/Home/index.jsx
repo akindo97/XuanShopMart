@@ -44,6 +44,7 @@ const HomeScreens = () => {
     }, [index]);
 
     useEffect(() => {
+
         // Nếu đã tải rồi thì thôi không tải nữa
         if (category.length && banner.length) return;
 
@@ -60,6 +61,7 @@ const HomeScreens = () => {
             }
         };
 
+        // tải banner
         const loadBanners = async () => {
             try {
                 const res = await apiRequest('/banner');

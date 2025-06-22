@@ -9,7 +9,7 @@ import { fToYen } from '../../utils/utils';
 import QuantitySelect from '../../components/quantityselect';
 import { useCartUI } from '../../hooks/useCartOverlay';
 import { useDialog } from '../../hooks/dialogcontext';
-import { MAX_WEIGHT } from '../../config/config';
+import { MAX_WEIGHT, IMAGE_URL } from '../../config/config';
 import MessengerButton from '../../components/fbmessenger';
 
 const CartScreen = () => {
@@ -53,7 +53,7 @@ const CartScreen = () => {
                                     <View key={item.id} style={styles.cCartProBlock}>
                                         {/* ảnh sản phẩm */}
                                         <View style={commonStyles.pRelative}>
-                                            <Image source={{ uri: item.thumbnail_url }} style={styles.cCartImage} />
+                                            <Image source={{ uri: `${IMAGE_URL}/${item.thumbnail_url}` }} style={styles.cCartImage} />
                                         </View>
                                         <View style={{ flex: 1, marginLeft: 10, flexDirection: 'column', justifyContent: 'space-between' }}>
                                             <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'flex-start' }}>

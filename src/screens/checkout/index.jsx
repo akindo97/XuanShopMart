@@ -3,7 +3,7 @@ import { View, Text, StyleSheet, ScrollView, Image, TouchableOpacity } from "rea
 import commonStyles from "../../utils/commonstyles";
 import { Button, Card, RadioButton, TextInput } from 'react-native-paper';
 import { Dropdown } from 'react-native-paper-dropdown';
-import { DELIVERY_TIME, PAY_METHOD } from '../../config/config';
+import { DELIVERY_TIME, PAY_METHOD, IMAGE_URL } from '../../config/config';
 import { useNavigation } from '@react-navigation/native';
 import { useCartUI } from '../../hooks/useCartOverlay';
 import { fToYen, isEmail, codeToAddress } from "../../utils/utils";
@@ -287,7 +287,7 @@ const CheckOutScreen = ({ params }) => {
                     {
                         cartItems.map((item) => (
                             <View key={item.id} style={styles.cCOTotalRow}>
-                                <Image source={{ uri: item.thumbnail_url }}
+                                <Image source={{ uri: `${IMAGE_URL}/${item.thumbnail_url}` }}
                                     style={styles.cCOTotalImage} />
                                 <Text style={styles.cCOTotalName} numberOfLines={2}>
                                     {item.name}

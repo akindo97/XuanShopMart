@@ -49,7 +49,7 @@ export const ORDER_STATUS = {
     },
     1: {
         label: 'Đợi xác nhận',
-        color: '#33FF00',
+        color: '#FF0000',
     },
     2: {
         label: 'Đã xác nhận',

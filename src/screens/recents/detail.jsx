@@ -4,7 +4,7 @@ import styles from './styles';
 import CopyToClipboard from '../../components/copy';
 import { fToYen, formatDate } from "../../utils/utils";
 import commonStyles from "../../utils/commonstyles";
-import { ORDER_STATUS, PAY_METHOD } from "../../config/config";
+import { ORDER_STATUS, PAY_METHOD, IMAGE_URL } from "../../config/config";
 
 const DetailScreen = ({ route }) => {
     // Lấy thông tin chi tiết đơn hàng từ index
@@ -91,7 +91,7 @@ const DetailScreen = ({ route }) => {
                     {
                         recent.order_items.map((item) => (
                             <View key={item.id} style={styles.cCOTotalRow}>
-                                <Image source={{ uri: item.product.thumbnail_url }}
+                                <Image source={{ uri: `${IMAGE_URL}/${item.product.thumbnail_url}` }}
                                     style={styles.cCOTotalImage} />
                                 <Text style={styles.cCOTotalName} numberOfLines={2}>
                                     {/* Tên sản phẩm lúc mua */}

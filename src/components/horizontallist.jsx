@@ -6,7 +6,7 @@ import { useCartUI } from '../hooks/useCartOverlay';
 import { useNavigation } from '@react-navigation/native';
 import { fToYen, shuffleArray } from '../utils/utils';
 import commonStyles from '../utils/commonstyles';
-import { MAX_ITEM } from '../config/config';
+import { MAX_ITEM, IMAGE_URL } from '../config/config';
 import AddToCartButton from './addtocart';
 import { ActivityIndicator } from 'react-native-paper';
 
@@ -77,7 +77,7 @@ const HorizontalList = ({
                     <Text style={styles.cCatOut}>Hết hàng</Text>
                 }
                 <View style={commonStyles.pRelative}>
-                    <Card.Cover source={{ uri: item.thumbnail_url }} style={styles.cCatImage} />
+                    <Card.Cover source={{ uri: `${IMAGE_URL}/${item.thumbnail_url}` }} style={styles.cCatImage} />
                     <View style={styles.cCatPrDeital}>
                         {/* nếu là sản phẩm đông lạnh thì hiển thị chữ "Đông" */}
                         {item.is_frozen ? <Text style={[styles.cCatTip, styles.cCatCold]}>đông</Text> : null}
