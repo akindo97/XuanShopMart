@@ -14,8 +14,11 @@ install! 'cocoapods',
 prepare_react_native_project!
 use_modular_headers!
 
+source 'https://github.com/expo/expo.git'
+source 'https://cdn.cocoapods.org/'
+
 target 'XuanShopMart' do
-  # use_expo_modules!
+  use_expo_modules!
 
   if ENV['EXPO_USE_COMMUNITY_AUTOLINKING'] == '1'
     config_command = ['node', '-e', "process.argv=['', '', 'config'];require('@react-native-community/cli').run()"];

@@ -205,6 +205,8 @@ export default function ProductScreen({ route }) {
                 <HorizontalList
                     // Các sản phẩm trong danh mục
                     products={relatedProducts.products}
+                    // id của category
+                    categoryId={product.category_id}
                     // Ẩn sản phẩm hiện tại
                     hideId={product.id}
                 />

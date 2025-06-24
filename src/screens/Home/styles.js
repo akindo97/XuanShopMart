@@ -42,6 +42,15 @@ export default StyleSheet.create({
         marginTop: 6,
         textAlign: 'center',
     },
+    cFooterWidth: {
+        width: screenWidth,
+        marginTop: 10,
+        backgroundColor: '#ffffff',
+        paddingBottom: 20,
+    },
+    cInfoText: {
+        paddingVertical: 6,
+    },
     cCatBlock: {
         backgroundColor: '#FFF',
         marginTop: 10,

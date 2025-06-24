@@ -2,8 +2,9 @@
 import { getToken, requestPermission, getMessaging, isDevice } from '@react-native-firebase/messaging';
 import { Platform, PermissionsAndroid } from 'react-native';
 import { getApp } from '@react-native-firebase/app';
+import { apiRequest } from '../api';
 
-export const checkAndGetFcmToken = async () => {
+export const checkAndGetFcmToken = async (userToken = null) => {
   try {
     const app = getApp(); // Lấy instance Firebase app
     const messaging = getMessaging(app); // Modular way
@@ -24,9 +25,29 @@ export const checkAndGetFcmToken = async () => {
       return null;
     }
 
-    const token = await getToken(messaging);
-    console.log('FCM Token:', token);
-    return token;
+    const FCMtoken = await getToken(messaging);
+    console.log('FCM Token:', FCMtoken);
+
+    // Thêm hoặc cập nhật hoặc check token
+    try {
+      const res = await apiRequest('/notifica-token', {
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${userToken}`
+        },
+        data: {
+          token: FCMtoken,
+        }
+      });
+      const { data } = res;
+      console.log(data);
+    } catch (err) {
+      console.log(err.message || 'Đã có lỗi xảy ra');
+    } finally {
+
+    }
+
+    return FCMtoken;
   } catch (err) {
     console.error('Lỗi lấy FCM token:', err);
     return null;

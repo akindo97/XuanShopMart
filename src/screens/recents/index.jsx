@@ -41,10 +41,7 @@ const RecentsScreen = () => {
                         method: 'POST',
                         headers: {
                             Authorization: `Bearer ${token}`,
-                        },
-                        data: {
-                            device_id: deviceId,
-                        },
+                        }
                     });
                     setRecents(res.data);
                 } catch (err) {
@@ -57,29 +54,6 @@ const RecentsScreen = () => {
             recentsApi();
         }, [token, deviceId])
     );
-
-    // useEffect(() => {
-    //     const recentsApi = async () => {
-    //         try {
-    //             const res = await apiRequest('/recents', {
-    //                 method: 'POST',
-    //                 headers: {
-    //                     Authorization: `Bearer ${token}`
-    //                 },
-    //                 data: {
-    //                     "device_id": deviceId
-    //                 }
-    //             });
-    //             console.log(res.data);
-    //             setRecents(res.data);
-    //         } catch (err) {
-    //             console.log(err.message || 'Đã có lỗi xảy ra');
-    //         } finally {
-    //             setLoading(false);
-    //         }
-    //     }
-    //     recentsApi();
-    // }, []);
 
     useEffect(() => {
         const filterRecents = recents.filter((recent) => selected == 0 || recent.order_status == selected);

@@ -10,6 +10,8 @@ import { showMessage } from 'react-native-flash-message';
 import { FullLoading } from '../../components/loading';
 import { useDialog } from '../../hooks/dialogcontext';
 import { isEmail } from '../../utils/utils';
+import { checkAndGetFcmToken } from '../../firebase/firebaseNotification';
+import { RootProvider } from '../../hooks/rootcontext';
 
 const RegisterLoginScreen = ({ route }) => {
     const navigation = useNavigation();
@@ -72,6 +74,9 @@ const RegisterLoginScreen = ({ route }) => {
                 address: address,
                 token: token
             });
+
+            // set thông báo cho tài khoản
+            checkAndGetFcmToken(token);
 
             // Nếu có đơn hàng trong thiết bị
             if (res.has_purchases) {

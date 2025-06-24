@@ -3,7 +3,6 @@ import React, { useEffect, useState, useRef, useMemo } from 'react';
 import { View, ScrollView, StyleSheet, TouchableOpacity, InteractionManager } from 'react-native';
 import Header from '../../components/header';
 import { Text } from 'react-native-paper';
-import { XproductCatalog } from '../../utils/fakeapi';
 import commonStyles from '../../utils/commonstyles';
 import HorizontalList from '../../components/horizontallist';
 import { useRootContext } from '../../hooks/rootcontext';
@@ -24,7 +23,8 @@ const StoreScreen = ({ route }) => {
     // Danh sách mới
     const newCategory = useMemo(() => {
         // Gom tât cả sản phẩm từ các danh mục để tạo danh sách tất cả sản phẩm
-        const allProduct = category.flatMap((catalog) => catalog.products);
+        // Loại bỏ sale để tránh trùng lặp
+        const allProduct = category.filter((catalog) => catalog.name !== 'Sale').flatMap((catalog) => catalog.products);
         // Tạo danh sách mới với mục "Tất cả" ở đầu
         return (
             [

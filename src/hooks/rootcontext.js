@@ -2,6 +2,7 @@ import React, { createContext, useState, useContext, useEffect } from 'react';
 import { apiRequest } from '../api';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import uuid from 'react-native-uuid';
+import { checkAndGetFcmToken } from '../firebase/firebaseNotification';
 
 // Tạo context gốc
 const RootContext = createContext(null);
@@ -58,6 +59,9 @@ export const RootProvider = ({ children }) => {
         } catch (err) {
         }
       }
+
+      // Xin quyền thông báo và ghi
+      checkAndGetFcmToken(storedToken);
     };
     loadStorage();
   }, []);

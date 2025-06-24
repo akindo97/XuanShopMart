@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Text, Image, View, FlatList, TouchableOpacity, Dimensions } from 'react-native';
-import { TouchableRipple, Surface, Icon, ActivityIndicator } from 'react-native-paper';
+import { Text, Image, View, FlatList, TouchableOpacity, Dimensions, Platform, Alert, Linking } from 'react-native';
+import { TouchableRipple, Surface, Icon, ActivityIndicator, Button } from 'react-native-paper';
 import Header from '../../components/header';
 import { useNavigation } from '@react-navigation/native';
 import HorizontalList from '../../components/horizontallist';
@@ -10,14 +10,12 @@ import { apiRequest } from '../../api';
 import { useRootContext } from '../../hooks/rootcontext';
 import { Loading } from '../../components/loading';
 import MessengerButton from '../../components/fbmessenger';
-import { IMAGE_URL } from '../../config/config';
+import { IMAGE_URL, AppStore, CHPlay } from '../../config/config';
+import Constants from 'expo-constants';
+import { compareVersion } from '../../utils/utils';
+import stepsImg from '../../../assets/images/steps.png';
 
 const { width } = Dimensions.get('window');
-const images = [
-    { id: '1', uri: 'images/mega-sale.jpg' },
-    { id: '2', uri: 'images/salepromax.jpg' },
-    { id: '3', uri: 'images/discount.jpg' },
-];
 
 const HomeScreens = () => {
     const navigation = useNavigation();
@@ -34,17 +32,17 @@ const HomeScreens = () => {
 
     useEffect(() => {
         const interval = setInterval(() => {
+            if (!banner.length) return;
             let nextIndex = index + 1;
-            if (nextIndex >= images.length) nextIndex = 0;
+            if (nextIndex >= banner.length) nextIndex = 0;
             setIndex(nextIndex);
             flatListRef.current?.scrollToIndex({ index: nextIndex, animated: true });
         }, 5000);
 
         return () => clearInterval(interval);
-    }, [index]);
+    }, [index, banner]);
 
     useEffect(() => {
-
         // Nếu đã tải rồi thì thôi không tải nữa
         if (category.length && banner.length) return;
 
@@ -52,30 +50,70 @@ const HomeScreens = () => {
             setLoading(true);
             try {
                 const res = await apiRequest('/category');
-                console.log(res.data);
-                setCategory(res.data);
+                const { settings, banners, categories } = res;
+                // console.log(res);
+
+                // Banner
+                setBanner(banners);
+                // Check cập nhật
+                const checkUpdate = await checkForUpdate(settings);
+                if (checkUpdate) return; // nếu cần update thì khỏi tải sản phẩm
+                // Danh mục và sản phẩm
+                setCategory(categories);
+
+
             } catch (err) {
-                setError(err.message || 'Đã có lỗi xảy ra');
+                Alert.alert('Không thể tải danh sách sản phẩm, vui lòng kiểm tra kết nối mạng hoặc cập nhật phiên bản mới.');
             } finally {
                 setLoading(false);
             }
         };
 
-        // tải banner
-        const loadBanners = async () => {
-            try {
-                const res = await apiRequest('/banner');
-                setBanner(res.data);
-            } catch (err) {
-                setError(err.message || 'Đã có lỗi xảy ra');
-            } finally {
-                setLoading(false);
-            }
+        loadProducts();
+    }, []);
+
+    // check cập nhật, bắt cập nhật nếu phiên bản quá cũ
+    const checkForUpdate = async (versions) => {
+        const currentVersion = Constants.expoConfig.version;
+
+        if (!versions || !currentVersion) return false;
+
+        const platform = Platform.OS;
+        const lowestVersion = platform === 'android'
+            ? versions.lowest_android_version
+            : versions.lowest_ios_version;
+
+        const result = compareVersion(currentVersion, lowestVersion);
+
+        if (result === -1) {
+            Alert.alert(
+                'Yêu cầu cập nhật',
+                'Vui lòng cập nhật phiên bản mới để sử dụng ứng dụng.',
+                [
+                    {
+                        text: 'Cập nhật ngay',
+                        onPress: () => {
+                            const url = platform === 'android'
+                                ? CHPlay
+                                : AppStore;
+                            Linking.openURL(url);
+                        },
+                    },
+                ],
+                { cancelable: false }
+            );
+
+            return true;
         }
 
-        loadProducts();
-        loadBanners();
-    }, []);
+        return false;
+    };
+
+    // Lấy tỷ lệ ảnh dưới footer
+    // const aspectRatio = useMemo(() => {
+    //     const { width, height } = Image.resolveAssetSource(stepsImg);
+    //     return width / height;
+    // }, []);
 
     // danh mục sản phẩm
     const catalogItem = ({ item }) => (
@@ -93,7 +131,7 @@ const HomeScreens = () => {
 
     // Loading khi tải dữ liệu
     if (loading) {
-        return (<Loading />);
+        return (<Loading top={100}/>);
     }
 
     return (
@@ -129,7 +167,7 @@ const HomeScreens = () => {
 
                             {/* Indicator chấm tròn */}
                             <View style={styles.dotContainer}>
-                                {images.map((_, i) => (
+                                {banner.map((_, i) => (
                                     <View
                                         key={i}
                                         style={[
@@ -170,8 +208,26 @@ const HomeScreens = () => {
                             <HorizontalList products={item.products} categoryId={item.id} random={false} />
                         </View>
                     </View>
-
                 )}
+                ListFooterComponent={
+                    <View style={styles.cFooterWidth}>
+                        <Image
+                            source={stepsImg}
+                            style={{ width: '100%', height: 520 }}
+                            resizeMode="conver"
+                        />
+                        <View style={{ padding: 10, paddingTop: 20 }}>
+                            <Text style={styles.cInfoText}><Icon source='domain' size={20} />　Công ty TNHH TPX</Text>
+                            <Text style={styles.cInfoText}><Icon source='map-marker-outline' size={20} />　Chi nhánh Hiroshima 広島県広島市西区三篠町1-7-26-1F</Text>
+                            <Text style={styles.cInfoText}><Icon source='email-outline' size={20} />　E-mail xuanshopgigido@email.com</Text>
+                            <Text style={styles.cInfoText}><Icon source='phone-outline' size={20} />　Hotline: 07022285999</Text>
+                        </View>
+                        <View style={{ padding: 10, paddingTop: 20 }}>
+                            <Text style={{ alignSelf: 'center' }}>Copyright © 2025 Sesofoods all rights reserved.</Text>
+                            <Text style={{ alignSelf: 'center' }}>Powered by TPX-AK Inc.</Text>
+                        </View>
+                    </View>
+                }
             />
             {/* Messenger button */}
             <MessengerButton />

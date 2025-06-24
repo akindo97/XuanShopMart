@@ -10,8 +10,8 @@ import { MAX_ITEM, IMAGE_URL } from '../config/config';
 import AddToCartButton from './addtocart';
 import { ActivityIndicator } from 'react-native-paper';
 
-const HorizontalList = ({ 
-    products = [], isHorizontal = true, random = true, hideId = null, onEndReached, loading = false 
+const HorizontalList = ({
+    products = [], categoryId = 0, isHorizontal = true, random = true, hideId = null, onEndReached, loading = false
 }) => {
     // Có random hay không - random
     // Các sản phẩm trong danh mục - products
@@ -34,7 +34,8 @@ const HorizontalList = ({
             // thêm item "Xem thêm" vào cuối danh sách
             handelList.push({
                 isSeeMore: true,
-                id: -1
+                id: -1,
+                category_id: categoryId,
             });
         }
         setRenderList(handelList);
@@ -47,8 +48,14 @@ const HorizontalList = ({
             return (
                 <TouchableOpacity style={styles.cCatMore}
                     onPress={() => {
-                        navigation.navigate('Store', {
-                            categoryId: item.category_id
+                        // navigation.navigate('Store', {
+                        //     categoryId: item.category_id
+                        // })
+                        navigation.navigate('Main', {
+                            screen: 'Store',
+                            params: {
+                                categoryId: item.category_id
+                            },
                         })
                     }}>
                     <View style={styles.cCatMoreIcon}>

@@ -73,3 +73,19 @@ export const shuffleArray = (array) => {
   }
   return result;
 }
+
+// So sánh phiên bản
+export const compareVersion = (current, latest) => {
+  const currParts = current.split('.').map(Number);
+  const latestParts = latest.split('.').map(Number);
+  const maxLength = Math.max(currParts.length, latestParts.length);
+
+  for (let i = 0; i < maxLength; i++) {
+    const curr = currParts[i] || 0;
+    const latestVal = latestParts[i] || 0;
+    if (curr < latestVal) return -1;
+    if (curr > latestVal) return 1;
+  }
+  return 0;
+};
+
