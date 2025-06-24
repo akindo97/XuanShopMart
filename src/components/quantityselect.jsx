@@ -9,19 +9,29 @@ const QuantitySelect = ({ defaultQlt = 1, size = 0, min = 0, max = 100, onChange
     const [quantity, setQuantity] = useState(defaultQlt);
 
     const didMount = useRef(false); // dùng để kiểm tra mount
+    const isFromOutside = useRef(false); // Thêm cờ để xác định thay đổi từ ngoài vào
 
     // Cập nhật giá trị khi defaultQlt thay đổi từ bên ngoài
     useEffect(() => {
-        setQuantity(defaultQlt);
+        if (defaultQlt !== quantity) {
+            isFromOutside.current = true;
+            setQuantity(defaultQlt);
+        }
     }, [defaultQlt]);
 
     // Cập nhật số lượng khi giá trị quantity thay đổi
     useEffect(() => {
-        if (didMount.current) {
-            onChange(quantity);
-        } else {
-            didMount.current = true; // lần đầu mount thì không gọi onChange
+        if (!didMount.current) {
+            didMount.current = true;
+            return;
         }
+        
+        if (isFromOutside.current) {
+            isFromOutside.current = false;
+            return; // bỏ qua onChange nếu là từ defaultQlt
+        }
+        
+        onChange(quantity);
     }, [quantity]);
     return (
         <Pressable style={styles.cAddBlock} onPress={(e) => {

@@ -36,9 +36,9 @@ export const CartUIProvider = ({ children }) => {
   };
 
   // Hàm ẩn thông tin sản phẩm
-  const addToCartHide = () => {
-    setVisible(false);
-  };
+  // const addToCartHide = () => {
+  //   setVisible(false);
+  // };
 
   // Hàm thêm sản phẩm vào giỏ hàng
   const addToCart = (quantity, productDetail) => {
@@ -53,8 +53,8 @@ export const CartUIProvider = ({ children }) => {
       // Nếu sản phẩm chưa có, thêm mới với số lượng 1
       return [...prevItems, { ...productDetail, quantity: quantity }];
     });
-    // Ẩn thông tin sản phẩm sau khi thêm vào giỏ hàng
-    addToCartHide();
+    // // Ẩn thông tin sản phẩm sau khi thêm vào giỏ hàng
+    // addToCartHide();
     // Hiển thị thông báo đã thêm vào giỏ hàng
     showMessage({
       message: 'Đã thêm vào giỏ hàng',
@@ -104,7 +104,6 @@ export const CartUIProvider = ({ children }) => {
 
   // Hàm load giỏ hàng từ AsyncStorage khi component mount
   useEffect(() => {
-    console.log('Loading cart from AsyncStorage...');
     const loadCart = async () => {
       try {
         const storedCart = await AsyncStorage.getItem('cartItems');
@@ -123,7 +122,7 @@ export const CartUIProvider = ({ children }) => {
 
   return (
     <CartUIContext.Provider value={{
-      visible, productDetail, addToCartShow, addToCartHide,
+      visible, productDetail, addToCartShow,
       cartItems, totalQuantity, totalPrice, getbonusPoint, totalWeight,
       setCartItems, addToCart, changeQuantity, removeFromCart, clearCart,
       selectId, setSelectId
