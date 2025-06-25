@@ -6,7 +6,9 @@ import { Text } from 'react-native-paper';
 import commonStyles from '../../utils/commonstyles';
 import HorizontalList from '../../components/horizontallist';
 import { useRootContext } from '../../hooks/rootcontext';
+import { Loading } from '../../components/loading';
 import MessengerButton from '../../components/fbmessenger';
+import { shuffleArray } from '../../utils/utils';
 
 const StoreScreen = ({ route }) => {
     const categoryId = route?.params?.categoryId ?? 0;
@@ -15,10 +17,15 @@ const StoreScreen = ({ route }) => {
 
     const [loading, setLoading] = useState(false);
 
+    // Kiểm tra load lần đầu
+    const is_first = useRef(true);
+    // Tất cả sản phẩm trong 1 danh mục
+    const [allProductInCa, setAllProductInCa] = useState([]);
+
     // Các sản phẩm đang hiển thị
     const [displayProducts, setDisplayProducts] = useState([]);
     const [page, setPage] = useState(1);
-    const itemsPerPage = 30;
+    const itemsPerPage = 20;
 
     // Danh sách mới
     const newCategory = useMemo(() => {
@@ -66,23 +73,40 @@ const StoreScreen = ({ route }) => {
 
 
     useEffect(() => {
+        console.log('Chạy hàm khi select')
         const showNow = newCategory.find((item) => item.id === selected);
 
         if (showNow) {
-            const firstPage = showNow.products.slice(0, itemsPerPage);
-            setDisplayProducts(firstPage);
+            // Đưa các sản phẩm hiển thị lại trang 1
             setPage(1);
+            // Xáo trộn thứ tự các sản phẩm
+            const shuffle = shuffleArray(showNow.products);
+            // Lưu để hiển thị thêm khi cuộn
+            setAllProductInCa(shuffle);
+            // Hiển thị số sản phẩm đầu tiên
+            const firstPage = shuffle.slice(0, itemsPerPage);
+            setDisplayProducts(firstPage);
         }
     }, [selected, newCategory]);
 
     const handleLoadMore = () => {
-        if (loading) return; // tránh gọi liên tục
+        // console.log('handleLoadMore');
+        // console.log('is_first.current', is_first.current);
+        // console.log('loading', loading);
+        
+        // Tránh gọi đúp khi chạy
+        if (is_first.current) {
+            is_first.current = false;
+            return;
+        };
+        // tránh gọi liên tục
+        if (loading) return;
 
         InteractionManager.runAfterInteractions(() => {
-            const currentCategory = newCategory.find((item) => item.id === selected);
-            const totalProducts = currentCategory.products;
-            const nextPage = page + 1;
-            const nextItems = totalProducts.slice(0, nextPage * itemsPerPage);
+            const nextPage = page + 1; // Thêm page
+            // Cắt thêm các item mới
+            const nextItems = allProductInCa.slice(0, nextPage * itemsPerPage);
+            // console.log('nextPage * itemsPerPage', nextPage * itemsPerPage)
 
             if (nextItems.length === displayProducts.length) return;
 
@@ -90,8 +114,8 @@ const StoreScreen = ({ route }) => {
 
             // Giả lập delay tải (giống fetch API)
             setTimeout(() => {
-                setDisplayProducts(nextItems);
-                setPage(nextPage);
+                setDisplayProducts(nextItems); // Thêm các sản phẩm mới
+                setPage(nextPage); // Thêm trang
                 setLoading(false);
             }, 300); // 300ms delay cho mượt
         });

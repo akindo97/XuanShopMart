@@ -23,10 +23,10 @@
                                 <color key="tintColor" name="SplashScreenBackground"/>
                             </imageView>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" ambiguous="YES" text="Đang tải dữ liệu ..." textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="4qN-Kx-Vse">
-                                <rect key="frame" x="35" y="753" width="342" height="94.999999999985675"/>
+                                <rect key="frame" x="36" y="748" width="342" height="94.999999999985675"/>
                                 <constraints>
-                                    <constraint firstAttribute="height" constant="110" id="UXa-B5-Td6"/>
-                                    <constraint firstAttribute="width" constant="349" id="rhK-hl-xVv"/>
+                                    <constraint firstAttribute="height" id="UXa-B5-Td6"/>
+                                    <constraint firstAttribute="width" id="rhK-hl-xVv"/>
                                 </constraints>
                                 <fontDescription key="fontDescription" type="system" weight="heavy" pointSize="20"/>
                                 <color key="textColor" red="0.1688564122" green="0.39870977400000002" blue="0.19603979590000001" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>

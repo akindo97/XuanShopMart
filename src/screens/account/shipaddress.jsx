@@ -58,6 +58,7 @@ const navigation = useNavigation();
 
         if (!lastName.trim()) newErrors.lastName = "Vui lòng nhập tên";
         if (!postalCode.trim()) newErrors.postalCode = "Vui lòng mã bưu điện";
+        if (postalCode.trim().length !== 7) newErrors.postalCode = "Vui lòng kiểm tra mã bưu điện";
         if (!address1.trim()) newErrors.address1 = "Vui lòng nhập địa chỉ";
         if (!address2.trim()) newErrors.address2 = "Vui lòng nhập địa chỉ";
         if (!address3.trim()) newErrors.address3 = "Vui lòng nhập địa chỉ";

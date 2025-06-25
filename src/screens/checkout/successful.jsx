@@ -6,11 +6,11 @@ import { PAY_METHOD } from '../../config/config';
 import { Button } from "react-native-paper"
 import { useNavigation } from '@react-navigation/native';
 import CopyToClipboard from "../../components/copy";
+import { useRootContext } from "../../hooks/rootcontext";
 
 const SuccessfulScreen = ({ route }) => {
     const { result, settings } = route.params;
-    console.log('result', result);
-    console.log('setting', settings);
+    const { auth } = useRootContext();
 
     const navigation = useNavigation();
 
@@ -48,12 +48,20 @@ const SuccessfulScreen = ({ route }) => {
                             {settings[PAY_METHOD[result.purchased_product.payment_method].key]}
                         </Text>
                     </View>
-                    <View style={styles.cSussGuideBlock}>
-                        <Text>
-                            Đăng nhập / đăng ký để nhận nhiều ưu đã nhé.
-                        </Text>
-                        <Button onPress={() => console.log(1)}>Đăng nhập/Đăng ký</Button>
-                    </View>
+                    {/* Nếu chưa đăng nhập */}
+                    {!auth ?
+                        <View style={styles.cSussGuideBlock}>
+                            <Text>
+                                Đăng nhập / đăng ký để nhận nhiều ưu đã nhé.
+                            </Text>
+                            <Button onPress={() => {
+                                navigation.navigate('RegisterLogin');
+                            }}>
+                                Đăng nhập/Đăng ký
+                            </Button>
+                        </View>
+                        : null
+                    }
                     <View style={{ flexDirection: 'row', justifyContent: 'space-between', paddingTop: 15 }}>
                         <Button mode="contained" style={commonStyles.buttonColor}
                             onPress={() => navigation.navigate('Main', {

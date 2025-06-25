@@ -11,7 +11,7 @@ import AddToCartButton from './addtocart';
 import { ActivityIndicator } from 'react-native-paper';
 
 const HorizontalList = ({
-    products = [], categoryId = 0, isHorizontal = true, random = true, hideId = null, onEndReached, loading = false
+    products = [], categoryId = 0, isHorizontal = true, random = false, hideId = null, onEndReached, loading = false
 }) => {
     // Có random hay không - random
     // Các sản phẩm trong danh mục - products
@@ -119,8 +119,8 @@ const HorizontalList = ({
             ListFooterComponent={loading && <ActivityIndicator size="large" />}
 
             // Tối ưu performance
-            initialNumToRender={10}               // Số item render ban đầu
-            maxToRenderPerBatch={10}             // Số item tối đa mỗi lần batch render
+            initialNumToRender={20}               // Số item render ban đầu
+            maxToRenderPerBatch={20}             // Số item tối đa mỗi lần batch render
             windowSize={5}                       // Vùng render trước và sau màn hình
 
             removeClippedSubviews={true}         // Tự động remove item đã cuộn khỏi view

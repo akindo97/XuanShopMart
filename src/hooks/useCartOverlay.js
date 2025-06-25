@@ -25,10 +25,6 @@ export const CartUIProvider = ({ children }) => {
   // 
   const [selectId, setSelectId] = useState(0);
 
-  useEffect(() => {
-    console.log(cartItems);
-  }, [cartItems])
-
   // Hàm hiển thị thông tin sản phẩm để thêm vào giỏ hàng
   const addToCartShow = (productDetail) => {
     setproductDetail(productDetail);

@@ -43,7 +43,7 @@ const ShippingInfo = ({
                 <TextInput mode="flat" underlineColor="transparent"
                     ref={inputRefs.lastName}
                     error={!!errors.lastName}
-                    label="Tên đệm & tên"
+                    label="Tên đệm & tên *"
                     value={lastName}
                     onChangeText={setLastName}
                     right={<TextInput.Icon style={styles.cCOInputIcon} icon="card-account-details-outline" color="#AAAAAA" />}
@@ -56,7 +56,7 @@ const ShippingInfo = ({
                 keyboardType="numeric"
                 ref={inputRefs.postalCode}
                 error={!!errors.postalCode}
-                label="Mã bưu điện - 郵便番号 (vd:1235678)"
+                label="Mã bưu điện - 郵便番号 (vd:1235678) *"
                 value={postalCode}
                 onChangeText={(text) => setPostalCode(text.replace(/[^0-9]/g, ''))}
                 right={<TextInput.Icon style={styles.cCOInputIcon} icon="office-building-marker-outline" color="#AAAAAA" />}
@@ -68,7 +68,7 @@ const ShippingInfo = ({
             <TextInput mode="flat" underlineColor="transparent"
                 ref={inputRefs.address1}
                 error={!!errors.address1}
-                label="Tỉnh - 都道府県"
+                label="Tỉnh - 都道府県 *"
                 value={address1}
                 onChangeText={setAddress1}
                 right={<TextInput.Icon style={styles.cCOInputIcon} icon="map-marker-outline" color="#AAAAAA" />}
@@ -79,7 +79,7 @@ const ShippingInfo = ({
             <TextInput mode="flat" underlineColor="transparent"
                 ref={inputRefs.address2}
                 error={!!errors.address2}
-                label="Thành phố/khu vực - 市区町村"
+                label="Thành phố/khu vực - 市区町村 *"
                 value={address2}
                 onChangeText={setAddress2}
                 right={<TextInput.Icon style={styles.cCOInputIcon} icon="map-marker-outline" color="#AAAAAA" />}
@@ -90,7 +90,7 @@ const ShippingInfo = ({
             <TextInput mode="flat" underlineColor="transparent"
                 ref={inputRefs.address3}
                 error={!!errors.address3}
-                label="Địa chỉ cụ thể - 番地・建物名・部屋番号"
+                label="Địa chỉ cụ thể - 番地・建物名・部屋番号 *"
                 value={address3}
                 onChangeText={setAddress3}
                 right={<TextInput.Icon style={styles.cCOInputIcon} icon="map-marker-outline" color="#AAAAAA" />}

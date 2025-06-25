@@ -121,10 +121,12 @@ const CheckOutScreen = ({ params }) => {
 
         if (!lastName.trim()) newErrors.lastName = "Vui lòng nhập tên";
         if (!postalCode.trim()) newErrors.postalCode = "Vui lòng mã bưu điện";
+        if (postalCode.trim().length !== 7) newErrors.postalCode = "Vui lòng kiểm tra mã bưu điện";
         if (!address1.trim()) newErrors.address1 = "Vui lòng nhập địa chỉ";
         if (!address2.trim()) newErrors.address2 = "Vui lòng nhập địa chỉ";
         if (!address3.trim()) newErrors.address3 = "Vui lòng nhập địa chỉ";
-        
+
+
         if (Object.keys(newErrors).length > 0) {
             setErrors(newErrors);
 
@@ -152,8 +154,7 @@ const CheckOutScreen = ({ params }) => {
     const checkOut = async () => {
         // Kiểm tra các INPUT cần
         const isValidateInput = validateAndFocus();
-
-
+        
         if (isValidateInput) {
             try {
                 showFullLoading(true);
@@ -215,12 +216,19 @@ const CheckOutScreen = ({ params }) => {
                     </View> : null
                 }
 
+                {/* Tip */}
+                <View>
+                    <Text style={{ fontFamily: 'monospace', color: '#696969', marginTop: 10 }}>
+                        Lưu ý: Các trường có dấu '*' là các trường cần thiết. hãy kiểm tra các thông tin trước khi xác nhận nhé.
+                    </Text>
+                </View>
+
                 {/* Thông tin liên hệ */}
-                <Text style={styles.cCOTitle}>Thông tin liên hệ</Text>
+                <Text style={styles.cCOTitle}>Thông tin liên hỆ</Text>
                 <TextInput mode="flat" underlineColor="transparent"
                     ref={inputRefs.email}
                     error={!!errors.email}
-                    label="E-mail"
+                    label="E-mail *"
                     value={email}
                     onChangeText={setEmail}
                     right={<TextInput.Icon style={styles.cCOInputIcon} icon="email" color="#AAAAAA" />}
@@ -246,7 +254,7 @@ const CheckOutScreen = ({ params }) => {
                 />
 
                 {/* Hình thức thanh toán */}
-                <Text style={styles.cCOTitle}>Hình thức thanh toán</Text>
+                <Text style={styles.cCOTitle}>Hình thức thanh toán  <Force /></Text>
                 <RadioButton.Group onValueChange={value => setPaymentMethod(value)} value={paymentMethod}>
                     {/* Chuyển khoản ngân hàng */}
                     <View style={styles.cCORadioItem1}>
@@ -350,5 +358,8 @@ const CheckOutScreen = ({ params }) => {
         </ScrollView>
     )
 }
+
+// Dấu *
+const Force = () => <Text style={{ color: 'red' }}>*</Text>;
 
 export default CheckOutScreen;

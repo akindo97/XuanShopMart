@@ -47,7 +47,11 @@ const AccountScreen = () => {
                 navigation.navigate('Voucher');
             }
         },
-        { id: 5, name: 'Điều khoản sử dụng', subTitle: 'Chính sách sử sụng dịch vụ', icon: 'shield-account-outline' },
+        { id: 5, name: 'Điều khoản & chính sách', subTitle: 'Bảo mật, sử dụng và hoàn trả', icon: 'shield-account-outline',
+            onPress: () => {
+                navigation.navigate('PolicyPrivacy')
+            }
+        },
         {
             id: 6, name: 'Liên hệ', subTitle: 'Liên hệ trực tiếp với chúng tôi', icon: 'chat-outline',
             onPress: () => openMessenger()
