@@ -224,7 +224,7 @@ const CheckOutScreen = ({ params }) => {
                 </View>
 
                 {/* Thông tin liên hệ */}
-                <Text style={styles.cCOTitle}>Thông tin liên hỆ</Text>
+                <Text style={styles.cCOTitle}>Thông tin liên hệ</Text>
                 <TextInput mode="flat" underlineColor="transparent"
                     ref={inputRefs.email}
                     error={!!errors.email}
