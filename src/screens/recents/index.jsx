@@ -11,7 +11,6 @@ import { fToYen, formatDate } from '../../utils/utils';
 import { Loading } from '../../components/loading';
 import { useRootContext } from '../../hooks/rootcontext';
 import { useFocusEffect } from '@react-navigation/native';
-import { SafeAreaView } from 'react-native-safe-area-context';
 import MessengerButton from '../../components/fbmessenger';
 
 const RecentsScreen = () => {

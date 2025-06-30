@@ -9,11 +9,14 @@ import StoreScreen from '../screens/store';
 import CartScreen from '../screens/cart';
 import RecentsScreen from '../screens/recents';
 import AccountScreen from '../screens/account';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 const Tab = createBottomTabNavigator();
 
 const Footer = () => {
     const { totalQuantity } = useCartUI();
+    const insets = useSafeAreaInsets(); // ✅ lấy thông tin vùng an toàn
+    console.log('Footer rendered with insets:', insets);
 
     return (
         <Tab.Navigator
@@ -22,11 +25,12 @@ const Footer = () => {
                 tabBarActiveTintColor: '#00CC66',
                 tabBarInactiveTintColor: 'gray',
                 tabBarStyle: {
-                    height: 92,
+                    height: 56 + insets.bottom, // chiều cao động
                     paddingTop: 3,
+                    paddingBottom: insets.bottom, // thêm padding đáy đúng chuẩn
                 },
                 tabBarLabelStyle: {
-                    paddingTop: 6,
+                    paddingTop: 5,
                     fontSize: 12,
                 },
                 tabBarIcon: ({ focused, color }) => {

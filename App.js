@@ -19,6 +19,8 @@ import ResetPasswordScreen from './src/screens/account/resetpassword';
 import VoucherScreen from './src/screens/account/voucher';
 import PolicyPrivacyScreen from './src/screens/account/policyandprivacy';
 import FlashMessage from "react-native-flash-message";
+import { SafeAreaView } from 'react-native-safe-area-context';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 const Stack = createNativeStackNavigator();
 
@@ -72,15 +74,17 @@ const MainContent = () => {
 export default function App() {
 
   return (
-    <PaperProvider theme={theme}>
-      <DialogProvider>
-        <RootProvider>
-          <CartUIProvider>
-            <MainContent />
-          </CartUIProvider>
-        </RootProvider>
-      </DialogProvider>
-    </PaperProvider>
+    <SafeAreaView style={{ flex: 1}} edges={['bottom']}>
+      <PaperProvider theme={theme}>
+        <DialogProvider>
+          <RootProvider>
+            <CartUIProvider>
+              <MainContent />
+            </CartUIProvider>
+          </RootProvider>
+        </DialogProvider>
+      </PaperProvider>
+    </SafeAreaView>
   );
 }
 

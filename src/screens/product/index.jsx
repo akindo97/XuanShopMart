@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useCallback, useMemo } from 'react';
-import { View, Text, FlatList, Image, TouchableOpacity,Dimensions } from 'react-native';
+import { View, Text, FlatList, Image, TouchableOpacity, Dimensions, ScrollView } from 'react-native';
 import { Icon, Button } from 'react-native-paper';
 import { useCartUI } from '../../hooks/useCartOverlay';
 import HorizontalList from '../../components/horizontallist';
@@ -102,115 +102,121 @@ export default function ProductScreen({ route }) {
 
     return (
         <View style={styles.container}>
-            {/* Slide các ảnh sản phẩm */}
-            <View style={styles.cProImageBlock}>
-                {loading ?
-                    <Loading text={''} top={60} />
-                    :
-                    productImages.length ?
-                        <FlatList
-                            data={productImages}
-                            horizontal
-                            pagingEnabled
-                            showsHorizontalScrollIndicator={false}
-                            keyExtractor={(item) => item.id}
-                            renderItem={({ item }) => (
-                                <Image source={{ uri: `${IMAGE_URL}/${item.image_url}` }} style={styles.cProImage} />
-                            )}
-                            onScroll={onScroll}
-                            scrollEventThrottle={16}
-                        /> :
-                        <Image source={noImage} style={styles.cProImage} />
-                }
+            <ScrollView showsVerticalScrollIndicator={false}>
+                {/* Slide các ảnh sản phẩm */}
+                <View style={styles.cProImageBlock}>
+                    {loading ?
+                        <Loading text={''} top={60} />
+                        :
+                        productImages.length ?
+                            <FlatList
+                                data={productImages}
+                                horizontal
+                                pagingEnabled
+                                showsHorizontalScrollIndicator={false}
+                                keyExtractor={(item) => item.id}
+                                renderItem={({ item }) => (
+                                    <Image source={{ uri: `${IMAGE_URL}/${item.image_url}` }} style={styles.cProImage} />
+                                )}
+                                onScroll={onScroll}
+                                scrollEventThrottle={16}
+                            /> :
+                            <Image source={noImage} style={styles.cProImage} />
+                    }
 
-                <View style={styles.cProCounter}>
-                    <Text style={styles.cProCounText}>{currentIndex + 1}/{productImages.length}</Text>
+                    <View style={styles.cProCounter}>
+                        <Text style={styles.cProCounText}>{currentIndex + 1}/{productImages.length}</Text>
+                    </View>
                 </View>
-            </View>
-            <View style={styles.CproDelBlock}>
-                <View style={styles.cProHov}>
-                    <View style={{ flexDirection: 'row', alignItems: 'flex-end' }}>
-                        {/* Giá */}
-                        <Text style={styles.cProPrice}>
-                            ￥{fToYen(product.price)}
-                        </Text>
-                        {/* Giá gốc */}
-                        <Text style={[commonStyles.oldPrice, commonStyles.pLeft10]}>
-                            {product.old_price != 0 ? '￥' + fToYen(product.old_price) : null}
-                        </Text>
-                        {product.is_sale ?
-                            <Text style={styles.cProSale}>　|　Sale</Text> : null
+                <View style={styles.CproDelBlock}>
+                    <View style={styles.cProHov}>
+                        <View style={{ flexDirection: 'row', alignItems: 'flex-end' }}>
+                            {/* Giá */}
+                            <Text style={styles.cProPrice}>
+                                ￥{fToYen(product.price)}
+                            </Text>
+                            {/* Giá gốc */}
+                            <Text style={[commonStyles.oldPrice, commonStyles.pLeft10]}>
+                                {product.old_price ? '￥' + fToYen(product.old_price) : null}
+                            </Text>
+                            {product.is_sale ?
+                                <Text style={styles.cProSale}>　|　Sale</Text> : null
+                            }
+                        </View>
+                        {/* Còn hàng / hết hàng */}
+                        {
+                            product.is_active ?
+                                <Text style={[styles.cProStatus, styles.cInStock]}>còn hàng</Text>
+                                :
+                                <Text style={[styles.cProStatus, styles.cOutStock]}>Hết hàng</Text>
+
                         }
                     </View>
-                    {/* Còn hàng / hết hàng */}
-                    {
-                        product.is_active ?
-                            <Text style={[styles.cProStatus, styles.cInStock]}>còn hàng</Text>
-                            :
-                            <Text style={[styles.cProStatus, styles.cOutStock]}>Hết hàng</Text>
-
-                    }
-                </View>
-                {/* Tên sản phẩm */}
-                <Text style={styles.cProName}>
-                    {product.name}
-                </Text>
-                {/* Mã sản phẩm */}
-                <Text style={styles.cProId}>
-                    ID: {product.sku}
-                </Text>
-            </View>
-            <View style={[styles.cProDesBlock, { minHeight: 100 }]}>
-                <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
-                    <Text style={styles.CProDesTit}>Mô tả</Text>
-                    <Text style={{ fontWeight: 'bold', marginTop: 8 }}>
-                        {product.is_frozen ? 'Hàng đông lạnh' : null}
+                    {/* Tên sản phẩm */}
+                    <Text style={styles.cProName}>
+                        {product.name}
+                    </Text>
+                    {/* Mã sản phẩm */}
+                    <Text style={styles.cProId}>
+                        ID: {product.sku}
                     </Text>
                 </View>
-
-                <View>
-                    {
-                        loading ?
-                            <Loading text={''} top={0} size={30} />
-                            :
-                            <Text>
-                                {
-                                    description ?
-                                        description
-                                        :
-                                        'Chưa cập nhật'
-                                }
-                            </Text>
-                    }
-                </View>
-            </View>
-
-            <View style={styles.cProDesBlock}>
-                <View style={styles.cCatTitle}>
-                    <View style={{ flex: 1 }}>
-                        <Text style={[styles.cCatTitTex, styles.fwbold]}>
-                            Sản phẩm liên quan
+                <View style={[styles.cProDesBlock, { minHeight: 100 }]}>
+                    <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+                        <Text style={styles.CProDesTit}>Mô tả</Text>
+                        <Text style={{ fontWeight: 'bold', marginTop: 8 }}>
+                            {product.is_frozen ? 'Hàng đông lạnh' : null}
                         </Text>
                     </View>
-                    <TouchableOpacity style={{ flexDirection: 'row', paddingTop: 3 }}
-                        onPress={() =>
-                            navigation.navigate('Main', {
-                                screen: 'Store',
-                            })
-                        }>
-                        <Text style={[styles.cCatShowTex, commonStyles.textColor]}>Xem tất cả</Text>
-                        <Icon source="chevron-right" size={23} color="#00CC66" />
-                    </TouchableOpacity>
+
+                    <View>
+                        {
+                            loading ?
+                                <Loading text={''} top={0} size={30} />
+                                :
+                                <Text>
+                                    {
+                                        description ?
+                                            description
+                                            :
+                                            'Chưa cập nhật'
+                                    }
+                                </Text>
+                        }
+                    </View>
                 </View>
-                <HorizontalList
-                    // Các sản phẩm trong danh mục
-                    products={relatedProducts.products}
-                    // id của category
-                    categoryId={product.category_id}
-                    // Ẩn sản phẩm hiện tại
-                    hideId={product.id}
-                />
-            </View>
+
+                <View style={styles.cProDesBlock}>
+                    <View style={styles.cCatTitle}>
+                        <View style={{ flex: 1 }}>
+                            <Text style={[styles.cCatTitTex, styles.fwbold]}>
+                                Sản phẩm liên quan
+                            </Text>
+                        </View>
+                        <TouchableOpacity style={{ flexDirection: 'row', paddingTop: 3 }}
+                            onPress={() =>
+                                navigation.navigate('Main', {
+                                    screen: 'Store',
+                                })
+                            }>
+                            <Text style={[styles.cCatShowTex, commonStyles.textColor]}>Xem tất cả</Text>
+                            <Icon source="chevron-right" size={23} color="#00CC66" />
+                        </TouchableOpacity>
+                    </View>
+                    <HorizontalList
+                        // Các sản phẩm trong danh mục
+                        products={relatedProducts.products}
+                        // id của category
+                        categoryId={product.category_id}
+                        // Ẩn sản phẩm hiện tại
+                        hideId={product.id}
+                    />
+                </View>
+
+                <View style={{ height: 60 }}>
+                    {/* Khoảng trống để tránh footer bị che mất */}
+                </View>
+            </ScrollView>
 
             <View style={styles.cProBotBlocck}>
                 {/* nút chat */}

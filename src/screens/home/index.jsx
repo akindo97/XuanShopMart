@@ -217,14 +217,14 @@ const HomeScreens = () => {
                             resizeMode="conver"
                         />
                         <View style={{ padding: 10, paddingTop: 20 }}>
-                            <Text style={styles.cInfoText}><Icon source='domain' size={20} />　Công ty TNHH TPX</Text>
+                            <Text style={styles.cInfoText}><Icon source='domain' size={20} />　Công ty FAT株式会社</Text>
                             <Text style={styles.cInfoText}><Icon source='map-marker-outline' size={20} />　Chi nhánh Hiroshima 広島県広島市西区三篠町1-7-26-1F</Text>
-                            <Text style={styles.cInfoText}><Icon source='email-outline' size={20} />　E-mail xuanshopgigido@email.com</Text>
+                            <Text style={styles.cInfoText}><Icon source='email-outline' size={20} />　E-mail fatjpgroup@gmail.com</Text>
                             <Text style={styles.cInfoText}><Icon source='phone-outline' size={20} />　Hotline: 07022285999</Text>
                         </View>
                         <View style={{ padding: 10, paddingTop: 20 }}>
                             <Text style={{ alignSelf: 'center' }}>Copyright © 2025 Sesofoods all rights reserved.</Text>
-                            <Text style={{ alignSelf: 'center' }}>Powered by TPX-AK Inc.</Text>
+                            <Text style={{ alignSelf: 'center' }}>Powered by FAT-AK Inc.</Text>
                         </View>
                     </View>
                 }

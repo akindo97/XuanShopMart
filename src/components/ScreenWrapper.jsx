@@ -1,0 +1,10 @@
+import View from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
+
+export default function ScreenWrapper({ children }) {
+  return (
+    <View style={{ flex: 1 }}>
+      {children}
+    </View>
+  );
+}

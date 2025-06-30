@@ -117,7 +117,6 @@ const styles = StyleSheet.create({
         borderColor: '#BEBEBE',
         borderTopWidth: 1,
         flexDirection: 'row',
-        paddingBottom: 20,
     },
     cProBotFlex: {
         alignItems: 'center',
