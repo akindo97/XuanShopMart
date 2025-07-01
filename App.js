@@ -20,7 +20,6 @@ import VoucherScreen from './src/screens/account/voucher';
 import PolicyPrivacyScreen from './src/screens/account/policyandprivacy';
 import FlashMessage from "react-native-flash-message";
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 const Stack = createNativeStackNavigator();
 

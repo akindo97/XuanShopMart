@@ -51,7 +51,6 @@ export default function NotificationScreen() {
 	const getToken = async () => {
 		try {
 			const token = await messaging().getToken();
-			console.log('FCM Token:', token);
 		} catch (error) {
 			console.error(error)
 		}

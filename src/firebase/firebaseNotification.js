@@ -14,14 +14,14 @@ export const checkAndGetFcmToken = async (userToken = null) => {
         PermissionsAndroid.PERMISSIONS.POST_NOTIFICATIONS
       );
       if (granted !== PermissionsAndroid.RESULTS.GRANTED) {
-        console.log('Android: Không có quyền thông báo');
+        // console.log('Android: Không có quyền thông báo');
         return null;
       }
     }
 
     const authStatus = await requestPermission(messaging);
     if (authStatus !== 1 && authStatus !== 2) {
-      console.log('Không được cấp quyền thông báo');
+      // console.log('Không được cấp quyền thông báo');
       return null;
     }
 

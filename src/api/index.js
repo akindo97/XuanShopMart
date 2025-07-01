@@ -32,7 +32,6 @@ export async function apiRequest(endpoint, options = {}) {
 
         let result;
         try {
-            console.log('rawText.length', rawText.length);
             result = rawText ? JSON.parse(rawText) : null;
         } catch (parseError) {
             throw new Error('Response is not valid JSON');

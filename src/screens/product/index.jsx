@@ -14,6 +14,7 @@ import noImage from '../../../assets/icons/picture.png';
 import QuantitySelect from '../../components/quantityselect';
 import styles from './styles';
 import { openMessenger } from '../../components/fbmessenger';
+import { shuffleArray } from '../../utils/utils';
 
 const { width } = Dimensions.get('window');
 
@@ -91,7 +92,9 @@ export default function ProductScreen({ route }) {
     // Lấy danh sách liên quan
     useState(() => {
         const related = category.find((item) => item.id === product.category_id);
-        setRelatedProducts(related);
+        // Xáo trộn thứ tự các sản phẩm
+        const shuffle = shuffleArray(related.products);
+        setRelatedProducts(shuffle);
     }, [])
 
     // Hàm xử lý sự kiện cuộn để cập nhật chỉ mục hiện tại
@@ -205,7 +208,7 @@ export default function ProductScreen({ route }) {
                     </View>
                     <HorizontalList
                         // Các sản phẩm trong danh mục
-                        products={relatedProducts.products}
+                        products={relatedProducts}
                         // id của category
                         categoryId={product.category_id}
                         // Ẩn sản phẩm hiện tại

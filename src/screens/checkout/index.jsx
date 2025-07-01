@@ -17,7 +17,7 @@ import ShippingInfo from "../../components/shippingInfo";
 const CheckOutScreen = ({ params }) => {
     const navigation = useNavigation();
     const { auth, user, token, address, deviceId } = useRootContext();
-    const { showFullLoading } = useDialog();
+    const { showFullLoading, showDialog } = useDialog();
 
 
     // Lấy thông tin giỏ hàng và các hàm từ context
@@ -89,9 +89,16 @@ const CheckOutScreen = ({ params }) => {
                     }
                 });
                 setCalculate(res.data);
-                console.log(res.data);
             } catch (err) {
-                console.log(err.message || 'Đã có lỗi xảy ra');
+                showDialog({
+                    type: 'alert',
+                    title: 'Hết hàng',
+                    message: err.message || 'Đã có lỗi xảy ra, vui lòng thử lại sau',
+                    ok: 'Quay lại',
+                    onConfirm: () => {
+                        navigation.goBack();
+                    }
+                });
             } finally {
                 showFullLoading(false);
             }

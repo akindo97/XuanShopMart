@@ -1,4 +1,5 @@
 import { StyleSheet, Dimensions } from "react-native";
+import { Platform } from "react-native";
 
 const { width } = Dimensions.get('window');
 
@@ -117,6 +118,7 @@ const styles = StyleSheet.create({
         borderColor: '#BEBEBE',
         borderTopWidth: 1,
         flexDirection: 'row',
+        paddingBottom: Platform.OS === 'ios' ? 20 : 6 ,
     },
     cProBotFlex: {
         alignItems: 'center',
