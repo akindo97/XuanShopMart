@@ -60,7 +60,7 @@ const ResetPasswordScreen = () => {
                     otp: otp,
                 }
             });
-            console.log(res);
+            // console.log(res);
             setStage(3);
         } catch (err) {
             setError(err.message || 'Đã có lỗi xảy ra');
@@ -92,7 +92,7 @@ const ResetPasswordScreen = () => {
                     password_confirmation: confirmPassword
                 }
             });
-            console.log(res);
+            // console.log(res);
             showDialog({
                 type: 'alert',
                 message: 'Mật khẩu của bạn đã được đặt lại thành công.',

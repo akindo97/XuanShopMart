@@ -44,7 +44,7 @@ const RecentsScreen = () => {
                     });
                     setRecents(res.data);
                 } catch (err) {
-                    console.log(err.message || 'Đã có lỗi xảy ra');
+                    // console.log(err.message || 'Đã có lỗi xảy ra');
                 } finally {
                     setLoading(false);
                 }

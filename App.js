@@ -19,6 +19,7 @@ import ResetPasswordScreen from './src/screens/account/resetpassword';
 import VoucherScreen from './src/screens/account/voucher';
 import PolicyPrivacyScreen from './src/screens/account/policyandprivacy';
 import FlashMessage from "react-native-flash-message";
+import GuideScreen from './src/screens/account/guide';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 const Stack = createNativeStackNavigator();
@@ -62,6 +63,7 @@ const MainContent = () => {
           <Stack.Screen name="ResetPassword" component={ResetPasswordScreen} options={{ title: 'Đặt lại mật khẩu' }} />
           <Stack.Screen name="Voucher" component={VoucherScreen} options={{ title: 'Voucher của tôi' }} />
           <Stack.Screen name="PolicyPrivacy" component={PolicyPrivacyScreen} options={{ title: 'Điều khoản & chính sách' }} />
+          <Stack.Screen name="Guide" component={GuideScreen} options={{ title: 'Hướng dẫn' }} />
         </Stack.Navigator>
       </NavigationContainer>
       {/* {visible && <AddToCartModal />} */}

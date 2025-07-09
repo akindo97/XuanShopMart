@@ -47,7 +47,18 @@ const SuccessfulScreen = ({ route }) => {
                             {/* Thông tin hướng dẫn */}
                             {settings[PAY_METHOD[result.purchased_product.payment_method].key]}
                         </Text>
+                        
+                        {/* Hiển thị hướng dẫn chuyển khoản nếu phương thức là chuyển khoản */}
+                        {result.purchased_product.payment_method === 'transfer' ?
+                            <Button mode="outlined" style={{ marginTop: 10, width: '100%' }}
+                                onPress={() => {
+                                    navigation.navigate('Guide');
+                                }}>
+                                Xem hướng dẫn chuyển khoản
+                            </Button>
+                            : null}
                     </View>
+
                     {/* Nếu chưa đăng nhập */}
                     {!auth ?
                         <View style={styles.cSussGuideBlock}>

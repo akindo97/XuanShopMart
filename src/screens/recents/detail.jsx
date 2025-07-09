@@ -1,15 +1,17 @@
-import { View, Text, Image, ScrollView } from "react-native";
+import { View, Text, Image, ScrollView, TouchableOpacity } from "react-native";
 import { Card, Icon } from "react-native-paper";
 import styles from './styles';
 import CopyToClipboard from '../../components/copy';
 import { fToYen, formatDate } from "../../utils/utils";
 import commonStyles from "../../utils/commonstyles";
 import { ORDER_STATUS, PAY_METHOD, IMAGE_URL } from "../../config/config";
+import { useNavigation } from '@react-navigation/native';
 
 const DetailScreen = ({ route }) => {
+    const navigation = useNavigation();
     // Lấy thông tin chi tiết đơn hàng từ index
     const recent = route.params?.recent ?? [];
-    
+
     return (
         <ScrollView style={{ backgroundColor: '#ffffff', flexGrow: 1 }}>
             <View style={{ padding: 10 }}>
@@ -84,6 +86,20 @@ const DetailScreen = ({ route }) => {
                         {recent.payment_guide}
                     </Text>
                 </Card>
+
+                {/* Hướng dẫn chuyển khoản nếu phương thức là chuyển khoản */}
+                {recent.payment_method === 'transfer' && (
+                    <TouchableOpacity onPress={() => {
+                        // Mở hướng dẫn chuyển khoản
+                        navigation.navigate('Guide');
+                    }}>
+                        <Card style={[styles.cDetailCard, { marginTop: 10 }]}>
+                            <Text style={[styles.cDetailSubTitle, { textAlign: 'center' }]}>
+                                Xem hướng dẫn chuyển khoản
+                            </Text>
+                        </Card>
+                    </TouchableOpacity>
+                )}
 
                 {/* Đơn hàng */}
                 <Text style={styles.cDetailTitle}>Đơn hàng</Text>

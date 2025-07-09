@@ -40,7 +40,7 @@ const SearchScreen = () => {
         if (!keyword) return;
         searchRef.current?.blur();
         // Thực hiện tìm kiếm lại với từ khoá được chọn
-        console.log('Selected:', keyword);
+        // console.log('Selected:', keyword);
         searchProducts(keyword);
         setKeyword(keyword);
     };
@@ -85,10 +85,10 @@ const SearchScreen = () => {
                 }
             });
             const result = res.data;
-            console.log(res);
+            // console.log(res);
             setProducts(result);
         } catch (err) {
-            console.log(err.message || 'Đã có lỗi xảy ra');
+            // console.log(err.message || 'Đã có lỗi xảy ra');
         } finally {
             setLoading(false);
         }

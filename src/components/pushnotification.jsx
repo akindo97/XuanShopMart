@@ -41,9 +41,9 @@ export default function NotificationScreen() {
 
 		const granted = await PermissionsAndroid.request(PermissionsAndroid.PERMISSIONS.POST_NOTIFICATIONS);
 		if (granted === PermissionsAndroid.RESULTS.GRANTED) {
-			console.log('lấy ok');
+			// console.log('lấy ok');
 		} else {
-			console.log('bị từ chối')
+			// console.log('bị từ chối')
 		}
 		getToken();
 	};

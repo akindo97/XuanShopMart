@@ -35,14 +35,14 @@ export const openFanpage = async () => {
   try {
     const supported = await Linking.canOpenURL(appUrl);
 
-    console.log('supported', supported)
+    // console.log('supported', supported)
     if (supported) {
       await Linking.openURL(appUrl);
     } else {
       await Linking.openURL(webUrl);
     }
   } catch (error) {
-    console.log(error)
+    // console.log(error)
     Alert.alert(
       'Không thể mở Facebook',
       'Vui lòng kiểm tra kết nối mạng hoặc cài đặt Facebook.'

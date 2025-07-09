@@ -81,7 +81,7 @@ export default function ProfileScreen() {
                     gender: gender,
                 }
             });
-            console.log(res);
+            // console.log(res);
             setUser(res.user)
             setIsEdit(false);
             showMessage({
@@ -89,7 +89,7 @@ export default function ProfileScreen() {
                 type: "info",
             });
         } catch (err) {
-            console.log(err.message || 'Đã có lỗi xảy ra');
+            // console.log(err.message || 'Đã có lỗi xảy ra');
         } finally {
             setLoading(false);
         }
@@ -107,7 +107,7 @@ export default function ProfileScreen() {
                     Authorization: `Bearer ${token}`
                 },
             });
-            console.log(res);
+            // console.log(res);
             logoutAccount(); // Xoá thông tin user ở local
             navigation.replace('Main'); // Điều hướng về trang chủ
             showMessage({
@@ -116,7 +116,7 @@ export default function ProfileScreen() {
             });
         } catch (err) {
             // Xử lý lỗi nếu có
-            console.log(err.message || 'Đã có lỗi xảy ra');
+            // console.log(err.message || 'Đã có lỗi xảy ra');
         } finally {
             setLoading(false); // Ẩn loading
         }
@@ -216,7 +216,7 @@ export default function ProfileScreen() {
                         mode="date"
                         display="default"
                         onChange={(event, date) => {
-                            console.log(date)
+                            // console.log(date)
                             if (date) setBirthDate(date);
                             setShowDatePicker(false);
                         }}

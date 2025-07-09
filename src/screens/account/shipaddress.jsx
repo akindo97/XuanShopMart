@@ -107,7 +107,7 @@ const navigation = useNavigation();
                     phone: phone,
                 }
             });
-        console.log(res.address)
+        // console.log(res.address)
             setAddress(res.address);
             showMessage({
                 message: res.message,
@@ -115,7 +115,7 @@ const navigation = useNavigation();
             })
             navigation.goBack();
         } catch (err) {
-            console.log(err.message || 'Đã có lỗi xảy ra');
+            // console.log(err.message || 'Đã có lỗi xảy ra');
         } finally {
             showFullLoading(false);
         }

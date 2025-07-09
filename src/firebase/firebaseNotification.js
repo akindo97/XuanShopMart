@@ -26,7 +26,7 @@ export const checkAndGetFcmToken = async (userToken = null) => {
     }
 
     const FCMtoken = await getToken(messaging);
-    console.log('FCM Token:', FCMtoken);
+    // console.log('FCM Token:', FCMtoken);
 
     // Thêm hoặc cập nhật hoặc check token
     try {
@@ -40,9 +40,9 @@ export const checkAndGetFcmToken = async (userToken = null) => {
         }
       });
       const { data } = res;
-      console.log(data);
+      // console.log(data);
     } catch (err) {
-      console.log(err.message || 'Đã có lỗi xảy ra');
+      // console.log(err.message || 'Đã có lỗi xảy ra');
     } finally {
 
     }

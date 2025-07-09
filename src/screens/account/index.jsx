@@ -38,7 +38,7 @@ const AccountScreen = () => {
         {
             id: 3, name: 'Tích điểm', subTitle: 'Tích điểm cho mỗi đơn hàng', icon: 'star-four-points-outline',
             onPress: () => {
-                console.log('Tích điểm');
+                // console.log('Tích điểm');
             }
         },
         {
@@ -47,18 +47,27 @@ const AccountScreen = () => {
                 navigation.navigate('Voucher');
             }
         },
-        { id: 5, name: 'Điều khoản & chính sách', subTitle: 'Bảo mật, sử dụng và hoàn trả', icon: 'shield-account-outline',
+        {
+            id: 5, name: 'Điều khoản & chính sách', subTitle: 'Bảo mật, sử dụng và hoàn trả', icon: 'shield-account-outline',
             onPress: () => {
-                navigation.navigate('PolicyPrivacy')
+                navigation.navigate('PolicyPrivacy');
             }
         },
         {
             id: 6, name: 'Liên hệ', subTitle: 'Liên hệ trực tiếp với chúng tôi', icon: 'chat-outline',
             onPress: () => openMessenger()
         },
-        { id: 7, name: 'Fanpage', subTitle: 'Ghé thăm fanpage chính thức', icon: 'facebook',
-            onPress:  () => openFanpage()
-         },
+        {
+            id: 7, name: 'Fanpage', subTitle: 'Ghé thăm fanpage chính thức', icon: 'facebook',
+            onPress: () => openFanpage()
+        },
+        ,
+        {
+            id: 8, name: 'Hướng dẫn', subTitle: 'Hướng dẫn sử dụng và chuyển khoản', icon: 'information-outline',
+            onPress: () => {
+                navigation.navigate('Guide');
+            }
+        },
     ];
 
     return (
@@ -150,7 +159,7 @@ const AccountScreen = () => {
                 </LinearGradient >
             </View >
 
-            <ScrollView style={[commonStyles.bgrColor, commonStyles.flex1, commonStyles.pHorizontal10]}>
+            <ScrollView style={[commonStyles.bgrColor, commonStyles.flex1, commonStyles.pHorizontal10 ]}>
                 {accList.map((item) => (
                     <TouchableOpacity key={item.id} onPress={item.onPress}>
                         <View style={styles.cAccItemBblock}>

@@ -46,7 +46,7 @@ export const RootProvider = ({ children }) => {
           setUser(user);
           setAddress(address);
         } catch (err) {
-          console.log(err.message || 'Đã có lỗi xảy ra');
+          // console.log(err.message || 'Đã có lỗi xảy ra');
         } finally {
           setAuthLoading(false);
         }

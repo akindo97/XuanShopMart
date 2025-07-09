@@ -46,7 +46,7 @@ export default function VoucherScreen({ navigation }) {
 
     const applyVoucher = (voucher) => {
         // Tuỳ logic, có thể chuyển qua màn hình thanh toán hoặc gọi hàm setVoucher
-        console.log('Voucher đã chọn:', voucher);
+        // console.log('Voucher đã chọn:', voucher);
         // navigation.goBack(); hoặc navigation.navigate('Checkout', { voucher })
     };
 

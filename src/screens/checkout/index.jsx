@@ -187,14 +187,14 @@ const CheckOutScreen = ({ params }) => {
                         shipping_message: message,
                     }
                 });
-                console.log(res);
+                // console.log(res);
                 const result = res.data;
                 // Xóa toàn bộ sản phẩm nếu đặt hàng thành công
                 clearCart();
                 // Sang trang báo thành công
                 navigation.replace('Successful', { result: result, settings: calculate.settings });
             } catch (err) {
-                console.log(err.message || 'Đã có lỗi xảy ra');
+                // console.log(err.message || 'Đã có lỗi xảy ra');
             } finally {
                 showFullLoading(false);
             }

@@ -178,7 +178,7 @@ const RegisterLoginScreen = ({ route }) => {
                     device_id: deviceId
                 }
             });
-            console.log(res);
+            // console.log(res);
             navigation.replace('Main');
             showMessage({
                 message: res.message,

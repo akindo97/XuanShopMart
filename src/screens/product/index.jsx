@@ -60,12 +60,12 @@ export default function ProductScreen({ route }) {
                     },
                 });
                 const { data } = res;
-                console.log(data);
+                // console.log(data);
                 setDescription(data.description);
                 setProductImages(data.images);
 
             } catch (err) {
-                console.log(err.message || 'Đã có lỗi xảy ra');
+                // console.log(err.message || 'Đã có lỗi xảy ra');
             } finally {
                 setLoading(false);
             }
