@@ -35,12 +35,12 @@ const AccountScreen = () => {
                     });
             }
         },
-        {
-            id: 3, name: 'Tích điểm', subTitle: 'Tích điểm cho mỗi đơn hàng', icon: 'star-four-points-outline',
-            onPress: () => {
-                // console.log('Tích điểm');
-            }
-        },
+        // {
+        //     id: 3, name: 'Tích điểm', subTitle: 'Tích điểm cho mỗi đơn hàng', icon: 'star-four-points-outline',
+        //     onPress: () => {
+        //         // console.log('Tích điểm');
+        //     }
+        // },
         {
             id: 4, name: 'Voucher', subTitle: 'Tiết kiệm nhiều hơn với mã giảm giá', icon: 'ticket-percent-outline',
             onPress: () => {

@@ -223,7 +223,7 @@ const HomeScreens = () => {
                             <Text style={styles.cInfoText}><Icon source='phone-outline' size={20} />　Hotline: 07022285999</Text>
                         </View>
                         <View style={{ padding: 10, paddingTop: 20 }}>
-                            <Text style={{ alignSelf: 'center' }}>Copyright © 2025 Sesofoods all rights reserved.</Text>
+                            <Text style={{ alignSelf: 'center' }}>Copyright © 2025 Xuan Shop HRS Co. all rights reserved.</Text>
                             <Text style={{ alignSelf: 'center' }}>Powered by FAT-AK Inc.</Text>
                         </View>
                     </View>

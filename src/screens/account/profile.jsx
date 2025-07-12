@@ -98,8 +98,8 @@ export default function ProfileScreen() {
     // Gọi API đăng xuất
     // Gọi API để đăng xuất tài khoản
     const logoutApi = async () => {
-        setLoading(true); // Hiển thị loading
         try {
+            setLoading(true); // Hiển thị loading
             // Gửi request logout lên server
             const res = await apiRequest('/logout', {
                 method: "POST",
@@ -129,6 +129,40 @@ export default function ProfileScreen() {
             message: 'Bạn có chắc muốn đăng xuất không?',
             onConfirm: logoutApi,
             ok: 'Đăng xuất',
+        });
+    };
+
+    // Xử lý khi nhấn nút "Xoá tài khoản" (hiện dialog xác nhận)
+    const handleDeleteAccount = () => {
+        showDialog({
+            type: 'confirm',
+            message: 'Bạn có chắc muốn xoá tài khoản không? Hành động này sẽ xoá vĩnh viễn tài khoản của bạn và không thể khôi phục lại.',
+            onConfirm: async () => {
+                try {
+                    setLoading(true); // Hiển thị loading
+                    // Gửi request logout lên server
+                    const res = await apiRequest('/delete-account', {
+                        method: "POST",
+                        headers: {
+                            Authorization: `Bearer ${token}`
+                        },
+                    });
+                    console.log(res);
+                    logoutAccount(); // Xoá thông tin user ở local
+                    navigation.replace('Main'); // Điều hướng về trang chủ
+                    showMessage({
+                        message: 'Xoá tài khoản thành công',
+                        type: "info",
+                    });
+                } catch (err) {
+                    // Xử lý lỗi nếu có
+                    console.log(err.message || 'Đã có lỗi xảy ra');
+                } finally {
+                    setLoading(false); // Ẩn loading
+                }
+            },
+            ok: 'Xoá tài khoản',
+            cancel: 'Huỷ',
         });
     };
 
@@ -164,7 +198,7 @@ export default function ProfileScreen() {
                         value={firstName}
                         onChangeText={setFirstName}
                         editable={isEdit}
-                        style={[styles.cRLInput, { width: '36%' }]}
+                        style={[styles.cRLInput, !isEdit ? styles.cNoInput : null, { width: '36%' }]}
                         activeUnderlineColor="#00CC66"
                     />
                     <TextInput
@@ -175,7 +209,7 @@ export default function ProfileScreen() {
                         onChangeText={setLastName}
                         editable={isEdit}
                         right={<TextInput.Icon icon="card-account-details-outline" color="#AAAAAA" />}
-                        style={[styles.cRLInput, commonStyles.mLeft10, commonStyles.flex1]}
+                        style={[styles.cRLInput, !isEdit ? styles.cNoInput : null, commonStyles.mLeft10, commonStyles.flex1]}
                         activeUnderlineColor="#00CC66"
                     />
                 </View>
@@ -189,7 +223,7 @@ export default function ProfileScreen() {
                     onChangeText={setPhone}
                     editable={isEdit}
                     right={<TextInput.Icon icon="cellphone" color="#AAAAAA" />}
-                    style={styles.cRLInput}
+                    style={[styles.cRLInput, !isEdit ? styles.cNoInput : null]}
                     activeUnderlineColor="#00CC66"
                 />
 
@@ -205,7 +239,7 @@ export default function ProfileScreen() {
                             value={birthDate ? formatDate(birthDate) : ''}
                             placeholder="Chọn ngày sinh"
                             right={<TextInput.Icon icon="calendar-account-outline" color="#AAAAAA" />}
-                            style={styles.cRLInput}
+                            style={[styles.cRLInput, !isEdit ? styles.cNoInput : null]}
                             editable={false}
                         />
                     </View>
@@ -230,7 +264,7 @@ export default function ProfileScreen() {
                         onValueChange={(value) => setGender(value)}
                         value={gender}
                     >
-                        <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                        <View style={[!isEdit ? styles.cNoInput : null, { flexDirection: 'row', alignItems: 'center', }]}>
                             <RadioButton value="male" disabled={!isEdit} />
                             <Text>Nam</Text>
                             <RadioButton value="female" disabled={!isEdit} style={{ marginLeft: 20 }} />
@@ -241,14 +275,23 @@ export default function ProfileScreen() {
                     </RadioButton.Group>
                 </View>
 
-                <View style={{ marginTop: 20 }}>
-                    <Text>Ấn vào nút chỉnh sửa nếu muốn thay đổi thông tin</Text>
-                </View>
+                {!isEdit ?
+                    <View style={{ marginTop: 20 }}>
+                        <Text>Ấn vào nút chỉnh sửa nếu muốn thay đổi thông tin</Text>
+                    </View> : null
+                }
 
                 {/* Các nút thao tác */}
                 <View style={{ flex: 1, justifyContent: 'flex-end' }}>
                     {!isEdit ? (
                         <View>
+                            <Button
+                                mode="contained"
+                                style={{ width: 200, alignSelf: 'flex-end' }}
+                                onPress={handleDeleteAccount}
+                            >
+                                Xoá tài khoản
+                            </Button>
                             <Button
                                 mode="contained"
                                 style={[commonStyles.buttonColor, styles.cRLButton]}

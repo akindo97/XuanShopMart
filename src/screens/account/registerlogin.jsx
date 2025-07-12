@@ -11,7 +11,7 @@ import { FullLoading } from '../../components/loading';
 import { useDialog } from '../../hooks/dialogcontext';
 import { isEmail } from '../../utils/utils';
 import { checkAndGetFcmToken } from '../../firebase/firebaseNotification';
-import { RootProvider } from '../../hooks/rootcontext';
+import rgLogo from '../../../assets/icons/rgLogo.png';
 
 const RegisterLoginScreen = ({ route }) => {
     const navigation = useNavigation();
@@ -207,7 +207,7 @@ const RegisterLoginScreen = ({ route }) => {
                     {/* logo */}
                     <View>
                         <Icon size={86}
-                            source={require('../../../assets/icons/logoxshrv.png')} />
+                            source={rgLogo} />
                     </View>
                     <Text style={{ color: 'red', fontWeight: 'bold', alignSelf: 'flex-start' }}>
                         {error}

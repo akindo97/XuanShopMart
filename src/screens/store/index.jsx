@@ -32,13 +32,15 @@ const StoreScreen = ({ route }) => {
         // Gom tât cả sản phẩm từ các danh mục để tạo danh sách tất cả sản phẩm
         // Loại bỏ sale để tránh trùng lặp
         const allProduct = category.filter((catalog) => catalog.name !== 'Sale').flatMap((catalog) => catalog.products);
+        // Xáo trộn thứ tự các sản phẩm
+        const shuffle = shuffleArray(allProduct);
         // Tạo danh sách mới với mục "Tất cả" ở đầu
         return (
             [
                 {
                     id: 0,
                     name: 'Tất cả',
-                    products: allProduct,
+                    products: shuffle,
                 },
                 ...category]
         );
@@ -73,18 +75,19 @@ const StoreScreen = ({ route }) => {
 
 
     useEffect(() => {
-        console.log('Chạy hàm khi select')
         const showNow = newCategory.find((item) => item.id === selected);
 
         if (showNow) {
             // Đưa các sản phẩm hiển thị lại trang 1
             setPage(1);
             // Xáo trộn thứ tự các sản phẩm
-            const shuffle = shuffleArray(showNow.products);
+            // const shuffle = shuffleArray(showNow.products);
             // Lưu để hiển thị thêm khi cuộn
-            setAllProductInCa(shuffle);
+            // setAllProductInCa(shuffle);
+            setAllProductInCa(showNow.products);
             // Hiển thị số sản phẩm đầu tiên
-            const firstPage = shuffle.slice(0, itemsPerPage);
+            // const firstPage = shuffle.slice(0, itemsPerPage);
+            const firstPage = showNow.products.slice(0, itemsPerPage);
             setDisplayProducts(firstPage);
         }
     }, [selected, newCategory]);
@@ -93,7 +96,7 @@ const StoreScreen = ({ route }) => {
         // console.log('handleLoadMore');
         // console.log('is_first.current', is_first.current);
         // console.log('loading', loading);
-        
+
         // Tránh gọi đúp khi chạy
         if (is_first.current) {
             is_first.current = false;

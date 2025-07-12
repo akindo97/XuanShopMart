@@ -34,6 +34,9 @@ const styles = StyleSheet.create({
         paddingHorizontal: 10,
         marginBottom: 10,
     },
+    cNoInput: {
+        backgroundColor: '#F0F0F0'
+    },
     xRLForgotBlock: {
         flexDirection: 'row',
         justifyContent: 'flex-end',
