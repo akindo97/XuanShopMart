@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet } from 'react-native';
+import { View, Text, StyleSheet,  Pressable } from 'react-native';
 import { Appbar, Searchbar, Avatar, useTheme, Icon } from 'react-native-paper';
 import { useNavigation } from '@react-navigation/native';
 
@@ -28,14 +28,15 @@ const Header = ({ title }) => {
           {/* Thanh tìm kiếm */}
           <View style={styles.cHeaSearchCtn}>
             <Searchbar
-              placeholder="Tìm kiếm sản phẩm..."
-              editable={false}
-              onTouchStart={() =>
-                navigation.navigate('Search')
-              }
-              style={styles.cSearchBar}
-              inputStyle={styles.inputStyle}
-            />
+    placeholder="Tìm kiếm sản phẩm..."
+    editable={false}
+    style={styles.cSearchBar}
+    inputStyle={styles.inputStyle}
+  />
+  <Pressable
+    style={StyleSheet.absoluteFill}
+    onPress={() => navigation.navigate('Search')}
+  />
           </View>
 
           {/* Icon thông báo */}

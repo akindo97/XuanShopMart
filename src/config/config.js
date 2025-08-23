@@ -42,9 +42,9 @@ export const PAY_METHOD = {
     },
     cod: {
         key: 'cod_info',
-        label: 'Thanh toán khi nhận hàng (COD) +￥500',
+        label: 'Thanh toán khi nhận hàng (Daibiki)',
         value: 'Thanh toán khi nhận hàng',
-        shorten: 'ship COD'
+        shorten: 'ship Daibiki'
     }
 }
 

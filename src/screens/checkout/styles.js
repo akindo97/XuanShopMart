@@ -121,7 +121,13 @@ const styles = StyleSheet.create({
         borderRadius: 8,
         padding: 10,
         marginVertical: 6
-    }
+    },
+        cProBotFlex: {
+            marginTop: 10,
+            backgroundColor: '#00CC66',
+            padding: 6,
+            borderRadius: 50,
+    },
 })
 
 export default styles;

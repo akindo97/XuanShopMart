@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useRef } from "react";
-import { View, Text, StyleSheet, ScrollView, Image, TouchableOpacity } from "react-native";
+import { View, Text, StyleSheet, ScrollView, Image, TouchableOpacity, Alert } from "react-native";
 import commonStyles from "../../utils/commonstyles";
 import { Button, Card, RadioButton, TextInput } from 'react-native-paper';
 import { Dropdown } from 'react-native-paper-dropdown';
@@ -161,8 +161,53 @@ const CheckOutScreen = ({ params }) => {
     const checkOut = async () => {
         // Kiểm tra các INPUT cần
         const isValidateInput = validateAndFocus();
-        
+
         if (isValidateInput) {
+            // Test các thông tin
+            // const result = {
+            //     "purchased_product": {
+            //         "user_id": 2,
+            //         "device_id": "3495e47c-9353-4cd2-9baa-d549bdccadd5",
+            //         "order_code": "XMZVAEOWN",
+            //         "contact_email": "a1@b.c",
+            //         "shipping_first_name": "Test",
+            //         "shipping_last_name": "Don hang",
+            //         "payment_method": "transfer",
+            //         "shipping_postal_code": "7300001",
+            //         "shipping_address_1": "広島県",
+            //         "shipping_address_2": "広島市中区白島北町",
+            //         "shipping_address_3": "required|string",
+            //         "shipping_phone_number": "123123123",
+            //         "shipping_delivery_time": "Không yêu cầu",
+            //         "shipping_message": null,
+            //         "subtotal": 449,
+            //         "quantity_total": 1,
+            //         "shipping_fee": 800,
+            //         "cold_fee": 600,
+            //         "cod_fee": 0,
+            //         "total_amount": 1849,
+            //         "reward_points": 4,
+            //         "total_weight": 1,
+            //         "updated_at": "2025-08-11T08:51:05.000000Z",
+            //         "created_at": "2025-08-11T08:51:05.000000Z",
+            //         "id": 1120
+            //     },
+            //     "order_items": [
+            //         {
+            //             "purchased_product_id": 1120,
+            //             "product_id": 87,
+            //             "product_name": "Chân gà có xương (kg)",
+            //             "price": 449,
+            //             "quantity": 1,
+            //             "updated_at": "2025-08-11T08:51:05.000000Z",
+            //             "created_at": "2025-08-11T08:51:05.000000Z",
+            //             "id": 1020
+            //         }
+            //     ]
+            // }
+            // navigation.replace('Successful', { result: result, settings: calculate.settings });
+            // return;
+
             try {
                 showFullLoading(true);
                 const res = await apiRequest('/checkout', {
@@ -189,12 +234,13 @@ const CheckOutScreen = ({ params }) => {
                 });
                 // console.log(res);
                 const result = res.data;
+                console.log('Đặt hàng thành công', result);
                 // Xóa toàn bộ sản phẩm nếu đặt hàng thành công
                 clearCart();
                 // Sang trang báo thành công
                 navigation.replace('Successful', { result: result, settings: calculate.settings });
             } catch (err) {
-                // console.log(err.message || 'Đã có lỗi xảy ra');
+                Alert.alert(err.message || 'Đã có lỗi xảy ra');
             } finally {
                 showFullLoading(false);
             }
@@ -324,9 +370,9 @@ const CheckOutScreen = ({ params }) => {
                         <Text style={styles.cCOTotalCalLeft}>Tổng hàng (số lượng {calculate.quantity_total})</Text>
                         <Text style={styles.cCOTotalCalRight}>¥{fToYen(calculate.subtotal)}</Text>
                     </View>
-                    {/* Phí vận chuyển */}
+                    {/* Phí ship thường */}
                     <View style={styles.cCOTotalCalRow}>
-                        <Text style={styles.cCOTotalCalLeft}>Phí vận chuyển</Text>
+                        <Text style={styles.cCOTotalCalLeft}>Phí ship thường</Text>
                         <Text style={styles.cCOTotalCalRight}>¥{fToYen(calculate.shipping_fee)}</Text>
                     </View>
                     {/* Nếu có phí động lạnh thì hiện thị */}
@@ -339,7 +385,7 @@ const CheckOutScreen = ({ params }) => {
                     {/* Nếu có phí shi COD thì hiện thị */}
                     {calculate.cod_fee !== 0 && (
                         <View style={styles.cCOTotalCalRow}>
-                            <Text style={styles.cCOTotalCalLeft}>Phí ship COD</Text>
+                            <Text style={styles.cCOTotalCalLeft}>Phí Daibiki</Text>
                             <Text style={styles.cCOTotalCalRight}>¥{fToYen(calculate.cod_fee)}</Text>
                         </View>
                     )}
