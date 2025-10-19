@@ -13,19 +13,20 @@ import MessengerButton from '../../components/fbmessenger';
 import { IMAGE_URL, AppStore, CHPlay } from '../../config/config';
 import Constants from 'expo-constants';
 import { compareVersion } from '../../utils/utils';
-import stepsImg from '../../../assets/images/steps.png';
+// import stepsImg from '../../../assets/images/steps.png';
 
 const { width } = Dimensions.get('window');
 
 const HomeScreens = () => {
     const navigation = useNavigation();
 
-    const { category, banner, setCategory, setBanner } = useRootContext();
+    const { category, banner, stepsImage, maxWeight, setCategory, setBanner, setStepsImage, setMaxWeight } = useRootContext();
 
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
 
-
+    // Tỷ lệ ảnh footer
+    const [footerImageRatio, setFooterImageRatio] = useState(1);
 
     const [index, setIndex] = useState(0);
     const flatListRef = useRef();
@@ -44,7 +45,7 @@ const HomeScreens = () => {
 
     useEffect(() => {
         // Nếu đã tải rồi thì thôi không tải nữa
-        if (category.length && banner.length) return;
+        if (category.length && banner.length && stepsImage && maxWeight) return;
 
         const loadProducts = async () => {
             setLoading(true);
@@ -61,6 +62,15 @@ const HomeScreens = () => {
                 // Danh mục và sản phẩm
                 setCategory(categories);
 
+                // thêm ảnh hướng dẫn
+                if (settings && settings.purchase_instructions) {
+                    setStepsImage(`${IMAGE_URL}/${settings.purchase_instructions}`);
+                }
+
+                // Thêm max_weight
+                if (settings && settings.max_weight) {
+                    setMaxWeight(settings.max_weight);
+                }
 
             } catch (err) {
                 Alert.alert('Không thể tải danh sách sản phẩm, vui lòng kiểm tra kết nối mạng hoặc cập nhật phiên bản mới.');
@@ -109,11 +119,13 @@ const HomeScreens = () => {
         return false;
     };
 
-    // Lấy tỷ lệ ảnh dưới footer
-    // const aspectRatio = useMemo(() => {
-    //     const { width, height } = Image.resolveAssetSource(stepsImg);
-    //     return width / height;
-    // }, []);
+    // Hàm xử lý khi ảnh footer load xong
+    const handleFooterImageLoad = (event) => {
+        const { width, height } = event.nativeEvent.source;
+        if (width && height) {
+            setFooterImageRatio(width / height);
+        }
+    };
 
     // danh mục sản phẩm
     const catalogItem = ({ item }) => (
@@ -131,7 +143,7 @@ const HomeScreens = () => {
 
     // Loading khi tải dữ liệu
     if (loading) {
-        return (<Loading top={100}/>);
+        return (<Loading top={100} />);
     }
 
     return (
@@ -178,6 +190,8 @@ const HomeScreens = () => {
                                 ))}
                             </View>
                         </View>
+
+                        {/* Danh mục */}
                         <FlatList
                             style={{ backgroundColor: '#FFF' }}
                             data={category}
@@ -188,6 +202,8 @@ const HomeScreens = () => {
                         />
                     </View>
                 }
+                
+                // các sản phẩm theo danh mục
                 renderItem={({ item }) => (
                     <View style={styles.container}>
                         <View style={styles.cCatBlock}>
@@ -211,11 +227,14 @@ const HomeScreens = () => {
                 )}
                 ListFooterComponent={
                     <View style={styles.cFooterWidth}>
-                        <Image
-                            source={stepsImg}
-                            style={{ width: '100%', height: 520 }}
-                            resizeMode="conver"
-                        />
+                        {stepsImage &&
+                            <Image
+                                source={{ uri: `${stepsImage}` }}
+                                style={{ width: '100%', aspectRatio: footerImageRatio }}
+                                resizeMode="contain"
+                                onLoad={handleFooterImageLoad}
+                            />
+                        }
                         <View style={{ padding: 10, paddingTop: 20 }}>
                             <Text style={styles.cInfoText}><Icon source='domain' size={20} />　Công ty FAT株式会社</Text>
                             <Text style={styles.cInfoText}><Icon source='map-marker-outline' size={20} />　Chi nhánh Hiroshima 広島県広島市西区三篠町1-7-26-1F</Text>

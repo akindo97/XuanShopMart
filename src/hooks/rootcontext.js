@@ -15,6 +15,10 @@ export const RootProvider = ({ children }) => {
   const [category, setCategory] = useState([]);
   // State lưu các banner image
   const [banner, setBanner] = useState([]);
+  // State lưu ảnh hướng dẫn
+  const [stepsImage, setStepsImage] = useState(null);
+  // State lưu giới hạn trọng lượng tối đa
+  const [maxWeight, setMaxWeight] = useState(null);
 
   // State kiểm tra đăng nhập
   const [auth, setAuth] = useState(false);
@@ -111,8 +115,8 @@ export const RootProvider = ({ children }) => {
   // Truyền các giá trị xuống các component con
   return (
     <RootContext.Provider value={{
-      deviceId, category, banner,
-      setCategory, setBanner, setUserInfo, setUser, setAddress, logoutAccount,
+      deviceId, category, banner, stepsImage, maxWeight,
+      setCategory, setBanner, setStepsImage, setMaxWeight, setUserInfo, setUser, setAddress, logoutAccount,
       user, address, token, auth, authLoading
     }}>
       {children}

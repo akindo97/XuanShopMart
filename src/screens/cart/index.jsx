@@ -9,12 +9,16 @@ import { fToYen } from '../../utils/utils';
 import QuantitySelect from '../../components/quantityselect';
 import { useCartUI } from '../../hooks/useCartOverlay';
 import { useDialog } from '../../hooks/dialogcontext';
-import { MAX_WEIGHT, IMAGE_URL } from '../../config/config';
+import { IMAGE_URL } from '../../config/config';
 import MessengerButton from '../../components/fbmessenger';
+import { useRootContext } from '../../hooks/rootcontext';
 
 const CartScreen = () => {
     const navigation = useNavigation();
 
+    // Lấy maxWeight từ RootContext
+    const { maxWeight } = useRootContext();
+    
     // Lấy thông tin giỏ hàng và các hàm từ context
     const { cartItems, changeQuantity, removeFromCart, totalQuantity, totalPrice, getbonusPoint, totalWeight } = useCartUI();
     // Lấy hàm hiển thị dialog từ context
@@ -97,8 +101,8 @@ const CartScreen = () => {
                             </ScrollView>
                             {/* khu vực tổng tiền và nút đặt hàng */}
                             {
-                                totalWeight > MAX_WEIGHT ?
-                                    // Nếu tổng cân nặng quá MAX_WEIGHT kg
+                                totalWeight > (maxWeight || 24.5) ?
+                                    // Nếu tổng cân nặng quá maxWeight kg
                                     <View style={styles.cCartPointBlock}>
                                         <Text style={{ fontSize: 16, fontWeight: 'bold', color: 'red' }}>
                                             Tổng tất cả các mặt hàng đã vượt quá 25kg, hãy điều chỉnh lại giỏ hàng của bạn
