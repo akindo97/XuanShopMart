@@ -55,7 +55,7 @@ const SuccessfulScreen = ({ route }) => {
                             onPress={openMessenger}
                         >
                             <View style={styles.cProBotFlex}>
-                                <Icon source="facebook-messenger" size={50} />
+                                <Icon source="facebook-messenger" size={50} color='#ffffff'/>
                             </View>
                         </TouchableOpacity>
                     </View>
