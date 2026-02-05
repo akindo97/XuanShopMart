@@ -1,9 +1,9 @@
 // URL API
-export const BASE_URL = 'https://api.xuanshopvietnhatmart.com/api'; // Product
+export const BASE_URL = 'https://sample.xuanshopvietnhatmart.com/api'; // Product
 // export const BASE_URL = 'http://127.0.0.1:8000/api'; // Test
 
 // URL ảnh
-export const IMAGE_URL = 'https://api.xuanshopvietnhatmart.com'; // Product
+export const IMAGE_URL = 'https://sample.xuanshopvietnhatmart.com'; // Product
 // export const IMAGE_URL = 'http://127.0.0.1:8000'; // Test
 
 // Số lượng item hiển thị khi tạo list ngang
